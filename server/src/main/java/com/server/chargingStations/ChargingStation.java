@@ -17,6 +17,8 @@ public class ChargingStation {
     private Status e_status;
     private double m_pricePerVolt;
 
+    // TODO E - Add Opening Hours
+
     public ChargingStation(GeoLocation location, String owner, double pricePerVolt) {
         m_location = location;
         m_owner = owner;
