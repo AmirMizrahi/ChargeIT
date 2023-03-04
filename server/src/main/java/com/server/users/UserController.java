@@ -21,6 +21,12 @@ public class UserController {
         m_userRepository.save(user);
     }
 
+    // TODO E - Login
+
+    // TODO E - DELETE User
+
+    // TODO E - Update User
+
     /*@GetMapping("/{id}")
     public User getUser(@PathVariable String id) {
         return m_userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
