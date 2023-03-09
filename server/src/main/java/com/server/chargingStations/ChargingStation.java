@@ -1,29 +1,30 @@
 package com.server.chargingStations;
 
 import com.server.GeoLocation;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 /*import java.awt.image.BufferedImage;*/
-import java.util.UUID;
 
 @Document(collection = "chargingStations")
 public class ChargingStation {
+    @Id
     private final GeoLocation m_location;
     private final String m_owner;
     /*private final BufferedImage m_qrCodeImage;*/
-    private Status e_status;
+    private final EchargerType e_chargerType;
+
+    private Estatus e_status;
     private double m_pricePerVolt;
 
     // TODO E - Add Opening Hours
 
-    public ChargingStation(GeoLocation location, String owner, double pricePerVolt) {
+    public ChargingStation(GeoLocation location, String owner, double pricePerVolt, EchargerType chargerType) {
         m_location = location;
         m_owner = owner;
+        e_chargerType = chargerType;
         /*m_qrCodeImage = generateQRCodeImage();*/
-        e_status = Status.NOT_CHARGING;
+        e_status = Estatus.NOT_CHARGING;
         m_pricePerVolt = pricePerVolt;
     }
 
@@ -33,11 +34,14 @@ public class ChargingStation {
     public String getOwner() {
         return m_owner;
     }
-    public Status getStatus() {
+    public EchargerType getChargerType() {
+        return e_chargerType;
+    }
+    public Estatus getStatus() {
         return e_status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(Estatus status) {
         e_status = status;
     }
 
@@ -78,8 +82,12 @@ public class ChargingStation {
     }*/
 }
 
-enum Status {
+enum Estatus {
     CHARGING, NOT_CHARGING
+}
+
+enum EchargerType {
+    TYPE_0, TYPE_1
 }
 
     /*ChargingStation chargingStation = new ChargingStation(new GeoLocation(123, 123), "John", 0.15);
