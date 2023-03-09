@@ -4,8 +4,6 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -13,8 +11,8 @@ public class UserController {
     @Autowired
     private UserRepository m_userRepository;
 
-    @PostMapping("/createUser")
-    public void createUser(@RequestBody User user) {
+    @PostMapping("/registration")
+    public void registerUser(@RequestBody User user) {
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         user.setPassword(hashedPassword);
 
@@ -26,6 +24,28 @@ public class UserController {
     // TODO E - DELETE User
 
     // TODO E - Update User
+
+    @PutMapping("/updateUserEmail")
+    public void updateUserEmail(@RequestHeader("email") String email, @RequestBody UserNameAndPassword userNameAndPassword) {
+        User user = m_userRepository.findByUserName(userNameAndPassword.getUserName()).orElseThrow(() -> new RuntimeException("User not found"));
+        String hashedPassword = user.getPassword();
+        if (!BCrypt.checkpw(userNameAndPassword.getPassword(), hashedPassword)) {
+            throw new RuntimeException("Invalid credentials");
+        }
+        user.setEmail(email);
+        m_userRepository.save(user);
+    }
+
+    @PutMapping("/updateUserPhoneNumber")
+    public void updateUserPhoneNumber(@RequestHeader("phoneNumber") String phoneNumber, @RequestBody UserNameAndPassword userNameAndPassword) {
+        User user = m_userRepository.findByUserName(userNameAndPassword.getUserName()).orElseThrow(() -> new RuntimeException("User not found"));
+        String hashedPassword = user.getPassword();
+        if (!BCrypt.checkpw(userNameAndPassword.getPassword(), hashedPassword)) {
+            throw new RuntimeException("Invalid credentials");
+        }
+        user.setPhoneNumber(phoneNumber);
+        m_userRepository.save(user);
+    }
 
     /*@GetMapping("/{id}")
     public User getUser(@PathVariable String id) {

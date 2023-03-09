@@ -1,61 +1,66 @@
 package com.server.users;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
 public class User {
 
-    private final String m_userName;
+    @Id
+    private final String userName;
 
-    private String m_password;
+    private String password;
 
-    private final String m_firstName;
+    private final String firstName;
 
-    private final String m_lastName;
+    private final String lastName;
 
-    private String m_email;
+    @Indexed(unique = true)
+    private String email;
 
-    private String m_phoneNumber;
+    @Indexed(unique = true)
+    private String phoneNumber;
 
     public User(String userName,String password, String firstName, String lastName, String email, String phoneNumber) {
-        this.m_userName = userName;
-        this.m_password = password;
-        this.m_firstName = firstName;
-        this.m_lastName = lastName;
-        this.m_email = email;
-        this.m_phoneNumber = phoneNumber;
+        this.userName = userName;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
     }
 
     // Getters and setters
 
-    public String getUserName() {return m_userName;}
+    public String getUserName() {return userName;}
 
-    public String getPassword() {return m_password;}
+    public String getPassword() {return password;}
 
-    public void setPassword(String password) { this.m_password = password;}
+    public void setPassword(String password) { this.password = password;}
 
     public String getFirstName() {
-        return m_firstName;
+        return firstName;
     }
 
     public String getLastName() {
-        return m_lastName;
+        return lastName;
     }
 
     public String getEmail() {
-        return m_email;
+        return email;
     }
 
     public void setEmail(String email) {
-        this.m_email = email;
+        this.email = email;
     }
 
     public String getPhoneNumber() {
-        return m_phoneNumber;
+        return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.m_phoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber;
     }
 }
 

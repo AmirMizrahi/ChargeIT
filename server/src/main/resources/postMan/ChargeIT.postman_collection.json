@@ -1,0 +1,155 @@
+{
+	"info": {
+		"_postman_id": "322c324c-d47f-4cda-8491-36bf92e48dea",
+		"name": "ChargeIT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19676146"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"JohnDoe\",\r\n  \"password\": \"123456\",\r\n  \"firstName\": \"John\",\r\n  \"lastName\": \"Doe\",\r\n  \"email\": \"johndoe@example.com\",\r\n  \"phoneNumber\": \"0541098765\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/registration",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"registration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUserEmail",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "email",
+								"value": "test@gmail.com",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"JohnDoe\",\r\n  \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/updateUserEmail",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"updateUserEmail"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUserPhoneNumber",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "phoneNumber",
+								"value": "0540000000",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"JohnDoe\",\r\n  \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/updateUserPhoneNumber",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"updateUserPhoneNumber"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ChargingStation",
+			"item": [
+				{
+					"name": "createChargingStation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 0.0,\r\n    \"longitude\": 0.0\r\n  },\r\n  \"owner\": \"John Doe\",\r\n  \"pricePerVolt\": 0.25,\r\n  \"chargerType\": \"TYPE_0\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/createChargingStation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"createChargingStation"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
