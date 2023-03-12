@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "chargingStations")
 public class ChargingStation {
     @Id
-    private final GeoLocation m_location;
+    private final GeoLocation location;
     private final String m_owner;
     /*private final BufferedImage m_qrCodeImage;*/
     private final EchargerType e_chargerType;
@@ -20,7 +20,7 @@ public class ChargingStation {
     // TODO E - Add Opening Hours
 
     public ChargingStation(GeoLocation location, String owner, double pricePerVolt, EchargerType chargerType) {
-        m_location = location;
+        this.location = location;
         m_owner = owner;
         e_chargerType = chargerType;
         /*m_qrCodeImage = generateQRCodeImage();*/
@@ -29,7 +29,7 @@ public class ChargingStation {
     }
 
     public GeoLocation getLocation() {
-        return m_location;
+        return location;
     }
     public String getOwner() {
         return m_owner;

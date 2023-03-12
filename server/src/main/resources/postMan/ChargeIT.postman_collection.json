@@ -148,6 +148,26 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "getAllChargingStationsLocations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/getAllChargingStationsLocations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"getAllChargingStationsLocations"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

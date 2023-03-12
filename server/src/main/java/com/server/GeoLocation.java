@@ -1,19 +1,19 @@
 package com.server;
 // TODO E - find an existing class for GeoLocation.
 public class GeoLocation {
-    private final double m_latitude;
-    private final double m_longitude;
+    private final double latitude;
+    private final double longitude;
 
     public GeoLocation(double latitude, double longitude) {
-        this.m_latitude = latitude;
-        this.m_longitude = longitude;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public double getLatitude() {
-        return m_latitude;
+        return latitude;
     }
 
     public double getLongitude() {
-        return m_longitude;
+        return longitude;
     }
 }
