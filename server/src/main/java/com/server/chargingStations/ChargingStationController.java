@@ -2,10 +2,8 @@ package com.server.chargingStations;
 
 import com.google.gson.JsonObject;
 import com.server.GeoLocation;
-import com.server.users.User;
-import com.server.users.UserNameAndPassword;
-import com.server.users.UserRepository;
-import org.mindrot.jbcrypt.BCrypt;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
@@ -22,19 +20,36 @@ public class ChargingStationController {
     private ChargingStationRepository m_chargingStationsRepository;
     @Autowired
     private MongoTemplate m_mongoTemplate;
-    @Autowired
-    private UserRepository m_userRepository;
 
     @PostMapping("/createChargingStation")
-    public void createChargingStation(@RequestBody ChargingStation chargingStation) {
+    public ResponseEntity<String> createChargingStation(@RequestBody ChargingStation chargingStation, HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
         m_chargingStationsRepository.save(chargingStation);
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
     }
 
     // TODO E - DELETE ChargingStation
 
     @GetMapping(value = "/getAllChargingStationsLocations", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<GeoLocation> getAllChargingStationsLocations() {
+    public List<GeoLocation> getAllChargingStationsLocations(HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
         List<GeoLocation> locations = m_mongoTemplate.query(ChargingStation.class)
                 .distinct("location")
                 .as(GeoLocation.class)
@@ -43,19 +58,15 @@ public class ChargingStationController {
     }
 
     @PutMapping("/charge")
-    public ResponseEntity<String> charge(@RequestBody ChargeRequest chargeRequest) {
+    public ResponseEntity<String> charge(@RequestBody GeoLocation location, HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
 
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
-
-        GeoLocation location = chargeRequest.getLocation();
-        UserNameAndPassword userNameAndPassword = chargeRequest.getUserNameAndPassword();
-
-        User user = m_userRepository.findByUserName(userNameAndPassword.getUserName()).orElseThrow(() -> new RuntimeException("User not found"));
-        String hashedPassword = user.getPassword();
-        if (!BCrypt.checkpw(userNameAndPassword.getPassword(), hashedPassword)) {
-            throw new RuntimeException("Invalid credentials");
-        }
 
         ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
         if(station.getStatus().equals(Estatus.NOT_CHARGING))
@@ -77,19 +88,15 @@ public class ChargingStationController {
     }
 
     @PutMapping("/unCharge")
-    public ResponseEntity<String> unCharge(@RequestBody ChargeRequest chargeRequest) {
+    public ResponseEntity<String> unCharge(@RequestBody GeoLocation location, HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
 
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
-
-        GeoLocation location = chargeRequest.getLocation();
-        UserNameAndPassword userNameAndPassword = chargeRequest.getUserNameAndPassword();
-
-        User user = m_userRepository.findByUserName(userNameAndPassword.getUserName()).orElseThrow(() -> new RuntimeException("User not found"));
-        String hashedPassword = user.getPassword();
-        if (!BCrypt.checkpw(userNameAndPassword.getPassword(), hashedPassword)) {
-            throw new RuntimeException("Invalid credentials");
-        }
 
         ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
         if(station.getStatus().equals(Estatus.CHARGING))
