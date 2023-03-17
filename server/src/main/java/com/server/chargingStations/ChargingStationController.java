@@ -1,6 +1,11 @@
 package com.server.chargingStations;
 
+import com.google.gson.JsonObject;
 import com.server.GeoLocation;
+import com.server.users.User;
+import com.server.users.UserNameAndPassword;
+import com.server.users.UserRepository;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
@@ -17,6 +22,8 @@ public class ChargingStationController {
     private ChargingStationRepository m_chargingStationsRepository;
     @Autowired
     private MongoTemplate m_mongoTemplate;
+    @Autowired
+    private UserRepository m_userRepository;
 
     @PostMapping("/createChargingStation")
     public void createChargingStation(@RequestBody ChargingStation chargingStation) {
@@ -25,7 +32,6 @@ public class ChargingStationController {
 
     // TODO E - DELETE ChargingStation
 
-    // TODO E - GET getAllChargingStationsLocations
     @GetMapping(value = "/getAllChargingStationsLocations", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<GeoLocation> getAllChargingStationsLocations() {
@@ -36,7 +42,71 @@ public class ChargingStationController {
         return locations;
     }
 
-    // TODO E - Charge
+    @PutMapping("/charge")
+    public ResponseEntity<String> charge(@RequestBody ChargeRequest chargeRequest) {
 
-    // TODO E - UnCharge
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        GeoLocation location = chargeRequest.getLocation();
+        UserNameAndPassword userNameAndPassword = chargeRequest.getUserNameAndPassword();
+
+        User user = m_userRepository.findByUserName(userNameAndPassword.getUserName()).orElseThrow(() -> new RuntimeException("User not found"));
+        String hashedPassword = user.getPassword();
+        if (!BCrypt.checkpw(userNameAndPassword.getPassword(), hashedPassword)) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+        if(station.getStatus().equals(Estatus.NOT_CHARGING))
+        {
+            station.charge();
+            m_chargingStationsRepository.save(station);
+        }
+        else
+        {
+            String m_errorMessage;
+            httpStatus = HttpStatus.LOCKED;
+            m_errorMessage = "ChargingStation is charging.";
+            jsonObject.addProperty("error-message", m_errorMessage);
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @PutMapping("/unCharge")
+    public ResponseEntity<String> unCharge(@RequestBody ChargeRequest chargeRequest) {
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        GeoLocation location = chargeRequest.getLocation();
+        UserNameAndPassword userNameAndPassword = chargeRequest.getUserNameAndPassword();
+
+        User user = m_userRepository.findByUserName(userNameAndPassword.getUserName()).orElseThrow(() -> new RuntimeException("User not found"));
+        String hashedPassword = user.getPassword();
+        if (!BCrypt.checkpw(userNameAndPassword.getPassword(), hashedPassword)) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+        if(station.getStatus().equals(Estatus.CHARGING))
+        {
+            station.unCharge();
+            m_chargingStationsRepository.save(station);
+        }
+        else
+        {
+            String m_errorMessage;
+            httpStatus = HttpStatus.BAD_REQUEST;
+            m_errorMessage = "ChargingStation isn't charging.";
+            jsonObject.addProperty("error-message", m_errorMessage);
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
 }
