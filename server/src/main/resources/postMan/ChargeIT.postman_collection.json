@@ -39,6 +39,35 @@
 					"response": []
 				},
 				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"JohnDoe\",\r\n  \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "updateUserEmail",
 					"request": {
 						"method": "PUT",
@@ -51,7 +80,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"userName\": \"JohnDoe\",\r\n  \"password\": \"123456\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -68,13 +97,6 @@
 							"path": [
 								"users",
 								"updateUserEmail"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": "",
-									"disabled": true
-								}
 							]
 						}
 					},
@@ -93,7 +115,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"userName\": \"JohnDoe\",\r\n  \"password\": \"123456\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -164,6 +186,64 @@
 							"path": [
 								"chargingStations",
 								"getAllChargingStationsLocations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "charge",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 0.0,\r\n    \"longitude\": 0.0\r\n  },\r\n  \"userNameAndPassword\": {\r\n    \"userName\": \"JohnDoe\",\r\n    \"password\": \"123456\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/charge",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"charge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unCharge",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 0.0,\r\n    \"longitude\": 0.0\r\n  },\r\n  \"userNameAndPassword\": {\r\n    \"userName\": \"JohnDoe\",\r\n    \"password\": \"123456\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/unCharge",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"unCharge"
 							]
 						}
 					},
