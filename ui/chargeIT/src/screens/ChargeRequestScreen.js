@@ -1,13 +1,13 @@
 import React from 'react';
 import {View, Text, StyleSheet} from "react-native";
 
-const Login = () => {
+const ChargeRequestScreen = () => {
     return (<View>
-        <Text>Login Screen</Text>
-    </View>
+            <Text>Discharge Request Screen</Text>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({});
 
-export default Login;
+export default ChargeRequestScreen;
