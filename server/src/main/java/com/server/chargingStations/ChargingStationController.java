@@ -1,6 +1,9 @@
 package com.server.chargingStations;
 
+import com.google.gson.JsonObject;
 import com.server.GeoLocation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
@@ -19,16 +22,34 @@ public class ChargingStationController {
     private MongoTemplate m_mongoTemplate;
 
     @PostMapping("/createChargingStation")
-    public void createChargingStation(@RequestBody ChargingStation chargingStation) {
+    public ResponseEntity<String> createChargingStation(@RequestBody ChargingStation chargingStation, HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
         m_chargingStationsRepository.save(chargingStation);
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
     }
 
     // TODO E - DELETE ChargingStation
 
-    // TODO E - GET getAllChargingStationsLocations
     @GetMapping(value = "/getAllChargingStationsLocations", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<GeoLocation> getAllChargingStationsLocations() {
+    public List<GeoLocation> getAllChargingStationsLocations(HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
         List<GeoLocation> locations = m_mongoTemplate.query(ChargingStation.class)
                 .distinct("location")
                 .as(GeoLocation.class)
@@ -36,7 +57,63 @@ public class ChargingStationController {
         return locations;
     }
 
-    // TODO E - Charge
+    @PutMapping("/charge")
+    public ResponseEntity<String> charge(@RequestBody GeoLocation location, HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
 
-    // TODO E - UnCharge
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+        if(station.getStatus().equals(Estatus.NOT_CHARGING))
+        {
+            station.charge();
+            m_chargingStationsRepository.save(station);
+        }
+        else
+        {
+            String m_errorMessage;
+            httpStatus = HttpStatus.LOCKED;
+            m_errorMessage = "ChargingStation is charging.";
+            jsonObject.addProperty("error-message", m_errorMessage);
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @PutMapping("/unCharge")
+    public ResponseEntity<String> unCharge(@RequestBody GeoLocation location, HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+        if(station.getStatus().equals(Estatus.CHARGING))
+        {
+            station.unCharge();
+            m_chargingStationsRepository.save(station);
+        }
+        else
+        {
+            String m_errorMessage;
+            httpStatus = HttpStatus.BAD_REQUEST;
+            m_errorMessage = "ChargingStation isn't charging.";
+            jsonObject.addProperty("error-message", m_errorMessage);
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
 }

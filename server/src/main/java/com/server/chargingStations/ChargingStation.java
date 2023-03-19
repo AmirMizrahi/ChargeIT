@@ -10,46 +10,55 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class ChargingStation {
     @Id
     private final GeoLocation location;
-    private final String m_owner;
+    private final String owner;
     /*private final BufferedImage m_qrCodeImage;*/
-    private final EchargerType e_chargerType;
-
-    private Estatus e_status;
-    private double m_pricePerVolt;
+    private final EchargerType chargerType;
+    private Estatus status;
+    private double pricePerVolt;
 
     // TODO E - Add Opening Hours
 
     public ChargingStation(GeoLocation location, String owner, double pricePerVolt, EchargerType chargerType) {
         this.location = location;
-        m_owner = owner;
-        e_chargerType = chargerType;
+        this.owner = owner;
+        this.chargerType = chargerType;
         /*m_qrCodeImage = generateQRCodeImage();*/
-        e_status = Estatus.NOT_CHARGING;
-        m_pricePerVolt = pricePerVolt;
+        status = Estatus.NOT_CHARGING;
+        this.pricePerVolt = pricePerVolt;
     }
 
     public GeoLocation getLocation() {
         return location;
     }
     public String getOwner() {
-        return m_owner;
+        return owner;
     }
     public EchargerType getChargerType() {
-        return e_chargerType;
+        return chargerType;
     }
     public Estatus getStatus() {
-        return e_status;
+        return status;
     }
 
     public void setStatus(Estatus status) {
-        e_status = status;
+        this.status = status;
     }
 
     public double getPricePerVolt() {
-        return m_pricePerVolt;
+        return pricePerVolt;
     }
 
-    public void setPricePerVolt(double pricePerVolt) { m_pricePerVolt = pricePerVolt; }
+    public void setPricePerVolt(double pricePerVolt) { this.pricePerVolt = pricePerVolt; }
+
+    public void charge()
+    {
+        status = Estatus.CHARGING;
+    }
+
+    public void unCharge()
+    {
+        status = Estatus.NOT_CHARGING;
+    }
 
     /*public BufferedImage getQRCodeImage() {
         return m_qrCodeImage;
