@@ -15,7 +15,7 @@ const switchNavigator = createSwitchNavigator({
             Registration: RegistrationScreen,
             Login: LoginScreen
         }),
-        mainFlow: createMaterialBottomTabNavigator({
+        chargingFlow: createMaterialBottomTabNavigator({
         CreateStation: CreateStationScreen,
         ChargeRequest: ChargeRequestScreen,
         UserProfile: UserProfileScreen

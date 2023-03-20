@@ -14,7 +14,8 @@ const RegistrationScreen = ({navigation}) => {
     const signup = async () => {
         try{
             console.log("trying to connect");
-            const response = await basicApi.post('/users/registration', {email,password})
+            const response = await basicApi.post('/users/registration',
+                {userName,firstName,lastName,email,phone,password})
             console.log(`Received code ${response.status}`);
         }
         catch (e) {
