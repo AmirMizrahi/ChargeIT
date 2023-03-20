@@ -1,10 +1,12 @@
 import React from 'react';
-import {View, Text, StyleSheet} from "react-native";
+import {StyleSheet} from "react-native";
+import {Text,Input,Button} from 'react-native-elements'
 
-const WelcomeScreen = () => {
-    return (<View>
+const WelcomeScreen = ({navigation}) => {
+    return (<>
             <Text>Hello world Screen</Text>
-        </View>
+            <Button title='Register' onPress={()=>navigation.navigate('RegistrationScreen')}/>
+        </>
     );
 };
 

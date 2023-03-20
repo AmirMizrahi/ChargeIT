@@ -1,13 +1,13 @@
 import React from 'react';
 import {View, Text, StyleSheet} from "react-native";
 
-const ChargeRequestScreen = () => {
+const UserProfileScreen = () => {
     return (<View>
-            <Text>Charge Request Screen</Text>
+            <Text>User profile Screen</Text>
         </View>
     );
 };
 
 const styles = StyleSheet.create({});
 
-export default ChargeRequestScreen;
+export default UserProfileScreen;
