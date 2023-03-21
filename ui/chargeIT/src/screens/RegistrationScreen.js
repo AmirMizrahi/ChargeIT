@@ -2,8 +2,11 @@ import React, {useState} from 'react';
 import {View, StyleSheet} from "react-native";
 import {Text,Input,Button} from 'react-native-elements'
 import basicApi from "../api/basicApi";
+import { logger } from 'react-native-logs';
 
 const RegistrationScreen = ({navigation}) => {
+    const log = logger.createLogger();
+
     const [userName,setUserName] = useState('');
     const [firstName,setFirstName] = useState('');
     const [lastName,setLastName] = useState('');
@@ -13,14 +16,14 @@ const RegistrationScreen = ({navigation}) => {
 
     const signup = async () => {
         try{
-            console.log("trying to connect");
+            log.debug(`Trying to register Username=${userName}, Email=${email}`);
             const response = await basicApi.post('/users/registration',
                 {userName,firstName,lastName,email,phone,password})
-            console.log(`Received code ${response.status}`);
+            log.debug(`Received code ${response.status}. Successfully registered Username=${userName}`);
         }
         catch (e) {
-            console.log("Something went wrong :(");
-            console.log(e);
+            log.error("Something went wrong :(");
+            log.error(e);
         }
     }
 
