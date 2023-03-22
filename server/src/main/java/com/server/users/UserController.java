@@ -29,6 +29,10 @@ public class UserController {
         user.setPassword(hashedPassword);
         m_userRepository.save(user);
 
+        String message;
+        message = "Register successfully.";
+        jsonObject.addProperty("message", message);
+
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(jsonObject.toString());
@@ -50,6 +54,10 @@ public class UserController {
         HttpSession session = request.getSession(true);
         session.setAttribute("userName", user.getUserName());
 
+        String message;
+        message = "Login successfully.";
+        jsonObject.addProperty("message", message);
+
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(jsonObject.toString());
@@ -60,7 +68,7 @@ public class UserController {
     // TODO E - Update password
 
     @PutMapping("/updateUserEmail")
-    public ResponseEntity<String> updateUserEmail(@RequestHeader("email") String email, HttpServletRequest request) {
+    public ResponseEntity<String> updateUserEmail(@RequestParam("email") String email, HttpServletRequest request) {
         // Check if user is logged in
         HttpSession session = request.getSession(false);
         if (session == null) {
@@ -78,7 +86,7 @@ public class UserController {
     }
 
     @PutMapping("/updateUserPhoneNumber")
-    public ResponseEntity<String> updateUserPhoneNumber(@RequestHeader("phoneNumber") String phoneNumber, HttpServletRequest request) {
+    public ResponseEntity<String> updateUserPhoneNumber(@RequestParam("phoneNumber") String phoneNumber, HttpServletRequest request) {
         // Check if user is logged in
         HttpSession session = request.getSession(false);
         if (session == null) {

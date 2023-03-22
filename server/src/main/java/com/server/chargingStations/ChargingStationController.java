@@ -76,10 +76,10 @@ public class ChargingStationController {
         }
         else
         {
-            String m_errorMessage;
+            String errorMessage;
             httpStatus = HttpStatus.LOCKED;
-            m_errorMessage = "ChargingStation is charging.";
-            jsonObject.addProperty("error-message", m_errorMessage);
+            errorMessage = "ChargingStation is charging.";
+            jsonObject.addProperty("error-message", errorMessage);
         }
 
         return ResponseEntity.status(httpStatus)
@@ -106,10 +106,10 @@ public class ChargingStationController {
         }
         else
         {
-            String m_errorMessage;
+            String errorMessage;
             httpStatus = HttpStatus.BAD_REQUEST;
-            m_errorMessage = "ChargingStation isn't charging.";
-            jsonObject.addProperty("error-message", m_errorMessage);
+            errorMessage = "ChargingStation isn't charging.";
+            jsonObject.addProperty("error-message", errorMessage);
         }
 
         return ResponseEntity.status(httpStatus)
