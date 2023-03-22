@@ -71,13 +71,7 @@
 					"name": "updateUserEmail",
 					"request": {
 						"method": "PUT",
-						"header": [
-							{
-								"key": "email",
-								"value": "test@gmail.com",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -88,7 +82,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/users/updateUserEmail",
+							"raw": "http://localhost:8080/users/updateUserEmail?email=example@example.com",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -97,6 +91,12 @@
 							"path": [
 								"users",
 								"updateUserEmail"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "example@example.com"
+								}
 							]
 						}
 					},
@@ -106,13 +106,7 @@
 					"name": "updateUserPhoneNumber",
 					"request": {
 						"method": "PUT",
-						"header": [
-							{
-								"key": "phoneNumber",
-								"value": "0540000000",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -123,7 +117,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/users/updateUserPhoneNumber",
+							"raw": "http://localhost:8080/users/updateUserPhoneNumber?phoneNumber=0540000000",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -132,6 +126,12 @@
 							"path": [
 								"users",
 								"updateUserPhoneNumber"
+							],
+							"query": [
+								{
+									"key": "phoneNumber",
+									"value": "0540000000"
+								}
 							]
 						}
 					},
@@ -198,7 +198,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 0.0,\r\n    \"longitude\": 0.0\r\n  },\r\n  \"userNameAndPassword\": {\r\n    \"userName\": \"JohnDoe\",\r\n    \"password\": \"123456\"\r\n  }\r\n}\r\n",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 0.0,\r\n    \"longitude\": 0.0\r\n  }\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -227,7 +227,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 0.0,\r\n    \"longitude\": 0.0\r\n  },\r\n  \"userNameAndPassword\": {\r\n    \"userName\": \"JohnDoe\",\r\n    \"password\": \"123456\"\r\n  }\r\n}\r\n",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 0.0,\r\n    \"longitude\": 0.0\r\n  }\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -244,6 +244,371 @@
 							"path": [
 								"chargingStations",
 								"unCharge"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tests",
+			"item": [
+				{
+					"name": "registration Avi",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"Avi\",\r\n  \"password\": \"123456\",\r\n  \"firstName\": \"Avi\",\r\n  \"lastName\": \"Avi\",\r\n  \"email\": \"Avi@example.com\",\r\n  \"phoneNumber\": \"0540000000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/registration",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"registration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "registration Beni",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"Beni\",\r\n  \"password\": \"123456\",\r\n  \"firstName\": \"Beni\",\r\n  \"lastName\": \"Beni\",\r\n  \"email\": \"Beni@example.com\",\r\n  \"phoneNumber\": \"0540000001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/registration",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"registration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "registration Gadi",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"Gadi\",\r\n  \"password\": \"123456\",\r\n  \"firstName\": \"Gadi\",\r\n  \"lastName\": \"Gadi\",\r\n  \"email\": \"Gadi@example.com\",\r\n  \"phoneNumber\": \"0540000002\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/registration",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"registration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login Avi",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"Avi\",\r\n  \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createChargingStation Avi",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 0.0,\r\n    \"longitude\": 0.0\r\n  },\r\n  \"owner\": \"Avi\",\r\n  \"pricePerVolt\": 0.25,\r\n  \"chargerType\": \"TYPE_0\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/createChargingStation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"createChargingStation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login Beni",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"Beni\",\r\n  \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createChargingStation Beni",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 1.0,\r\n    \"longitude\": 1.0\r\n  },\r\n  \"owner\": \"Beni\",\r\n  \"pricePerVolt\": 0.25,\r\n  \"chargerType\": \"TYPE_0\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/createChargingStation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"createChargingStation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login Gadi",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"Gadi\",\r\n  \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "charge",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 0.0,\r\n    \"longitude\": 0.0\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/charge",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"charge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unCharge",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 0.0,\r\n    \"longitude\": 0.0\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/unCharge",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"unCharge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUserEmail Gadi",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/updateUserEmail?email=example@example.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"updateUserEmail"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "example@example.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUserPhoneNumber Gadi",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/updateUserPhoneNumber?phoneNumber=0549999999",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"updateUserPhoneNumber"
+							],
+							"query": [
+								{
+									"key": "phoneNumber",
+									"value": "0549999999"
+								}
 							]
 						}
 					},
