@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, KeyboardAvoidingView, ScrollView} from "react-native";
 import {Text, Input, Button} from 'react-native-elements'
-import basicApi from "../api/basicApi";
+import basicApi from "../../api/basicApi";
 import {logger} from 'react-native-logs';
 
 const RegistrationScreen = ({navigation}) => {
