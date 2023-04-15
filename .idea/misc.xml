@@ -9,6 +9,7 @@
       <list>
         <option value="$PROJECT_DIR$/ui/pom.xml" />
         <option value="$PROJECT_DIR$/server/pom.xml" />
+        <option value="$PROJECT_DIR$/ui-rn6/pom.xml" />
       </list>
     </option>
   </component>

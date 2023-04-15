@@ -7,10 +7,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="server" />
+        <module name="ui-rn6" />
+        <module name="untitled" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="ui" target="1.5" />
+      <module name="untitled" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
