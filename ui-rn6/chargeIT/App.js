@@ -5,7 +5,8 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack"
 import Splash from "./src/screens/authentication/Splash";
 import Onboarding from "./src/screens/authentication/Onboarding";
 import Login from "./src/screens/authentication/Login";
-
+import RegistrationScreen from "./src/screens/authentication/RegistrationScreen";
+import { Provider as AuthProvider } from "./src/context/AuthContext";
 
 // import { createAppContainer, createSwitchNavigator } from "react-navigation";
 // import {createMaterialBottomTabNavigator} from "react-navigation-material-bottom-tabs";
@@ -37,23 +38,24 @@ const Stack = createNativeStackNavigator();
 //const App = createAppContainer(switchNavigator);
 
 const App = () => {
-  return (
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{headerShown:false}}>
-          <Stack.Screen name="Splash" component={Splash}/>
-          <Stack.Screen name="Onboarding" component={Onboarding}/>
-          <Stack.Screen name="Login" component={Login}/>
-        </Stack.Navigator>
-      </NavigationContainer>
-  )
+    return (
+        <NavigationContainer>
+            <Stack.Navigator screenOptions={{headerShown: false}}>
+                <Stack.Screen name="Splash" component={Splash}/>
+                <Stack.Screen name="Onboarding" component={Onboarding}/>
+                <Stack.Screen name="Login" component={Login}/>
+                <Stack.Screen name="RegistrationScreen" component={RegistrationScreen}/>
+            </Stack.Navigator>
+        </NavigationContainer>
+    )
 }
 
-export default App;
-// export default () => {
-//   return (
-//       <AuthProvider>
-//         <App />
-//       </AuthProvider>
-//   );
-// };
-//
+//export default App;
+export default () => {
+  return (
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+  );
+};
+

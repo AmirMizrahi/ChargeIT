@@ -55,7 +55,7 @@ const Login = ({navigation}) => {
 
                 <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'flex-end',backgroundColor:'#fff',marginBottom:40}} >
                     <Text style={{fontSize:17,color:'#818181'}} >Don't have a account? </Text>
-                    <Text style={{fontSize:18,color:'#333'}} onPress={console.log("hu")}>Sign Up</Text>
+                    <Text style={{fontSize:18,color:'#333'}} onPress={()=>navigation.navigate('RegistrationScreen')}>Sign Up</Text>
                 </View>
             </View>
         </ScrollView>
