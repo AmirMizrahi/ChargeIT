@@ -1,8 +1,13 @@
-import React,{useState} from 'react'
+import React, {useContext, useState} from 'react'
 import { StyleSheet, Text, ScrollView,View,StatusBar,Image,TextInput, TouchableOpacity } from 'react-native'
 import Buttons from '../../components/Buttons'
+import {Context as AuthContext} from "../../context/AuthContext";
 
 const Login = ({navigation}) => {
+    const {state, signin} = useContext(AuthContext);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
     const [formData,setformData] = useState({
         email:'',
         password:''
@@ -21,11 +26,18 @@ const Login = ({navigation}) => {
 
                 <View style={{flexDirection:'column',paddingTop:20}} >
                     <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center',backgroundColor:'#ededed',width:'95%',borderRadius:10,height:60,paddingLeft:20}} >
-                        <TextInput onChangeText={(text)=>{setformData((prevState)=>({...prevState,email:text}))}} style={styles.input} placeholder="Enter Email" placeholderTextColor="#818181" />
+                        <TextInput onChangeText={setEmail}
+                                   style={styles.input}
+                                   placeholder="Enter Email"
+                                   placeholderTextColor="#818181" />
                     </View>
 
                     <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center',backgroundColor:'#ededed',width:'95%',borderRadius:10,height:60,paddingLeft:20,marginTop:20}} >
-                        <TextInput onChangeText={(text)=>{setformData((prevState)=>({...prevState,password:text}))}} style={styles.input} placeholder="Enter Password" secureTextEntry={true} placeholderTextColor="#818181" />
+                        <TextInput onChangeText={setPassword}
+                                   style={styles.input}
+                                   placeholder="Enter Password"
+                                   secureTextEntry={true}
+                                   placeholderTextColor="#818181" />
                     </View>
 
                     <View style={{width:'95%',marginBottom:10}} >
@@ -33,7 +45,7 @@ const Login = ({navigation}) => {
                             color:'#818181',alignSelf:'flex-end',paddingTop:10}} >Forgot Password?</Text>
                     </View>
 
-                    <Buttons  btn_text={"Sign In"} on_press={()=>console.log(formData)} />
+                    <Buttons  btn_text={"Sign In"} on_press={()=>signin({email,password})} />
                 </View>
             </View>
 
