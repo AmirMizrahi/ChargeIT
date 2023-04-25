@@ -40,19 +40,19 @@ public class UserController {
 
     // TODO E - Login
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody UserNameAndPassword userNameAndPassword, HttpServletRequest request) {
+    public ResponseEntity<String> loginUser(@RequestBody EmailAndPassword emailAndPassword, HttpServletRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
-        User user = m_userRepository.findByUserName(userNameAndPassword.getUserName()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = m_userRepository.findByEmail(emailAndPassword.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
 
         String hashedPassword = user.getPassword();
-        if (!BCrypt.checkpw(userNameAndPassword.getPassword(), hashedPassword)) {
+        if (!BCrypt.checkpw(emailAndPassword.getPassword(), hashedPassword)) {
             throw new RuntimeException("Invalid credentials");
         }
 
         // Set user attributes in session
         HttpSession session = request.getSession(true);
-        session.setAttribute("userName", user.getUserName());
+        session.setAttribute("email", user.getEmail());
 
         String message;
         message = "Login successfully.";
@@ -67,7 +67,7 @@ public class UserController {
 
     // TODO E - Update password
 
-    @PutMapping("/updateUserEmail")
+    /*@PutMapping("/updateUserEmail")
     public ResponseEntity<String> updateUserEmail(@RequestParam("email") String email, HttpServletRequest request) {
         // Check if user is logged in
         HttpSession session = request.getSession(false);
@@ -76,14 +76,14 @@ public class UserController {
         }
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
-        User user = m_userRepository.findByUserName((String) session.getAttribute("userName")).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = m_userRepository.findByEmail((String) session.getAttribute("email")).orElseThrow(() -> new RuntimeException("User not found"));
         user.setEmail(email);
         m_userRepository.save(user);
 
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(jsonObject.toString());
-    }
+    }*/
 
     @PutMapping("/updateUserPhoneNumber")
     public ResponseEntity<String> updateUserPhoneNumber(@RequestParam("phoneNumber") String phoneNumber, HttpServletRequest request) {
@@ -95,7 +95,7 @@ public class UserController {
 
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
-        User user = m_userRepository.findByUserName((String) session.getAttribute("userName")).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = m_userRepository.findByEmail((String) session.getAttribute("email")).orElseThrow(() -> new RuntimeException("User not found"));
         user.setPhoneNumber(phoneNumber);
         m_userRepository.save(user);
 

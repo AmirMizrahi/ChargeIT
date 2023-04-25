@@ -7,33 +7,34 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "users")
 public class User {
 
-    @Id
-    private final String userName;
+    /*@Id
+    private final String userName;*/
 
     private String password;
 
-    private final String firstName;
+    private String firstName;
 
-    private final String lastName;
+    private String lastName;
 
+    @Id
     @Indexed(unique = true)
     private String email;
 
-    @Indexed(unique = true)
+    //@Indexed(unique = true)
     private String phoneNumber;
 
-    public User(String userName,String password, String firstName, String lastName, String email, String phoneNumber) {
-        this.userName = userName;
+    public User(String password,String email) {
+        //this.userName = userName;
         this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.firstName = "";
+        this.lastName = "";
         this.email = email;
-        this.phoneNumber = phoneNumber;
+        this.phoneNumber = "";
     }
 
     // Getters and setters
 
-    public String getUserName() {return userName;}
+    //public String getUserName() {return userName;}
 
     public String getPassword() {return password;}
 
