@@ -4,6 +4,7 @@ import {Text, TextInput, Button} from "react-native";
 import Spacer from "../../components/Spacer";
 import {KeyboardAvoidingView, ScrollView} from "react-native";
 import {Context as AuthContext} from "../../context/AuthContext";
+import { useNavigation } from '@react-navigation/native';
 
 const RegistrationScreen = ({navigation}) => {
     const {state, register} = useContext(AuthContext);

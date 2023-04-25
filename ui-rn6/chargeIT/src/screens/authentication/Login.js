@@ -2,6 +2,7 @@ import React, {useContext, useState} from 'react'
 import { StyleSheet, Text, ScrollView,View,StatusBar,Image,TextInput, TouchableOpacity } from 'react-native'
 import Buttons from '../../components/Buttons'
 import {Context as AuthContext} from "../../context/AuthContext";
+import {useNavigation} from "@react-navigation/native";
 
 const Login = ({navigation}) => {
     const {state, signin} = useContext(AuthContext);
@@ -49,27 +50,11 @@ const Login = ({navigation}) => {
                 </View>
             </View>
 
-            {/* social login section */}
-            <View style={{flex:2,flexDirection:'column',paddingHorizontal:'3%', borderColor:"blue", borderWidth:10}} >
-                <Text style={{textAlign:'center',marginVertical:35,color:'#818181',fontSize:20}} >Or</Text>
-
-                <View style={{flexDirection:'column',alignItems:'center',width:'95%'}} >
-                    <TouchableOpacity onPress={()=>console.log("google login")} style={styles.social_btn} >
-                        <Image style={styles.social_img} source={require('../../assets/images/google_icon.png')} />
-                        <Text style={{width:'80%',textAlign:'center',fontSize:16}} >Sign in with Google </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={()=>console.log("facebook login")} style={styles.social_btn} >
-                        <Image style={styles.social_img} source={require('../../assets/images/facebook_icon.png')} />
-                        <Text style={{width:'80%',textAlign:'center',fontSize:16}} >Sign in with Facebook </Text>
-                    </TouchableOpacity>
-                </View>
 
                 <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'flex-end',backgroundColor:'#fff',marginBottom:40}} >
                     <Text style={{fontSize:17,color:'#818181'}} >Don't have a account? </Text>
                     <Text style={{fontSize:18,color:'#333'}} onPress={()=>navigation.navigate('RegistrationScreen')}>Sign Up</Text>
                 </View>
-            </View>
         </ScrollView>
     )
 }
