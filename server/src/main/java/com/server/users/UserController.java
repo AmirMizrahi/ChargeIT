@@ -22,16 +22,21 @@ public class UserController {
     private UserRepository m_userRepository;
 
     @PostMapping("/registration")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
+    public ResponseEntity<String> registerUser(@RequestBody User user, HttpServletRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         user.setPassword(hashedPassword);
         m_userRepository.save(user);
 
+        // Set user attributes in session
+        HttpSession session = request.getSession(true);
+        session.setAttribute("email", user.getEmail());
+
         String message;
         message = "Register successfully.";
         jsonObject.addProperty("message", message);
+        jsonObject.addProperty("token", session.getId());
 
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -57,6 +62,7 @@ public class UserController {
         String message;
         message = "Login successfully.";
         jsonObject.addProperty("message", message);
+        jsonObject.addProperty("token", session.getId());
 
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
