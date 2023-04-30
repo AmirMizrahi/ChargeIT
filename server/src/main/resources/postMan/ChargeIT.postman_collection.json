@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"userName\": \"JohnDoe\",\r\n  \"password\": \"123456\",\r\n  \"firstName\": \"John\",\r\n  \"lastName\": \"Doe\",\r\n  \"email\": \"johndoe@example.com\",\r\n  \"phoneNumber\": \"0541098765\"\r\n}",
+							"raw": "{\r\n  \"password\": \"123456\",\r\n  \"email\": \"eden@example.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -45,7 +45,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"userName\": \"JohnDoe\",\r\n  \"password\": \"123456\"\r\n}",
+							"raw": "{\r\n  \"email\": \"eden@example.com\",\r\n  \"password\": \"123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -82,7 +82,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/users/updateUserEmail?email=example@example.com",
+							"raw": "http://localhost:8080/users/updateUserEmail?email=eden2@example.com",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -95,7 +95,7 @@
 							"query": [
 								{
 									"key": "email",
-									"value": "example@example.com"
+									"value": "eden2@example.com"
 								}
 							]
 						}
@@ -117,7 +117,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/users/updateUserPhoneNumber?phoneNumber=0540000000",
+							"raw": "http://localhost:8080/users/updateUserPhoneNumber?phoneNumber=0548098765",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -130,7 +130,7 @@
 							"query": [
 								{
 									"key": "phoneNumber",
-									"value": "0540000000"
+									"value": "0548098765"
 								}
 							]
 						}
@@ -149,7 +149,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 0.0,\r\n    \"longitude\": 0.0\r\n  },\r\n  \"owner\": \"John Doe\",\r\n  \"pricePerVolt\": 0.25,\r\n  \"chargerType\": \"TYPE_0\"\r\n}\r\n",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 32.253,\r\n    \"longitude\": 34.929\r\n  },\r\n  \"pricePerVolt\": 0.25,\r\n  \"chargerType\": \"TYPE_0\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -166,6 +166,55 @@
 							"path": [
 								"chargingStations",
 								"createChargingStation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteChargingStationByLocation",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 32.253,\r\n    \"longitude\": 34.929\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAllChargingStationsByOwner",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/delete-all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"delete-all"
 							]
 						}
 					},
@@ -198,7 +247,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 0.0,\r\n    \"longitude\": 0.0\r\n  }\r\n}\r\n",
+							"raw": "{\r\n    \"latitude\": 32.253,\r\n    \"longitude\": 34.929\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -227,7 +276,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 0.0,\r\n    \"longitude\": 0.0\r\n  }\r\n}\r\n",
+							"raw": "{\r\n    \"latitude\": 32.253,\r\n    \"longitude\": 34.929\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
