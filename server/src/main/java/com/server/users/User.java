@@ -1,11 +1,14 @@
 package com.server.users;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
 public class User {
+    @Id
+    private ObjectId id;
 
     /*@Id
     private final String userName;*/
@@ -16,7 +19,6 @@ public class User {
 
     private String lastName;
 
-    @Id
     @Indexed(unique = true)
     private String email;
 
@@ -35,6 +37,9 @@ public class User {
     // Getters and setters
 
     //public String getUserName() {return userName;}
+    public ObjectId getId() {
+        return id;
+    }
 
     public String getPassword() {return password;}
 
@@ -64,13 +69,3 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 }
-
-// json example
-/*{
-  "userName": "JohnDoe",
-  "password": "123456",
-  "firstName": "John",
-  "lastName": "Doe",
-  "email": "johndoe@example.com",
-  "phoneNumber": "0541098765"
-}*/

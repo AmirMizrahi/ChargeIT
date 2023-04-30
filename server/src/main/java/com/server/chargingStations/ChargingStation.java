@@ -1,6 +1,7 @@
 package com.server.chargingStations;
 
 import com.server.GeoLocation;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,17 +11,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class ChargingStation {
     @Id
     private final GeoLocation location;
-    private final String owner;
+    private final ObjectId ownerId;
     /*private final BufferedImage m_qrCodeImage;*/
     private final EchargerType chargerType;
     private Estatus status;
     private double pricePerVolt;
 
-    // TODO E - Add Opening Hours
-
-    public ChargingStation(GeoLocation location, String owner, double pricePerVolt, EchargerType chargerType) {
+    public ChargingStation(GeoLocation location, ObjectId ownerId, double pricePerVolt, EchargerType chargerType) {
         this.location = location;
-        this.owner = owner;
+        this.ownerId = ownerId;
         this.chargerType = chargerType;
         /*m_qrCodeImage = generateQRCodeImage();*/
         status = Estatus.NOT_CHARGING;
@@ -30,8 +29,8 @@ public class ChargingStation {
     public GeoLocation getLocation() {
         return location;
     }
-    public String getOwner() {
-        return owner;
+    public ObjectId getOwnerId() {
+        return ownerId;
     }
     public EchargerType getChargerType() {
         return chargerType;
