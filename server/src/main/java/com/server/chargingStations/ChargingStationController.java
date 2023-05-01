@@ -2,6 +2,7 @@ package com.server.chargingStations;
 
 import com.google.gson.JsonObject;
 import com.server.GeoLocation;
+import com.server.users.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.bson.types.ObjectId;
@@ -177,6 +178,35 @@ public class ChargingStationController {
             httpStatus = HttpStatus.BAD_REQUEST;
             errorMessage = "ChargingStation isn't charging.";
             jsonObject.addProperty("error-message", errorMessage);
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @PutMapping("/updatePricePerVolt")
+    public ResponseEntity<String> updatePricePerVolt(@RequestParam("pricePerVolt") double pricePerVolt, @RequestBody GeoLocation location, HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+        // Check if the input string is a valid price
+        if (pricePerVolt <= 0)
+        {
+            httpStatus = HttpStatus.BAD_REQUEST;
+            jsonObject.addProperty("error", "Invalid price per volt");        }
+        else
+        {
+            station.setPricePerVolt(pricePerVolt);
+            m_chargingStationsRepository.save(station);
+            jsonObject.addProperty("message", "Update price per volt successfully.");
         }
 
         return ResponseEntity.status(httpStatus)

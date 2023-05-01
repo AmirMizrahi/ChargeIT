@@ -39,13 +39,33 @@
 					"response": []
 				},
 				{
+					"name": "deleteUser",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users/deleteUser",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"deleteUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "login",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"eden@example.com\",\r\n  \"password\": \"123456\"\r\n}",
+							"raw": "{\r\n  \"email\": \"eden@example.com\",\r\n  \"password\": \"000000\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -62,6 +82,111 @@
 							"path": [
 								"users",
 								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUserPassword",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/updateUserPassword?password=000000",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"updateUserPassword"
+							],
+							"query": [
+								{
+									"key": "password",
+									"value": "000000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUserFirstName",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/updateUserFirstName?firstName=eden",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"updateUserFirstName"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "eden"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUserLastName",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/updateUserLastName?lastName=Natanzon",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"updateUserLastName"
+							],
+							"query": [
+								{
+									"key": "lastName",
+									"value": "Natanzon"
+								}
 							]
 						}
 					},
@@ -293,6 +418,41 @@
 							"path": [
 								"chargingStations",
 								"unCharge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePricePerVolt",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 32.253,\r\n    \"longitude\": 34.929\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/updatePricePerVolt?pricePerVolt=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"updatePricePerVolt"
+							],
+							"query": [
+								{
+									"key": "pricePerVolt",
+									"value": "5"
+								}
 							]
 						}
 					},

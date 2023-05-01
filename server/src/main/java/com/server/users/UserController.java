@@ -93,8 +93,85 @@ public class UserController {
 
     // TODO E - DELETE User
 
-    // TODO E - Update password
+    @PutMapping("/updateUserPassword")
+    public ResponseEntity<String> updateUserPassword(@RequestParam("password") String password, HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
 
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        user.setPassword(hashedPassword);
+        m_userRepository.save(user);
+        jsonObject.addProperty("message", "Update password successfully.");
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @PutMapping("/updateUserFirstName")
+    public ResponseEntity<String> updateUserFirstName(@RequestParam("firstName") String firstName, HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
+        // Check if the input string is a valid first name
+        if (!firstName.matches("[a-zA-Z]+"))
+        {
+            httpStatus = HttpStatus.BAD_REQUEST;
+            jsonObject.addProperty("error", "Invalid first name");        }
+        else
+        {
+            user.setFirstName(firstName);
+            m_userRepository.save(user);
+            jsonObject.addProperty("message", "Update first Name successfully.");
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @PutMapping("/updateUserLastName")
+    public ResponseEntity<String> updateUserLastName(@RequestParam("lastName") String lastName, HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
+        // Check if the input string is a valid last name
+        if (!lastName.matches("[a-zA-Z]+"))
+        {
+            httpStatus = HttpStatus.BAD_REQUEST;
+            jsonObject.addProperty("error", "Invalid last name");        }
+        else
+        {
+            user.setLastName(lastName);
+            m_userRepository.save(user);
+            jsonObject.addProperty("message", "Update last Name successfully.");
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
     @PutMapping("/updateUserEmail")
     public ResponseEntity<String> updateUserEmail(@RequestParam("email") String email, HttpServletRequest request) {
         // Check if user is logged in
@@ -160,7 +237,7 @@ public class UserController {
             User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
             user.setPhoneNumber(phoneNumber);
             m_userRepository.save(user);
-            jsonObject.addProperty("message", "Update phoneNumber successfully.");
+            jsonObject.addProperty("message", "Update phone Number successfully.");
         }
 
         return ResponseEntity.status(httpStatus)
