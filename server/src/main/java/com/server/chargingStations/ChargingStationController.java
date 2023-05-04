@@ -2,15 +2,16 @@ package com.server.chargingStations;
 
 import com.google.gson.JsonObject;
 import com.server.GeoLocation;
+import com.server.users.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -21,8 +22,9 @@ public class ChargingStationController {
     @Autowired
     private MongoTemplate m_mongoTemplate;
 
+    // TODO E - add check that user cant create new chargingStation with existing location in DB.
     @PostMapping("/createChargingStation")
-    public ResponseEntity<String> createChargingStation(@RequestBody ChargingStation chargingStation, HttpServletRequest request) {
+    public ResponseEntity<String> createChargingStation(@RequestBody ChargingStationJson chargingStationJson, HttpServletRequest request) {
         // Check if user is logged in
         HttpSession session = request.getSession(false);
         if (session == null) {
@@ -32,23 +34,87 @@ public class ChargingStationController {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
+        ChargingStation chargingStation = new ChargingStation(chargingStationJson.getLocation(), (ObjectId) session.getAttribute("id"),
+                                                              chargingStationJson.getPricePerVolt(), chargingStationJson.getChargerType());
         m_chargingStationsRepository.save(chargingStation);
+        jsonObject.addProperty("message", "Created ChargingStation successfully.");
 
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(jsonObject.toString());
     }
 
-    // TODO E - DELETE ChargingStation
-
-    @GetMapping(value = "/getAllChargingStationsLocations", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public List<GeoLocation> getAllChargingStationsLocations(HttpServletRequest request) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteChargingStationByLocation(@RequestBody GeoLocation location, HttpServletRequest request) {
         // Check if user is logged in
         HttpSession session = request.getSession(false);
         if (session == null) {
             throw new RuntimeException("Unauthorized");
         }
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+        if(station.getOwnerId().equals((ObjectId) session.getAttribute("id")))
+        {
+            station.unCharge();
+            m_chargingStationsRepository.save(station);
+            m_chargingStationsRepository.deleteByLocation(location);
+            jsonObject.addProperty("message", "Charging station deleted successfully");
+        }
+        else
+        {
+            httpStatus = HttpStatus.FORBIDDEN;
+            jsonObject.addProperty("message", "You do not have permission to delete this charging station");
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @DeleteMapping("/delete-all")
+    public ResponseEntity<String> deleteAllChargingStationsByOwner(HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        List<ChargingStation> chargingStations = m_chargingStationsRepository.findByOwnerId((ObjectId) session.getAttribute("id"));
+        if(chargingStations.isEmpty())
+        {
+            jsonObject.addProperty("message", "No charging stations found for this owner");
+        }
+        else
+        {
+            for (ChargingStation station : chargingStations) {
+                // Uncharge each charging station before deleting it
+                station.unCharge();
+                m_chargingStationsRepository.save(station);
+            }
+            m_chargingStationsRepository.deleteAllByOwnerId((ObjectId) session.getAttribute("id"));
+            jsonObject.addProperty("message", "All charging stations deleted successfully");
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping(value = "/getAllChargingStationsLocations", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Iterable<GeoLocation> getAllChargingStationsLocations(HttpServletRequest request) {
+        /*// Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }*/
 
         List<GeoLocation> locations = m_mongoTemplate.query(ChargingStation.class)
                 .distinct("location")
@@ -73,6 +139,7 @@ public class ChargingStationController {
         {
             station.charge();
             m_chargingStationsRepository.save(station);
+            jsonObject.addProperty("message", "Charging...");
         }
         else
         {
@@ -103,6 +170,7 @@ public class ChargingStationController {
         {
             station.unCharge();
             m_chargingStationsRepository.save(station);
+            jsonObject.addProperty("message", "UnCharge.");
         }
         else
         {
@@ -110,6 +178,35 @@ public class ChargingStationController {
             httpStatus = HttpStatus.BAD_REQUEST;
             errorMessage = "ChargingStation isn't charging.";
             jsonObject.addProperty("error-message", errorMessage);
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @PutMapping("/updatePricePerVolt")
+    public ResponseEntity<String> updatePricePerVolt(@RequestParam("pricePerVolt") double pricePerVolt, @RequestBody GeoLocation location, HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+        // Check if the input string is a valid price
+        if (pricePerVolt <= 0)
+        {
+            httpStatus = HttpStatus.BAD_REQUEST;
+            jsonObject.addProperty("error", "Invalid price per volt");        }
+        else
+        {
+            station.setPricePerVolt(pricePerVolt);
+            m_chargingStationsRepository.save(station);
+            jsonObject.addProperty("message", "Update price per volt successfully.");
         }
 
         return ResponseEntity.status(httpStatus)

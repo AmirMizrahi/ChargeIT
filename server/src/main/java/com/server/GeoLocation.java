@@ -1,5 +1,4 @@
 package com.server;
-// TODO E - find an existing class for GeoLocation.
 public class GeoLocation {
     private final double latitude;
     private final double longitude;
