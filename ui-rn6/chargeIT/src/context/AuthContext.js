@@ -1,60 +1,75 @@
 import createDataContext from "./createDataContext";
 import trackerApi from "../api/basicApi";
-import {AsyncStorage} from "@react-native-async-storage/async-storage";
-import { useNavigation } from '@react-navigation/native';
+import { AsyncStorage } from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 const authReducer = (state, action) => {
-    switch (action.type) {
-        case 'add_error':
-            return {...state, errorMessage: action.payload}
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case "add_error":
+      return { ...state, errorMessage: action.payload };
+    default:
+      return state;
+  }
 };
 
-const register = (dispatch) => async ({email, password}) => {
+const register =
+  (dispatch) =>
+  async ({ email, password, navigation }) => {
+    debugger;
 
     try {
-        console.log("aaab");
-        const response = await trackerApi.post("/users/registration", {email, password});
-        //console.log(response.data.token);
-        console.log("aaac");
+      const response = await trackerApi.post("/users/registration", {
+        email,
+        password,
+      });
+      debugger;
+      navigation.navigate("TabNavigator", { screen: "UserProfile" });
+
+      //console.log(response.data.token);
     } catch (err) {
-        // If email is already in use...
-        console.log(err.response.data);
-        dispatch({type: 'add_error', payload: 'Something went wrong with registration'})
+      // If email is already in use...
+      console.log(err.response.data.error);
+      dispatch({
+        type: "add_error",
+        payload: err.response.data.error,
+      });
     }
-};
+  };
 
 const signin = (dispatch) => {
-    //delete!!!
-    return async ({email, password}) => {
-        try {
-            const response = await trackerApi.post("/users/login", {email, password});
-            //console.log(response);
+  //delete!!!
+  return async ({ email, password }) => {
+    try {
+      const response = await trackerApi.post("/users/login", {
+        email,
+        password,
+      });
+      //console.log(response);
 
-            // Save session token
-            console.log(response.data.token);
-            await AsyncStorage.setItem("token", response.data.token);
-            dispatch({type: "signup", payload: response.data.token});
+      // Save session token
+      console.log(response.data.token);
+      await AsyncStorage.setItem("token", response.data.token);
+      dispatch({ type: "signup", payload: response.data.token });
 
-            // Navigate to main flow
-c
-        } catch (err) {
-            // If email is already in use...
-            console.log(err.response.data);
-            dispatch({type: 'add_error', payload: 'Something went wrong with .......'})
-        }
-    };
+      // Navigate to main flow
+      c;
+    } catch (err) {
+      // If email is already in use...
+      console.log(err.response.data);
+      dispatch({
+        type: "add_error",
+        payload: "Something went wrong with .......",
+      });
+    }
+  };
 };
 
 const signout = (dispatch) => {
-    return ({email, password}) => {
-    };
+  return ({ email, password }) => {};
 };
 
-export const {Provider, Context} = createDataContext(
-    authReducer,
-    {signin, signout, register},
-    {token: '', errorMessage: ''}
+export const { Provider, Context } = createDataContext(
+  authReducer,
+  { signin, signout, register },
+  { token: "", errorMessage: "" }
 );
