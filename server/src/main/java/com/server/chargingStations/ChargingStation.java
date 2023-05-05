@@ -17,6 +17,8 @@ public class ChargingStation {
     private Estatus status;
     private double pricePerVolt;
 
+    // TODO E - Add Reviews (list of strings?).
+
     public ChargingStation(GeoLocation location, ObjectId ownerId, double pricePerVolt, EchargerType chargerType) {
         this.location = location;
         this.ownerId = ownerId;

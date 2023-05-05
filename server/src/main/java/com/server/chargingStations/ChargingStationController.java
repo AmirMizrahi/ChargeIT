@@ -2,7 +2,6 @@ package com.server.chargingStations;
 
 import com.google.gson.JsonObject;
 import com.server.GeoLocation;
-import com.server.users.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.bson.types.ObjectId;
@@ -22,7 +21,6 @@ public class ChargingStationController {
     @Autowired
     private MongoTemplate m_mongoTemplate;
 
-    // TODO E - add check that user cant create new chargingStation with existing location in DB.
     @PostMapping("/createChargingStation")
     public ResponseEntity<String> createChargingStation(@RequestBody ChargingStationJson chargingStationJson, HttpServletRequest request) {
         // Check if user is logged in
@@ -34,10 +32,20 @@ public class ChargingStationController {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
-        ChargingStation chargingStation = new ChargingStation(chargingStationJson.getLocation(), (ObjectId) session.getAttribute("id"),
-                                                              chargingStationJson.getPricePerVolt(), chargingStationJson.getChargerType());
-        m_chargingStationsRepository.save(chargingStation);
-        jsonObject.addProperty("message", "Created ChargingStation successfully.");
+        try
+        {
+            // Check if the location already exists in the database
+            ChargingStation existingChargingStation = m_chargingStationsRepository.findByLocation(chargingStationJson.getLocation()).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+            jsonObject.addProperty("message", "ChargingStation already exists with the given location.");
+            httpStatus = HttpStatus.BAD_REQUEST;
+        }
+        catch (RuntimeException runtimeException)
+        {
+            ChargingStation chargingStation = new ChargingStation(chargingStationJson.getLocation(), (ObjectId) session.getAttribute("id"),
+                    chargingStationJson.getPricePerVolt(), chargingStationJson.getChargerType());
+            m_chargingStationsRepository.save(chargingStation);
+            jsonObject.addProperty("message", "Created ChargingStation successfully.");
+        }
 
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -122,6 +130,8 @@ public class ChargingStationController {
                 .all();
         return locations;
     }
+
+    // TODO E - Get ChargingStation info by ChargingStationDTO.
 
     @PutMapping("/charge")
     public ResponseEntity<String> charge(@RequestBody GeoLocation location, HttpServletRequest request) {
