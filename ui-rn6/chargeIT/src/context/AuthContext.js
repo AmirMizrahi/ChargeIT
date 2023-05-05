@@ -18,7 +18,11 @@ const register =
     debugger;
 
     try {
-      const response = await trackerApi.post("/users/registration", {
+      // const response = await trackerApi.post("/users/registration", {
+      //   email,
+      //   password,
+      // });
+      const response = await trackerApi.post("/test/register", {
         email,
         password,
       });

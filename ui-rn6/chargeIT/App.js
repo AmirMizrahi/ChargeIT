@@ -40,7 +40,7 @@ const App = () => {
     <>
       {/* First Navigation Container */}
       <NavigationContainer>
-        <TabNavigator />
+        <StackNavigator />
       </NavigationContainer>
 
       {/*/!* Second Navigation Container *!/*/}
