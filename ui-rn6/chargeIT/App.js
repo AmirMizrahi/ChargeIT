@@ -10,14 +10,13 @@ import Registration from "./src/screens/authentication/Registration";
 import { Provider as AuthProvider } from "./src/context/AuthContext";
 import UserProfileScreen from "./src/screens/UserProfileScreen";
 import ChargeRequestScreen from "./src/screens/ChargeRequestScreen";
-//import {setNavigator} from "./src/navigationRef";
 
 const Stack = createNativeStackNavigator();
 function StackNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Registration" component={Registration} />
       <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Registration" component={Registration} />
       <Stack.Screen name="Splash" component={Splash} />
       <Stack.Screen name="Onboarding" component={Onboarding} />
       <Stack.Screen name="TabNavigator" component={TabNavigator} />

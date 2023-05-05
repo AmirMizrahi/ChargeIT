@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpSession;
 @RestController
 public class EndpointTest {
 
-    @RequestMapping("/test/register")
+    @RequestMapping("/test/registration")
     public ResponseEntity<String> register(@RequestBody User user, HttpServletRequest request){
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
@@ -27,6 +27,18 @@ public class EndpointTest {
 
         jsonObject.addProperty("message", "Register successfully.");
         jsonObject.addProperty("token", session.getId());
+        
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @RequestMapping("/test/registrationfail")
+    public ResponseEntity<String> registerFail(@RequestBody User user, HttpServletRequest request){
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+        httpStatus = HttpStatus.CONFLICT;
+            jsonObject.addProperty("error", "Email already exists in the database");
         
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
