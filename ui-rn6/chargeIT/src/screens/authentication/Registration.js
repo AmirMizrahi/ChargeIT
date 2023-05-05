@@ -1,58 +1,37 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { View, StyleSheet } from "react-native";
-import { Text, TextInput, Button } from "react-native";
-import Spacer from "../../components/Spacer";
+import { Text } from "react-native";
 import { KeyboardAvoidingView, ScrollView } from "react-native";
 import { Context as AuthContext } from "../../context/AuthContext";
-import { useNavigation } from "@react-navigation/native";
+import AuthForm from "./AuthForm";
 
 const Registration = ({ navigation }) => {
   const { state, register } = useContext(AuthContext);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  console.log(state);
   return (
     <KeyboardAvoidingView>
       <ScrollView contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.container}>
-          <Spacer>
-            <Text style={styles.headText}>Sign Up for ChargeIT!</Text>
-          </Spacer>
-          <View style={styles.inputView}>
-            <TextInput
-              style={styles.input}
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-              autoCorrect={false}
-              placeholder={"Enter Email"}
-            />
+          {/* Going to the a generic form */}
+          <AuthForm
+            headerText="Signup to ChargeIT"
+            errorMessage={state.errorMessage}
+            onSubmit={register}
+            submitButtonText="Signup"
+            subText="We're happy to meet you. Please signup to join our community"
+          />
+
+          <View style={styles.loginTextView}>
+            <Text style={{ fontSize: 17, color: "#818181" }}>
+              Already have an account?{" "}
+            </Text>
+            <Text
+              style={{ fontSize: 18, color: "blue" }}
+              onPress={() => navigation.navigate("Login")}
+            >
+              Login
+            </Text>
           </View>
-          <Spacer></Spacer>
-          <View style={styles.inputView}>
-            <TextInput
-              style={styles.input}
-              secureTextEntry
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              autoCapitalize="none"
-              autoCorrect={false}
-              placeholder={"Enter Password"}
-            />
-          </View>
-          {state.errorMessage ? (
-            <Text style={styles.errorMessage}>{state.errorMessage}</Text>
-          ) : null}
-          <Spacer>
-            <Button
-              style={styles.button}
-              title="Sign Up"
-              onPress={() => register({ email, password, navigation })}
-            />
-          </Spacer>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -101,6 +80,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 60,
     paddingLeft: 20,
+  },
+  loginTextView: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "flex-end",
+    marginBottom: 40,
   },
 });
 
