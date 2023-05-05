@@ -90,6 +90,28 @@ public class UserController {
                 .body(jsonObject.toString());
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logoutUser(HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        HttpSession session = request.getSession(false);
+
+        if (session != null)
+        {
+            session.invalidate(); // invalidate the session
+            jsonObject.addProperty("message", "Logout successfully.");
+        }
+        else
+        {
+            httpStatus = HttpStatus.BAD_REQUEST;
+            jsonObject.addProperty("error", "No session found.");
+        }
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
     @DeleteMapping ("/deleteUser")
     public ResponseEntity<?> deleteUser(HttpServletRequest request) {
 
@@ -128,7 +150,6 @@ public class UserController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(jsonObject.toString());
     }
-
 
     @PutMapping("/updateUserPassword")
     public ResponseEntity<String> updateUserPassword(@RequestParam("password") String password, HttpServletRequest request) {
