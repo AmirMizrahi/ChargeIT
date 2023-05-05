@@ -1,6 +1,6 @@
 import createDataContext from "./createDataContext";
 import trackerApi from "../api/basicApi";
-import { AsyncStorage } from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 
 const authReducer = (state, action) => {
@@ -15,15 +15,15 @@ const authReducer = (state, action) => {
 const register =
   (dispatch) =>
   async ({ email, password, navigation }) => {
-    debugger;
-
     try {
       const response = await trackerApi.post("/users/registration", {
         email,
         password,
       });
+      await AsyncStorage.setItem("token", response.data.token);
+      console.log(await AsyncStorage.getItem("token"));
       debugger;
-      navigation.navigate("TabNavigator", { screen: "UserProfile" });
+      navigation.navigate("TabNavigator", { screen: "UserProfile" }); // Need to add token logic...
 
       //console.log(response.data.token);
     } catch (err) {
