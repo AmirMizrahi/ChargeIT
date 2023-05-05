@@ -91,7 +91,66 @@ public class UserController {
                 .body(jsonObject.toString());
     }
 
-    // TODO E - DELETE User
+    @PostMapping("/logout")
+    public ResponseEntity<String> logoutUser(HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        HttpSession session = request.getSession(false);
+
+        if (session != null)
+        {
+            session.invalidate(); // invalidate the session
+            jsonObject.addProperty("message", "Logout successfully.");
+        }
+        else
+        {
+            httpStatus = HttpStatus.BAD_REQUEST;
+            jsonObject.addProperty("error", "No session found.");
+        }
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @DeleteMapping ("/deleteUser")
+    public ResponseEntity<?> deleteUser(HttpServletRequest request) {
+
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
+
+        // delete all charging stations owned by the user
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cookie", request.getHeader("Cookie"));
+        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+        String url = "http://localhost:8080/chargingStations/delete-all";
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
+        jsonObject.addProperty("deleteAllChargingStationsByOwner message", response.getBody());
+        if(response.getStatusCode() == HttpStatus.OK)
+        {
+            m_userRepository.delete(user);
+            jsonObject.addProperty("message", "User deleted successfully.");
+            session.invalidate(); // kill the session
+        }
+        else
+        {
+            httpStatus = (HttpStatus) response.getStatusCode();
+            jsonObject.addProperty("error", "Failed to delete user.");
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
 
     @PutMapping("/updateUserPassword")
     public ResponseEntity<String> updateUserPassword(@RequestParam("password") String password, HttpServletRequest request) {
