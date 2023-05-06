@@ -10,6 +10,8 @@ import { Provider as AuthProvider } from "./src/context/AuthContext";
 import UserProfile from "./src/screens/mainFlow/UserProfile";
 import ChargeRequestScreen from "./src/screens/mainFlow/ChargeRequestScreen";
 import ResolveAuthScreen from "./src/screens/authentication/ResolveAuthScreen";
+import {StationWatchScreen} from "./src/screens/mainFlow/StationWatchScreen";
+import {StationSelectScreen} from "./src/screens/mainFlow/StationSelectScreen";
 
 const Stack = createNativeStackNavigator();
 function StackNavigator() {
@@ -21,6 +23,8 @@ function StackNavigator() {
       <Stack.Screen name="Onboarding" component={Onboarding} />
       <Stack.Screen name="Resolve" component={ResolveAuthScreen} />
       <Stack.Screen name="TabNavigator" component={TabNavigator} />
+        <Stack.Screen name="StationWatchScreen" component={StationWatchScreen} />
+        <Stack.Screen name="StationSelectScreen" component={StationSelectScreen} />
     </Stack.Navigator>
   );
 }
@@ -37,11 +41,9 @@ function TabNavigator() {
 
 const App = () => {
   return (
-    <>
       <NavigationContainer>
-        <StackNavigator />
+          <StackNavigator />
       </NavigationContainer>
-    </>
   );
 };
 
