@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     title: {
         color:'white',
         fontSize:30,
-        fontFamily:"sans-serif-condensed"
+       // fontFamily:"sans-serif-condensed"
     }
 })
 
