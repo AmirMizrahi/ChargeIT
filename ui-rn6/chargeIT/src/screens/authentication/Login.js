@@ -1,10 +1,18 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, ScrollView, View } from "react-native";
 import { Context as AuthContext } from "../../context/AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
 import AuthForm from "./AuthForm";
 
 const Login = ({ navigation }) => {
-  const { state, signin } = useContext(AuthContext);
+  const { state, signin, clearErrorMessage } = useContext(AuthContext);
+
+  // Remove the errorMsg if available.
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => clearErrorMessage();
+    }, [])
+  );
 
   return (
     <ScrollView>

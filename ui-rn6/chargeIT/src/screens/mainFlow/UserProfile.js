@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useBackHandler } from "@react-native-community/hooks";
+import Buttons from "../../components/Buttons";
+import Spacer from "../../components/Spacer";
+import { Context as AuthContext } from "../../context/AuthContext";
 
-const UserProfileScreen = ({ navigation }) => {
+const UserProfile = ({ navigation }) => {
+  const { logout } = useContext(AuthContext);
+
+  // Cancel return to the authentication flow.
   useBackHandler(() => {
     return true;
   });
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Email:</Text>
@@ -19,6 +26,8 @@ const UserProfileScreen = ({ navigation }) => {
 
       <Text style={styles.label}>Phone number:</Text>
       <Text style={styles.value}>{}</Text>
+
+      <Buttons btn_text={"Sign Out"} on_press={() => logout({ navigation })} />
     </View>
   );
 };
@@ -41,4 +50,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserProfileScreen;
+export default UserProfile;

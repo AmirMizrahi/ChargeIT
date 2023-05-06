@@ -3,10 +3,19 @@ import { View, StyleSheet } from "react-native";
 import { Text } from "react-native";
 import { KeyboardAvoidingView, ScrollView } from "react-native";
 import { Context as AuthContext } from "../../context/AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
+
 import AuthForm from "./AuthForm";
 
 const Registration = ({ navigation }) => {
-  const { state, register } = useContext(AuthContext);
+  const { state, register, clearErrorMessage } = useContext(AuthContext);
+
+  // Remove the errorMsg if available.
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => clearErrorMessage();
+    }, [])
+  );
 
   return (
     <KeyboardAvoidingView>

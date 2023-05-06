@@ -8,9 +8,30 @@ const authReducer = (state, action) => {
       return { ...state, errorMessage: action.payload };
     case "signin":
       return { errorMessage: "", token: action.payload };
+    case "signout":
+      return { token: null, errorMessage: "" };
+    case "clear_error_message":
+      return { ...state, errorMessage: "" };
     default:
       return state;
   }
+};
+
+// This function will refer the user to the mainflow if token is available.
+const tryLocalLogin =
+  (dispatch) =>
+  async ({ navigation }) => {
+    const token = await AsyncStorage.getItem("token");
+    if (token) {
+      dispatch({ type: "signin", payload: token });
+      navigation.navigate("TabNavigator", { screen: "UserProfile" }); // Need to add token logic...
+    } else {
+      navigation.navigate("Registration"); // Need to add token logic...
+    }
+  };
+
+const clearErrorMessage = (dispatch) => () => {
+  dispatch({ type: "clear_error_message" });
 };
 
 const register =
@@ -60,12 +81,18 @@ const signin =
     }
   };
 
-const signout = (dispatch) => {
-  return ({ email, password }) => {};
-};
+const logout =
+  (dispatch) =>
+  async ({ navigation }) => {
+    try {
+      await AsyncStorage.removeItem("token");
+      dispatch({ type: "signout" });
+      navigation.navigate("Onboarding"); // Need to add token logic...
+    } catch (err) {}
+  };
 
 export const { Provider, Context } = createDataContext(
   authReducer,
-  { signin, signout, register },
+  { signin, logout, register, clearErrorMessage, tryLocalLogin },
   { token: null, errorMessage: "" }
 );
