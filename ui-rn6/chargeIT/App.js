@@ -10,6 +10,7 @@ import { Provider as AuthProvider } from "./src/context/AuthContext";
 import UserProfile from "./src/screens/mainFlow/UserProfile";
 import ChargeRequestScreen from "./src/screens/mainFlow/ChargeRequestScreen";
 import ResolveAuthScreen from "./src/screens/authentication/ResolveAuthScreen";
+import SelectTemp from "./src/screens/mainFlow/SelectTemp";
 
 const Stack = createNativeStackNavigator();
 function StackNavigator() {
@@ -31,6 +32,7 @@ function TabNavigator() {
     <Tab.Navigator screenOptions={{ headerShown: false }}>
       <Tab.Screen name="UserProfile" component={UserProfile} />
       <Tab.Screen name="Charge" component={ChargeRequestScreen} />
+      <Tab.Screen name="SelectTemp" component={SelectTemp} />
     </Tab.Navigator>
   );
 }
