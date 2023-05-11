@@ -375,12 +375,12 @@
 					"response": []
 				},
 				{
-					"name": "getAllChargingStationsLocations",
+					"name": "getAllChargingStations",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/chargingStations/getAllChargingStationsLocations",
+							"raw": "http://localhost:8080/chargingStations/getAllChargingStations",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -388,7 +388,85 @@
 							"port": "8080",
 							"path": [
 								"chargingStations",
-								"getAllChargingStationsLocations"
+								"getAllChargingStations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getChargingStation",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 32.253,\r\n    \"longitude\": 34.929\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/getChargingStation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"getChargingStation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getChargingStationsByRadius",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/getChargingStationsByRadius?latitude=32.253&longitude=34.929&radius=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"getChargingStationsByRadius"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "32.253"
+								},
+								{
+									"key": "longitude",
+									"value": "34.929"
+								},
+								{
+									"key": "radius",
+									"value": "1"
+								}
 							]
 						}
 					},

@@ -1,6 +1,6 @@
 package com.server.chargingStations;
 
-import com.server.GeoLocation;
+import com.server.location.GeoLocation;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
