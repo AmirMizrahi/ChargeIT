@@ -1,9 +1,10 @@
 package com.server.chargingStations;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.server.GeoLocation;
+import com.server.location.GeoLocation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.bson.types.ObjectId;
@@ -13,7 +14,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
+
+import static com.server.location.GeoUtils.distanceBetweenPointsInKilometers;
 
 @RestController
 @RequestMapping("/chargingStations")
@@ -117,20 +124,35 @@ public class ChargingStationController {
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping(value = "/getAllChargingStationsLocations", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/getAllChargingStations", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Iterable<GeoLocation> getAllChargingStationsLocations(HttpServletRequest request) {
+    public ResponseEntity<String> getAllChargingStations(HttpServletRequest request) {
         /*// Check if user is logged in
         HttpSession session = request.getSession(false);
         if (session == null) {
             throw new RuntimeException("Unauthorized");
         }*/
 
-        List<GeoLocation> locations = m_mongoTemplate.query(ChargingStation.class)
-                .distinct("location")
-                .as(GeoLocation.class)
-                .all();
-        return locations;
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        List<ChargingStation> chargingStations = m_chargingStationsRepository.findAll();
+
+        // Convert the list of charging stations to JSON
+        Gson gson = new Gson();
+        JsonArray jsonArray = new JsonArray();
+        int index = 0;
+        for (ChargingStation station : chargingStations) {
+            JsonObject chargingStationJson = new JsonObject();
+            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getLocation(), station.getPricePerVolt(), station.getChargerType());
+            chargingStationJson.addProperty(Integer.toString(index++), gson.toJson(chargingStationDTO));
+            jsonArray.add(chargingStationJson);
+        }
+        jsonObject.add("chargingStations", jsonArray);
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
     }
 
     @CrossOrigin(origins = "*")
@@ -164,6 +186,79 @@ public class ChargingStationController {
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(jsonObject.toString());
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping(value = "/getChargingStationsByRadius", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> getChargingStationsByRadius(@RequestParam("latitude") double latitude,
+                                                              @RequestParam("longitude") double longitude,
+                                                              @RequestParam("radius") double radius,
+                                                              HttpServletRequest request)
+    {
+        /*// Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }*/
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        if(radius >= 0)
+        {
+            List<ChargingStation> chargingStations = m_chargingStationsRepository.findAll();
+            List<ChargingStation> chargingStationsWithinRadius = new ArrayList<>();
+
+            for (ChargingStation station : chargingStations) {
+                GeoLocation stationLocation = station.getLocation();
+                double distanceInKilometers = distanceBetweenPointsInKilometers(latitude, longitude,
+                        stationLocation.getLatitude(), stationLocation.getLongitude());
+
+                if (distanceInKilometers <= radius) {
+                    chargingStationsWithinRadius.add(station);
+                }
+            }
+
+            // Sort the charging stations by distance from the given location
+            Collections.sort(chargingStationsWithinRadius, new Comparator<ChargingStation>() {
+                @Override
+                public int compare(ChargingStation station1, ChargingStation station2) {
+                    GeoLocation location1 = station1.getLocation();
+                    GeoLocation location2 = station2.getLocation();
+                    double distance1 = distanceBetweenPointsInKilometers(latitude, longitude,
+                            location1.getLatitude(), location1.getLongitude());
+                    double distance2 = distanceBetweenPointsInKilometers(latitude, longitude,
+                            location2.getLatitude(), location2.getLongitude());
+
+                    return Double.compare(distance1, distance2);
+                }
+            });
+
+
+            // Convert the list of charging stations to JSON
+            Gson gson = new Gson();
+            JsonArray jsonArray = new JsonArray();
+            for (ChargingStation station : chargingStationsWithinRadius) {
+                JsonObject chargingStationJson = new JsonObject();
+                double distanceInKilometers = distanceBetweenPointsInKilometers(latitude, longitude, station.getLocation().getLatitude(), station.getLocation().getLongitude());
+                ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getLocation(), station.getPricePerVolt(), station.getChargerType());
+                chargingStationJson.addProperty(Double.toString(distanceInKilometers), gson.toJson(chargingStationDTO));
+                jsonArray.add(chargingStationJson);
+            }
+
+            jsonObject.add("chargingStations", jsonArray);
+        }
+        else
+        {
+            httpStatus = HttpStatus.BAD_REQUEST;
+            jsonObject.addProperty("error", "Radius must be non-negative");
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+
     }
 
     @PutMapping("/charge")

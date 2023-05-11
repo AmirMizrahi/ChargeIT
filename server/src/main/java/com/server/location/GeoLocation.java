@@ -1,4 +1,4 @@
-package com.server;
+package com.server.location;
 public class GeoLocation {
     private final double latitude;
     private final double longitude;

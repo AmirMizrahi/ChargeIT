@@ -1,6 +1,6 @@
 package com.server.chargingStations;
 
-import com.server.GeoLocation;
+import com.server.location.GeoLocation;
 import org.springframework.data.annotation.Id;
 
 public class ChargingStationJson {
