@@ -13,6 +13,7 @@ import ResolveAuthScreen from "./src/screens/authentication/ResolveAuthScreen";
 import { StationWatchScreen } from "./src/screens/mainFlow/StationWatchScreen";
 import { StationSelectScreen } from "./src/screens/mainFlow/StationSelectScreen";
 import SelectTemp from "./src/screens/mainFlow/SelectTemp";
+import { Provider as StationsProvider } from "./src/context/StationsContext";
 
 const Stack = createNativeStackNavigator();
 function StackNavigator() {
@@ -37,8 +38,8 @@ const Tab = createBottomTabNavigator();
 function TabNavigator() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
-      <Tab.Screen name="SelectTemp" component={SelectTemp} />
       <Tab.Screen name="UserProfile" component={UserProfile} />
+      <Tab.Screen name="SelectTemp" component={SelectTemp} />
       <Tab.Screen name="Charge" component={ChargeRequestScreen} />
     </Tab.Navigator>
   );
@@ -47,7 +48,7 @@ function TabNavigator() {
 const App = () => {
   return (
     <NavigationContainer>
-      <StackNavigator />
+      <TabNavigator />
     </NavigationContainer>
   );
 };
@@ -55,8 +56,10 @@ const App = () => {
 //export default App;
 export default () => {
   return (
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+    <StationsProvider>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </StationsProvider>
   );
 };

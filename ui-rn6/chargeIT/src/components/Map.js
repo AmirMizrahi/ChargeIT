@@ -1,21 +1,61 @@
-import React from "react";
-import { StyleSheet } from "react-native";
-import MapView from "react-native-maps";
+import React, { useContext, useState, useEffect } from "react";
+import { ActivityIndicator, StyleSheet } from "react-native";
+import MapView, { Marker } from "react-native-maps";
+import { Context as StationsContext } from "../context/StationsContext";
 
 const Map = () => {
-  return (
-    <MapView
-      style={styles.map}
-      // initialRegion={{
-      //   latitude: 32.109333,
-      //   longitude: 34.855499,
-      //   latitudeDelta: 0.01,
-      //   longitudeDelta: 0.01,
-      // }}
-      followsUserLocation={true}
-      showsUserLocation={true}
-    />
-  );
+  const [markerList, setMarkerList] = useState([]);
+  const { state, fetchChargingStations } = useContext(StationsContext);
+  const { currentLocation } = useContext(StationsContext).state;
+
+  // Get all the locations from the server when screen renders
+  useEffect(() => {
+    const fetchMarkers = async () => {
+      try {
+        const arrayOfStations = await fetchChargingStations();
+        debugger;
+        setMarkerList(arrayOfStations);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchMarkers();
+  }, []);
+
+  if (!currentLocation) {
+    return <ActivityIndicator size="large" style={{ marginTop: 200 }} />;
+  }
+
+  if (state)
+    return (
+      <MapView
+        style={styles.map}
+        // Location on load:
+        initialRegion={{
+          ...currentLocation.coords,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        }}
+        // Following user:
+        region={{
+          ...currentLocation.coords,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        }}
+        followsUserLocation={true}
+        showsUserLocation={true}
+      >
+        {markerList.map((marker) => (
+          <Marker
+            key={marker.latitude}
+            coordinate={{
+              latitude: marker.latitude,
+              longitude: marker.longitude,
+            }}
+          />
+        ))}
+      </MapView>
+    );
 };
 
 const styles = StyleSheet.create({

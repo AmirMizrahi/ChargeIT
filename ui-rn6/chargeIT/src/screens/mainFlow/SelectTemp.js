@@ -1,31 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import React, { useEffect, useState, useContext } from "react";
+import { View, StyleSheet, Text, Button } from "react-native";
 import Map from "../../components/Map";
-import { requestForegroundPermissionsAsync } from "expo-location";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useIsFocused } from "@react-navigation/native";
+import { Context as StationsContext } from "../../context/StationsContext";
+import trackMyLocation from "../../hooks/trackMyLocation";
 
-const SelectTemp = ({ navigation }) => {
-  const [err, setErr] = useState(null);
+const SelectTemp = () => {
+  const { getCurrentLocation } = useContext(StationsContext);
 
-  const startWatching = async () => {
-    try {
-      await requestForegroundPermissionsAsync();
-    } catch (e) {
-      setErr(e);
-    }
-  };
-
-  useEffect(() => {
-    startWatching();
-  }, []);
+  const [err] = trackMyLocation(useIsFocused(), getCurrentLocation);
 
   return (
-    <View>
-      <Map />
-      {err ? <Text> Please enable location services</Text> : <Text>Hi</Text>}
-    </View>
+    <SafeAreaView forceInset={{ top: "always" }}>
+      <View>
+        <Map />
+        {err ? (
+          <Text style={styles.errMsg}> Please enable location services</Text>
+        ) : null}
+      </View>
+    </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  errMsg: {
+    color: "red",
+    fontSize: 23,
+    textAlign: "center",
+  },
+});
 
 export default SelectTemp;
