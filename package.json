@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@react-native-community/hooks": "^3.0.0"
+    "@react-native-community/hooks": "^3.0.0",
+    "react-native-maps": "^0.28.0"
   }
 }
