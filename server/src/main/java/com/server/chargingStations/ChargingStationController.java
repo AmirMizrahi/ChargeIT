@@ -1,5 +1,7 @@
 package com.server.chargingStations;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.server.GeoLocation;
 import jakarta.servlet.http.HttpServletRequest;
@@ -131,7 +133,38 @@ public class ChargingStationController {
         return locations;
     }
 
-    // TODO E - Get ChargingStation info by ChargingStationDTO.
+    @CrossOrigin(origins = "*")
+    @GetMapping(value = "/getChargingStation", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> getChargingStation(@RequestBody GeoLocation location, HttpServletRequest request) {
+        /*// Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }*/
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        try
+        {
+            ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getLocation(), station.getPricePerVolt(), station.getChargerType());
+            Gson gson = new Gson();
+            JsonElement jsonElement = gson.toJsonTree(chargingStationDTO);
+            JsonObject chargingStationJson = jsonElement.getAsJsonObject();
+            jsonObject.add("chargingStation", chargingStationJson);
+        }
+        catch (RuntimeException runtimeException)
+        {
+            httpStatus = HttpStatus.NOT_FOUND;
+            jsonObject.addProperty("error", runtimeException.getMessage());
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
 
     @PutMapping("/charge")
     public ResponseEntity<String> charge(@RequestBody GeoLocation location, HttpServletRequest request) {

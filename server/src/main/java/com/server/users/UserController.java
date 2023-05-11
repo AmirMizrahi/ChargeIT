@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @EnableMongoHttpSession
@@ -72,19 +76,28 @@ public class UserController {
     public ResponseEntity<String> loginUser(@RequestBody EmailAndPassword emailAndPassword, HttpServletRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
-        User user = m_userRepository.findByEmail(emailAndPassword.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
 
-        String hashedPassword = user.getPassword();
-        if (!BCrypt.checkpw(emailAndPassword.getPassword(), hashedPassword)) {
-            throw new RuntimeException("Invalid credentials");
+        try
+        {
+            User user = m_userRepository.findByEmail(emailAndPassword.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
+
+            String hashedPassword = user.getPassword();
+            if (!BCrypt.checkpw(emailAndPassword.getPassword(), hashedPassword)) {
+                throw new RuntimeException("Invalid credentials");
+            }
+
+            // Set user attributes in session
+            HttpSession session = request.getSession(true);
+            session.setAttribute("id", user.getId());
+
+            jsonObject.addProperty("message", "Login successfully.");
+            jsonObject.addProperty("token", session.getId());
         }
-
-        // Set user attributes in session
-        HttpSession session = request.getSession(true);
-        session.setAttribute("id", user.getId());
-
-        jsonObject.addProperty("message", "Login successfully.");
-        jsonObject.addProperty("token", session.getId());
+        catch (RuntimeException runtimeException)
+        {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "Login failed, " + runtimeException.getMessage());
+        }
 
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -113,44 +126,44 @@ public class UserController {
                 .body(jsonObject.toString());
     }
 
-    // @DeleteMapping ("/deleteUser")
-    // public ResponseEntity<?> deleteUser(HttpServletRequest request) {
+    @DeleteMapping ("/deleteUser")
+    public ResponseEntity<?> deleteUser(HttpServletRequest request) {
 
-    //     // Check if user is logged in
-    //     HttpSession session = request.getSession(false);
-    //     if (session == null) {
-    //         throw new RuntimeException("Unauthorized");
-    //     }
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
 
-    //     HttpStatus httpStatus = HttpStatus.OK;
-    //     JsonObject jsonObject = new JsonObject();
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
 
-    //     User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
 
-    //     // delete all charging stations owned by the user
-    //     RestTemplate restTemplate = new RestTemplate();
-    //     HttpHeaders headers = new HttpHeaders();
-    //     headers.add("Cookie", request.getHeader("Cookie"));
-    //     HttpEntity<String> httpEntity = new HttpEntity<>(headers);
-    //     String url = "http://localhost:8080/chargingStations/delete-all";
-    //     ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
-    //     jsonObject.addProperty("deleteAllChargingStationsByOwner message", response.getBody());
-    //     if(response.getStatusCode() == HttpStatus.OK)
-    //     {
-    //         m_userRepository.delete(user);
-    //         jsonObject.addProperty("message", "User deleted successfully.");
-    //         session.invalidate(); // kill the session
-    //     }
-    //     else
-    //     {
-    //         httpStatus = (HttpStatus) response.getStatusCode();
-    //         jsonObject.addProperty("error", "Failed to delete user.");
-    //     }
+        // delete all charging stations owned by the user
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cookie", request.getHeader("Cookie"));
+        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+        String url = "http://localhost:8080/chargingStations/delete-all";
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
+        jsonObject.addProperty("deleteAllChargingStationsByOwner message", response.getBody());
+        if(response.getStatusCode() == HttpStatus.OK)
+        {
+            m_userRepository.delete(user);
+            jsonObject.addProperty("message", "User deleted successfully.");
+            session.invalidate(); // kill the session
+        }
+        else
+        {
+            httpStatus = (HttpStatus) response.getStatusCode();
+            jsonObject.addProperty("error", "Failed to delete user.");
+        }
 
-    //     return ResponseEntity.status(httpStatus)
-    //             .contentType(MediaType.APPLICATION_JSON)
-    //             .body(jsonObject.toString());
-    // }
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
 
     @PutMapping("/updateUserPassword")
     public ResponseEntity<String> updateUserPassword(@RequestParam("password") String password, HttpServletRequest request) {
