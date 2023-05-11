@@ -17,10 +17,9 @@ const getCurrentLocation = (dispatch) => (location) => {
 
 const fetchChargingStations = (dispatch) => async () => {
   const response = await basicApi.get(
-    "/chargingStations/getAllChargingStationsLocations"
+    "/chargingStations/getAllChargingStations"
   );
-  debugger;
-  return response.data;
+  return response.data.chargingStations;
 };
 
 const createChargingStation = (dispatch) => async () => {

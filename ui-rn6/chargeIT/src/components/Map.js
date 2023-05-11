@@ -13,8 +13,10 @@ const Map = () => {
     const fetchMarkers = async () => {
       try {
         const arrayOfStations = await fetchChargingStations();
-        debugger;
-        setMarkerList(arrayOfStations);
+        const jsonArray = arrayOfStations.map((obj) =>
+          JSON.parse(Object.values(obj)[0])
+        );
+        setMarkerList(jsonArray);
       } catch (error) {
         console.error(error);
       }
@@ -47,10 +49,12 @@ const Map = () => {
       >
         {markerList.map((marker) => (
           <Marker
-            key={marker.latitude}
+            key={marker.location.latitude}
+            title={marker.chargerType}
+            description={marker.status}
             coordinate={{
-              latitude: marker.latitude,
-              longitude: marker.longitude,
+              latitude: marker.location.latitude,
+              longitude: marker.location.longitude,
             }}
           />
         ))}
