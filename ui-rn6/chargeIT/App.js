@@ -13,6 +13,7 @@ import ResolveAuthScreen from "./src/screens/authentication/ResolveAuthScreen";
 import { StationWatchScreen } from "./src/screens/mainFlow/StationWatchScreen";
 import { StationSelectScreen } from "./src/screens/mainFlow/StationSelectScreen";
 import SelectTemp from "./src/screens/mainFlow/SelectTemp";
+import EditProfile from "./src/screens/authentication/EditProfile";
 import { Provider as StationsProvider } from "./src/context/StationsContext";
 
 import { MaterialIcons } from "@expo/vector-icons";
@@ -32,14 +33,36 @@ function TabNavigator() {
         }}
       />
       <Tab.Screen
+        name="EditProfile"
+        component={EditProfile}
+        options={{
+          tabBarButton: () => null,
+          tabBarVisible: false, //hide tab bar on this screen
+        }}
+      />
+      <Tab.Screen
         name="SelectTemp"
         component={SelectTemp}
-        options={{ title: "Temp Map" }}
+        options={{
+          title: "Temp Map",
+          tabBarIcon: (tabInfo) => (
+            <MaterialIcons name="map" size={24} color={tabInfo.tintColor} />
+          ),
+        }}
       />
       <Tab.Screen
         name="Charge"
         component={ChargeRequestScreen}
-        options={{ title: "Charge" }}
+        options={{
+          title: "Charge",
+          tabBarIcon: (tabInfo) => (
+            <MaterialIcons
+              name="battery-std"
+              size={24}
+              color={tabInfo.tintColor}
+            />
+          ),
+        }}
       />
     </Tab.Navigator>
   );
