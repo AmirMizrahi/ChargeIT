@@ -10,7 +10,6 @@ import {
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import Buttons from "../../components/Buttons";
 
 const EditProfile = () => {
@@ -80,19 +79,6 @@ const EditProfile = () => {
         />
       </View>
       <View style={styles.action}>
-        <Ionicons name="ios-clipboard-outline" color="#333333" size={20} />
-        <TextInput
-          multiline
-          numberOfLines={3}
-          placeholder="About Me"
-          placeholderTextColor="#666666"
-          value={userData ? userData.about : ""}
-          onChangeText={(txt) => setUserData({ ...userData, about: txt })}
-          autoCorrect={true}
-          style={[styles.textInput, { height: 40 }]}
-        />
-      </View>
-      <View style={styles.action}>
         <Feather name="phone" color="#333333" size={20} />
         <TextInput
           placeholder="Phone"
@@ -104,29 +90,13 @@ const EditProfile = () => {
           style={styles.textInput}
         />
       </View>
-
       <View style={styles.action}>
-        <FontAwesome name="globe" color="#333333" size={20} />
+        <Feather name="mail" color="#333333" size={20} />
         <TextInput
-          placeholder="Country"
+          placeholder="Email"
           placeholderTextColor="#666666"
           autoCorrect={false}
-          value={userData ? userData.country : ""}
-          onChangeText={(txt) => setUserData({ ...userData, country: txt })}
-          style={styles.textInput}
-        />
-      </View>
-      <View style={styles.action}>
-        <MaterialCommunityIcons
-          name="map-marker-outline"
-          color="#333333"
-          size={20}
-        />
-        <TextInput
-          placeholder="City"
-          placeholderTextColor="#666666"
-          autoCorrect={false}
-          value={userData ? userData.city : ""}
+          value={userData ? userData.email : ""}
           onChangeText={(txt) => setUserData({ ...userData, city: txt })}
           style={styles.textInput}
         />
@@ -141,7 +111,7 @@ export default EditProfile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    marginLeft: 20,
   },
   commandButton: {
     padding: 15,

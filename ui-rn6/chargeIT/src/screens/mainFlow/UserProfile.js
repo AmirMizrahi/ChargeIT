@@ -46,12 +46,17 @@ const UserProfile = ({ navigation }) => {
         <Text style={styles.label}>Phone number:</Text>
         <Text style={styles.value}>{}</Text>
       </View>
-
-      <Buttons
-        btn_text={"Update Profile"}
-        on_press={() => navigation.navigate("EditProfile")}
-      />
-      <Buttons btn_text={"Sign Out"} on_press={() => logout({ navigation })} />
+      <Spacer></Spacer>
+      <View style={styles.buttons}>
+        <Buttons
+          btn_text={"Update Profile"}
+          on_press={() => navigation.navigate("EditProfile")}
+        />
+        <Buttons
+          btn_text={"Sign Out"}
+          on_press={() => logout({ navigation })}
+        />
+      </View>
     </View>
   );
 };
@@ -78,6 +83,9 @@ const styles = StyleSheet.create({
     color: "#333333",
     fontSize: 20,
     marginRight: 10,
+  },
+  buttons: {
+    alignItems: "center",
   },
 });
 
