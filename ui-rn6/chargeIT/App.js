@@ -46,6 +46,20 @@ function TabNavigator() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
       <Tab.Screen
+        name="Stations"
+        component={MyStations}
+        options={{
+          title: "Manage Stations",
+          tabBarIcon: (tabInfo) => (
+            <MaterialIcons
+              name="ev-station"
+              size={24}
+              color={tabInfo.tintColor}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
         name="CreateStation"
         component={CreateStation}
         options={{
@@ -78,20 +92,6 @@ function TabNavigator() {
           title: "Temp Map",
           tabBarIcon: (tabInfo) => (
             <MaterialIcons name="map" size={24} color={tabInfo.tintColor} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Stations"
-        component={MyStations}
-        options={{
-          title: "Manage Stations",
-          tabBarIcon: (tabInfo) => (
-            <MaterialIcons
-              name="ev-station"
-              size={24}
-              color={tabInfo.tintColor}
-            />
           ),
         }}
       />
