@@ -1,10 +1,27 @@
-import {Alert,  StyleSheet, Text, View} from "react-native";
-import React from "react";
+import {Alert, StyleSheet, Text, View} from "react-native";
+import React, {useState} from "react";
 import basicApi from "../../api/basicApi";
 import Buttons from "../../components/Buttons";
 
 export const StationWatchScreen = ({navigation, route}) => {
-    const stationDetails = route.params;
+    const [stationDetails, setStation] = useState({});
+
+    Object.keys(route.params).map(key => {
+        console.log(route);
+        console.log(route.params);
+        if (key === 'location') {
+            stationDetails["Location"] = "Longitude: " + route.params[key].longitude + ", Latitude: " + route.params[key].latitude
+        }
+        if (key === 'chargerType') {
+            stationDetails["Charging Type"] = route.params[key];
+        }
+        if (key === 'pricePerVolt') {
+            stationDetails["Price Per Volt"] = route.params[key] + "$";
+        } else if (key === 'status') {
+            stationDetails["Status"] = route.params['status'] === "NOT_CHARGING" ? "Ready for use" : "Not Available";
+        }
+        console.log(stationDetails);
+    });
 
 
     return (
@@ -24,27 +41,31 @@ export const StationWatchScreen = ({navigation, route}) => {
 
                 try {
                     await basicApi.post("/chargingStations/charge", {
-                        id: stationDetails.id
+                        location: route.params['location']
                     }).then(() => {
-                        Alert.alert('Charging in progress...',null, [{text: 'OK', onPress: () => console.log('OK Pressed')}] )
+                        Alert.alert('Charging in progress...', null, [{
+                            text: 'OK',
+                            onPress: () => console.log('OK Pressed')
+                        }])
                     })
-                }
-                catch (err) {
+                } catch (err) {
                     console.log(err)
 
                 }
             }}>
             </Buttons>
 
-            <Buttons btn_text={"Stop"} on_press={async ()=> {
+            <Buttons btn_text={"Stop"} on_press={async () => {
                 try {
                     await basicApi.post("/chargingStations/unCharge", {
-                        id: stationDetails.id
+                        location: route.params['location']
                     }).then(() => {
-                        Alert.alert('Charging session ended!',null, [{text: 'OK', onPress: () => console.log('OK Pressed')}] )
+                        Alert.alert('Charging session ended!', null, [{
+                            text: 'OK',
+                            onPress: () => console.log('OK Pressed')
+                        }])
                     })
-                }
-                catch (err) {
+                } catch (err) {
                 }
             }}>
             </Buttons>
@@ -55,12 +76,12 @@ export const StationWatchScreen = ({navigation, route}) => {
 
 const styles = StyleSheet.create({
     button: {
-        justifyContent:'center',
-        width:'95%',
-        backgroundColor:"#465bd8",
-        height:50,
-        marginBottom:30,
-        borderRadius:10,
+        justifyContent: 'center',
+        width: '95%',
+        backgroundColor: "#465bd8",
+        height: 50,
+        marginBottom: 30,
+        borderRadius: 10,
     },
     buttonDisabled: {
         padding: '10px 30px',
@@ -86,10 +107,8 @@ const styles = StyleSheet.create({
         fontSize: 30,
     },
     smallText: {
-        maxWidth: "50%",
-        color: "#999",
-        fontSize: 14,
-        textAlign: "center",
-        paddingTop: 10,
-    }
+        fontSize: 18,
+        fontStyle: "italic",
+        fontWeight: "400",
+    },
 });
