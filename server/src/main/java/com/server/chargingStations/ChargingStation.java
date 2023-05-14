@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "chargingStations")
 public class ChargingStation {
     @Id
+    private ObjectId id;
     private final GeoLocation location;
     private final ObjectId ownerId;
     /*private final BufferedImage m_qrCodeImage;*/
@@ -28,15 +29,26 @@ public class ChargingStation {
         this.pricePerVolt = pricePerVolt;
     }
 
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
     public GeoLocation getLocation() {
         return location;
     }
+
     public ObjectId getOwnerId() {
         return ownerId;
     }
+
     public EchargerType getChargerType() {
         return chargerType;
     }
+
     public Estatus getStatus() {
         return status;
     }

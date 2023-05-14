@@ -8,7 +8,8 @@ import java.util.Optional;
 
 public interface ChargingStationRepository extends MongoRepository<ChargingStation, String> {
     Optional<ChargingStation> findByLocation(GeoLocation location);
-    List<ChargingStation> findByOwnerId(ObjectId id);
+    List<ChargingStation> findByOwnerId(ObjectId ownerId);
+    Optional<ChargingStation> findById(ObjectId id);
     void deleteByLocation(GeoLocation location);
     void deleteAllByOwnerId(ObjectId id);
 }

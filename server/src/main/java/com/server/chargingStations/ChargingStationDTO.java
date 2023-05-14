@@ -1,14 +1,13 @@
 package com.server.chargingStations;
 
 import com.server.location.GeoLocation;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /*import java.awt.image.BufferedImage;*/
 
 @Document(collection = "chargingStations")
 public class ChargingStationDTO {
-    @Id
+    private String id;
     private final GeoLocation location;
     //private final ObjectId ownerId;
     /*private final BufferedImage m_qrCodeImage;*/
@@ -18,13 +17,22 @@ public class ChargingStationDTO {
 
     // TODO E - Add Reviews (list of strings?).
 
-    public ChargingStationDTO(GeoLocation location, /*ObjectId ownerId,*/ double pricePerVolt, EchargerType chargerType) {
+    public ChargingStationDTO(String id, GeoLocation location, /*ObjectId ownerId,*/ double pricePerVolt, EchargerType chargerType, Estatus status) {
+        this.id = id;
         this.location = location;
         //this.ownerId = ownerId;
         this.chargerType = chargerType;
         /*m_qrCodeImage = generateQRCodeImage();*/
-        status = Estatus.NOT_CHARGING;
+        this.status = status;
         this.pricePerVolt = pricePerVolt;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public GeoLocation getLocation() {
