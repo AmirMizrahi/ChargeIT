@@ -54,6 +54,7 @@ public class ChargingStationController {
                     chargingStationJson.getPricePerVolt(), chargingStationJson.getChargerType());
             m_chargingStationsRepository.save(chargingStation);
             jsonObject.addProperty("message", "Created ChargingStation successfully.");
+            jsonObject.addProperty("chargingStationId", chargingStation.getId().toString());
         }
 
         return ResponseEntity.status(httpStatus)
@@ -62,7 +63,7 @@ public class ChargingStationController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteChargingStationByLocation(@RequestBody GeoLocation location, HttpServletRequest request) {
+    public ResponseEntity<String> deleteChargingStationById(@RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
         // Check if user is logged in
         HttpSession session = request.getSession(false);
         if (session == null) {
@@ -72,12 +73,12 @@ public class ChargingStationController {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
-        ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+        ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
         if(station.getOwnerId().equals((ObjectId) session.getAttribute("id")))
         {
             station.unCharge();
             m_chargingStationsRepository.save(station);
-            m_chargingStationsRepository.deleteByLocation(location);
+            m_chargingStationsRepository.deleteByLocation(station.getLocation());
             jsonObject.addProperty("message", "Charging station deleted successfully");
         }
         else
@@ -144,7 +145,7 @@ public class ChargingStationController {
         int index = 0;
         for (ChargingStation station : chargingStations) {
             JsonObject chargingStationJson = new JsonObject();
-            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getLocation(), station.getPricePerVolt(), station.getChargerType());
+            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus());
             chargingStationJson.addProperty(Integer.toString(index++), gson.toJson(chargingStationDTO));
             jsonArray.add(chargingStationJson);
         }
@@ -158,7 +159,7 @@ public class ChargingStationController {
     @CrossOrigin(origins = "*")
     @GetMapping(value = "/getChargingStation", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> getChargingStation(@RequestBody GeoLocation location, HttpServletRequest request) {
+    public ResponseEntity<String> getChargingStation(@RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
         /*// Check if user is logged in
         HttpSession session = request.getSession(false);
         if (session == null) {
@@ -170,8 +171,8 @@ public class ChargingStationController {
 
         try
         {
-            ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
-            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getLocation(), station.getPricePerVolt(), station.getChargerType());
+            ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus());
             Gson gson = new Gson();
             JsonElement jsonElement = gson.toJsonTree(chargingStationDTO);
             JsonObject chargingStationJson = jsonElement.getAsJsonObject();
@@ -242,7 +243,7 @@ public class ChargingStationController {
             for (ChargingStation station : chargingStationsWithinRadius) {
                 JsonObject chargingStationJson = new JsonObject();
                 double distanceInKilometers = distanceBetweenPointsInKilometers(latitude, longitude, station.getLocation().getLatitude(), station.getLocation().getLongitude());
-                ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getLocation(), station.getPricePerVolt(), station.getChargerType());
+                ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus());
                 chargingStationJson.addProperty(Double.toString(distanceInKilometers), gson.toJson(chargingStationDTO));
                 jsonArray.add(chargingStationJson);
             }
@@ -262,7 +263,7 @@ public class ChargingStationController {
     }
 
     @PutMapping("/charge")
-    public ResponseEntity<String> charge(@RequestBody GeoLocation location, HttpServletRequest request) {
+    public ResponseEntity<String> charge(@RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
         // Check if user is logged in
         HttpSession session = request.getSession(false);
         if (session == null) {
@@ -272,7 +273,7 @@ public class ChargingStationController {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
-        ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+        ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
         if(station.getStatus().equals(Estatus.NOT_CHARGING))
         {
             station.charge();
@@ -293,7 +294,7 @@ public class ChargingStationController {
     }
 
     @PutMapping("/unCharge")
-    public ResponseEntity<String> unCharge(@RequestBody GeoLocation location, HttpServletRequest request) {
+    public ResponseEntity<String> unCharge(@RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
         // Check if user is logged in
         HttpSession session = request.getSession(false);
         if (session == null) {
@@ -303,7 +304,7 @@ public class ChargingStationController {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
-        ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+        ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
         if(station.getStatus().equals(Estatus.CHARGING))
         {
             station.unCharge();
@@ -324,7 +325,7 @@ public class ChargingStationController {
     }
 
     @PutMapping("/updatePricePerVolt")
-    public ResponseEntity<String> updatePricePerVolt(@RequestParam("pricePerVolt") double pricePerVolt, @RequestBody GeoLocation location, HttpServletRequest request) {
+    public ResponseEntity<String> updatePricePerVolt(@RequestParam("pricePerVolt") double pricePerVolt, @RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
         // Check if user is logged in
         HttpSession session = request.getSession(false);
         if (session == null) {
@@ -334,7 +335,7 @@ public class ChargingStationController {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
-        ChargingStation station = m_chargingStationsRepository.findByLocation(location).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+        ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
         // Check if the input string is a valid price
         if (pricePerVolt <= 0)
         {

@@ -326,13 +326,13 @@
 					"response": []
 				},
 				{
-					"name": "deleteChargingStationByLocation",
+					"name": "deleteChargingStationById",
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"latitude\": 32.253,\r\n    \"longitude\": 34.929\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -340,7 +340,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/chargingStations/delete",
+							"raw": "http://localhost:8080/chargingStations/delete?chargingStationId=6460e23e4f4e427aa3199489",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -349,6 +349,12 @@
 							"path": [
 								"chargingStations",
 								"delete"
+							],
+							"query": [
+								{
+									"key": "chargingStationId",
+									"value": "6460e23e4f4e427aa3199489"
+								}
 							]
 						}
 					},
@@ -404,7 +410,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"latitude\": 32.253,\r\n    \"longitude\": 34.929\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -412,7 +418,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/chargingStations/getChargingStation",
+							"raw": "http://localhost:8080/chargingStations/getChargingStation?chargingStationId=6460e23e4f4e427aa3199489",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -421,6 +427,12 @@
 							"path": [
 								"chargingStations",
 								"getChargingStation"
+							],
+							"query": [
+								{
+									"key": "chargingStationId",
+									"value": "6460e23e4f4e427aa3199489"
+								}
 							]
 						}
 					},
@@ -479,7 +491,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"latitude\": 32.253,\r\n    \"longitude\": 34.929\r\n}\r\n",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -487,7 +499,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/chargingStations/charge",
+							"raw": "http://localhost:8080/chargingStations/charge?chargingStationId=6460e23e4f4e427aa3199489",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -496,6 +508,12 @@
 							"path": [
 								"chargingStations",
 								"charge"
+							],
+							"query": [
+								{
+									"key": "chargingStationId",
+									"value": "6460e23e4f4e427aa3199489"
+								}
 							]
 						}
 					},
@@ -508,7 +526,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"latitude\": 32.253,\r\n    \"longitude\": 34.929\r\n}\r\n",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -516,7 +534,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/chargingStations/unCharge",
+							"raw": "http://localhost:8080/chargingStations/unCharge?chargingStationId=6460e23e4f4e427aa3199489",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -525,6 +543,12 @@
 							"path": [
 								"chargingStations",
 								"unCharge"
+							],
+							"query": [
+								{
+									"key": "chargingStationId",
+									"value": "6460e23e4f4e427aa3199489"
+								}
 							]
 						}
 					},
@@ -537,7 +561,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"latitude\": 32.253,\r\n    \"longitude\": 34.929\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -545,7 +569,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/chargingStations/updatePricePerVolt?pricePerVolt=5",
+							"raw": "http://localhost:8080/chargingStations/updatePricePerVolt?pricePerVolt=5&chargingStationId=6460e23e4f4e427aa3199489",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -559,6 +583,10 @@
 								{
 									"key": "pricePerVolt",
 									"value": "5"
+								},
+								{
+									"key": "chargingStationId",
+									"value": "6460e23e4f4e427aa3199489"
 								}
 							]
 						}
