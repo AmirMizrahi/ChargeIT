@@ -1,5 +1,6 @@
 import basicApi from "../api/basicApi";
 import createDataContext from "./createDataContext";
+import trackerApi from "../api/basicApi";
 
 const stationsReducer = (state, action) => {
   switch (action.type) {
@@ -22,9 +23,30 @@ const fetchChargingStations = (dispatch) => async () => {
   return response.data.chargingStations;
 };
 
-const createChargingStation = (dispatch) => async () => {
-  //const response = await basicApi.get(/)
-};
+const createChargingStation =
+  (dispatch) =>
+  async ({ latitude, longitude, price, selectedValue }) => {
+    const location = { latitude, longitude };
+    debugger;
+    try {
+      const response = await trackerApi.post(
+        "/chargingStations/createChargingStation",
+        {
+          location,
+          price,
+          selectedValue,
+        }
+      );
+      // await AsyncStorage.setItem("token", response.data.token);
+      // dispatch({ type: "signin", payload: response.data.token });
+      // navigation.navigate("TabNavigator", { screen: "UserProfile" });
+    } catch (err) {
+      dispatch({
+        type: "add_error",
+        payload: err.response.data.error,
+      });
+    }
+  };
 
 export const { Context, Provider } = createDataContext(
   stationsReducer,

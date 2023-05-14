@@ -33,10 +33,10 @@ public class ChargingStationController {
     @PostMapping("/createChargingStation")
     public ResponseEntity<String> createChargingStation(@RequestBody ChargingStationJson chargingStationJson, HttpServletRequest request) {
         // Check if user is logged in
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            throw new RuntimeException("Unauthorized");
-        }
+         HttpSession session = request.getSession(false);
+        // if (session == null) {
+        //     throw new RuntimeException("Unauthorized");
+        // }
 
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();

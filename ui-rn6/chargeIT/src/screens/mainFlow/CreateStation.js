@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import Buttons from "../../components/Buttons";
 import Map from "../../components/Map";
 import MapView, { Marker } from "react-native-maps";
@@ -10,22 +11,23 @@ import trackMyLocation from "../../hooks/trackMyLocation";
 import { useIsFocused } from "@react-navigation/native";
 import { Context as StationsContext } from "../../context/StationsContext";
 
-const CreateStation = ({ navigation }) => {
-  const { getCurrentLocation } = useContext(StationsContext);
-
+const CreateStation = ({ navigation, route }) => {
+  const { getCurrentLocation, createChargingStation } =
+    useContext(StationsContext);
   const [err] = trackMyLocation(useIsFocused(), getCurrentLocation);
+  const [price, setPrice] = useState("");
+  const [selectedValue, setSelectedValue] = useState("type0");
+  const { latitude, longitude } = route.params;
 
-  const [location, setLocation] = useState(null);
+  // const handleMapPress = (event) => {
+  //   const { coordinate } = event.nativeEvent;
+  //   setLocation(coordinate);
+  // };
 
-  const handleMapPress = (event) => {
-    const { coordinate } = event.nativeEvent;
-    setLocation(coordinate);
-  };
-
-  const handleSavePress = () => {
-    // Handle save location here
-    console.log("Selected location:", location);
-  };
+  // const handleSavePress = () => {
+  //   // Handle save location here
+  //   console.log("Selected location:", location);
+  // };
 
   return (
     <>
@@ -33,14 +35,46 @@ const CreateStation = ({ navigation }) => {
         <Text style={styles.headerText}>Create New Charging Station</Text>
       </View>
       <View style={{ borderColor: "red", borderWidth: 3 }}>
+        <Text>
+          {latitude},{longitude}
+        </Text>
         <View style={styles.viewGeneral}>
           <Text style={styles.label}>pricePerVolt:</Text>
-          <TextInput style={styles.value}></TextInput>
+          <TextInput style={styles.value} onChangeText={setPrice}></TextInput>
         </View>
 
         <View style={styles.viewGeneral}>
           <Text style={styles.label}>chargerType:</Text>
-          <Text style={styles.value}>{}</Text>
+          <View
+            style={{
+              borderColor: "blue",
+              borderWidth: 3,
+              fontSize: 20,
+              justifyContent: "center",
+              flex: 1,
+            }}
+          >
+            <Picker
+              selectedValue={selectedValue}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedValue(itemValue)
+              }
+            >
+              <Picker.Item label="TYPE_0" value="type0" />
+              <Picker.Item label="TYPE_1" value="type1" />
+            </Picker>
+            <Buttons
+              on_press={() =>
+                createChargingStation({
+                  latitude,
+                  longitude,
+                  price,
+                  selectedValue,
+                })
+              }
+              btn_text={"Create"}
+            ></Buttons>
+          </View>
         </View>
       </View>
     </>
