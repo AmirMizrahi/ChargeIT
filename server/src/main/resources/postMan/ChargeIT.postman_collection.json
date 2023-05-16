@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"password\": \"123456\",\r\n  \"email\": \"eden2@example.com\"\r\n}",
+							"raw": "{\r\n  \"password\": \"123456\",\r\n  \"email\": \"eden3@example.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -45,7 +45,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"eden2@example.com\",\r\n  \"password\": \"123456\"\r\n}",
+							"raw": "{\r\n  \"email\": \"eden3@example.com\",\r\n  \"password\": \"123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -111,6 +111,38 @@
 							"path": [
 								"users",
 								"deleteUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUser",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/getUser",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"getUser"
 							]
 						}
 					},
@@ -303,7 +335,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 32.253,\r\n    \"longitude\": 34.929\r\n  },\r\n  \"pricePerVolt\": 0.25,\r\n  \"chargerType\": \"TYPE_0\"\r\n}\r\n",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 32.254,\r\n    \"longitude\": 34.929\r\n  },\r\n  \"pricePerVolt\": 0.25,\r\n  \"chargerType\": \"TYPE_0\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -395,6 +427,26 @@
 							"path": [
 								"chargingStations",
 								"getAllChargingStations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllUserChargingStations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/getAllUserChargingStations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"getAllUserChargingStations"
 							]
 						}
 					},

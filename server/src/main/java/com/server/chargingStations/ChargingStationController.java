@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-
 import static com.server.location.GeoUtils.distanceBetweenPointsInKilometers;
 
 @RestController
@@ -27,34 +24,36 @@ import static com.server.location.GeoUtils.distanceBetweenPointsInKilometers;
 public class ChargingStationController {
     @Autowired
     private ChargingStationRepository m_chargingStationsRepository;
-    @Autowired
-    private MongoTemplate m_mongoTemplate;
 
     @PostMapping("/createChargingStation")
     public ResponseEntity<String> createChargingStation(@RequestBody ChargingStationJson chargingStationJson, HttpServletRequest request) {
-        // Check if user is logged in
-         HttpSession session = request.getSession(false);
-        // if (session == null) {
-        //     throw new RuntimeException("Unauthorized");
-        // }
-
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
-        try
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
         {
-            // Check if the location already exists in the database
-            ChargingStation existingChargingStation = m_chargingStationsRepository.findByLocation(chargingStationJson.getLocation()).orElseThrow(() -> new RuntimeException("Charging Station not found"));
-            jsonObject.addProperty("message", "ChargingStation already exists with the given location.");
-            httpStatus = HttpStatus.BAD_REQUEST;
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
         }
-        catch (RuntimeException runtimeException)
+        else
         {
-            ChargingStation chargingStation = new ChargingStation(chargingStationJson.getLocation(), (ObjectId) session.getAttribute("id"),
-                    chargingStationJson.getPricePerVolt(), chargingStationJson.getChargerType());
-            m_chargingStationsRepository.save(chargingStation);
-            jsonObject.addProperty("message", "Created ChargingStation successfully.");
-            jsonObject.addProperty("chargingStationId", chargingStation.getId().toString());
+            try
+            {
+                // Check if the location already exists in the database
+                ChargingStation existingChargingStation = m_chargingStationsRepository.findByLocation(chargingStationJson.getLocation()).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+                jsonObject.addProperty("message", "ChargingStation already exists with the given location.");
+                httpStatus = HttpStatus.BAD_REQUEST;
+            }
+            catch (RuntimeException runtimeException)
+            {
+                ChargingStation chargingStation = new ChargingStation(chargingStationJson.getLocation(), (ObjectId) session.getAttribute("id"),
+                        chargingStationJson.getPricePerVolt(), chargingStationJson.getChargerType());
+                m_chargingStationsRepository.save(chargingStation);
+                jsonObject.addProperty("message", "Created ChargingStation successfully.");
+                jsonObject.addProperty("chargingStationId", chargingStation.getId().toString());
+            }
         }
 
         return ResponseEntity.status(httpStatus)
@@ -64,27 +63,31 @@ public class ChargingStationController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteChargingStationById(@RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
-        // Check if user is logged in
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            throw new RuntimeException("Unauthorized");
-        }
-
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
-        ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
-        if(station.getOwnerId().equals((ObjectId) session.getAttribute("id")))
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
         {
-            station.unCharge();
-            m_chargingStationsRepository.save(station);
-            m_chargingStationsRepository.deleteByLocation(station.getLocation());
-            jsonObject.addProperty("message", "Charging station deleted successfully");
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
         }
         else
         {
-            httpStatus = HttpStatus.FORBIDDEN;
-            jsonObject.addProperty("message", "You do not have permission to delete this charging station");
+            ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+            if(station.getOwnerId().equals((ObjectId) session.getAttribute("id")))
+            {
+                station.unCharge();
+                m_chargingStationsRepository.save(station);
+                m_chargingStationsRepository.deleteByLocation(station.getLocation());
+                jsonObject.addProperty("message", "Charging station deleted successfully");
+            }
+            else
+            {
+                httpStatus = HttpStatus.FORBIDDEN;
+                jsonObject.addProperty("message", "You do not have permission to delete this charging station");
+            }
         }
 
         return ResponseEntity.status(httpStatus)
@@ -94,29 +97,33 @@ public class ChargingStationController {
 
     @DeleteMapping("/delete-all")
     public ResponseEntity<String> deleteAllChargingStationsByOwner(HttpServletRequest request) {
-        // Check if user is logged in
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            throw new RuntimeException("Unauthorized");
-        }
-
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
-        List<ChargingStation> chargingStations = m_chargingStationsRepository.findByOwnerId((ObjectId) session.getAttribute("id"));
-        if(chargingStations.isEmpty())
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
         {
-            jsonObject.addProperty("message", "No charging stations found for this owner");
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
         }
         else
         {
-            for (ChargingStation station : chargingStations) {
-                // Uncharge each charging station before deleting it
-                station.unCharge();
-                m_chargingStationsRepository.save(station);
+            List<ChargingStation> chargingStations = m_chargingStationsRepository.findByOwnerId((ObjectId) session.getAttribute("id"));
+            if(chargingStations.isEmpty())
+            {
+                jsonObject.addProperty("message", "No charging stations found for this owner");
             }
-            m_chargingStationsRepository.deleteAllByOwnerId((ObjectId) session.getAttribute("id"));
-            jsonObject.addProperty("message", "All charging stations deleted successfully");
+            else
+            {
+                for (ChargingStation station : chargingStations) {
+                    // Uncharge each charging station before deleting it
+                    station.unCharge();
+                    m_chargingStationsRepository.save(station);
+                }
+                m_chargingStationsRepository.deleteAllByOwnerId((ObjectId) session.getAttribute("id"));
+                jsonObject.addProperty("message", "All charging stations deleted successfully");
+            }
         }
 
         return ResponseEntity.status(httpStatus)
@@ -150,6 +157,41 @@ public class ChargingStationController {
             jsonArray.add(chargingStationJson);
         }
         jsonObject.add("chargingStations", jsonArray);
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @GetMapping(value = "/getAllUserChargingStations", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> getAllUserChargingStations(HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
+        {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
+        }
+        else
+        {
+            List<ChargingStation> chargingStations = m_chargingStationsRepository.findByOwnerId((ObjectId) session.getAttribute("id"));
+
+            // Convert the list of charging stations to JSON
+            Gson gson = new Gson();
+            JsonArray jsonArray = new JsonArray();
+            int index = 0;
+            for (ChargingStation station : chargingStations) {
+                JsonObject chargingStationJson = new JsonObject();
+                ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus());
+                chargingStationJson.addProperty(Integer.toString(index++), gson.toJson(chargingStationDTO));
+                jsonArray.add(chargingStationJson);
+            }
+            jsonObject.add("chargingStations", jsonArray);
+        }
 
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -264,28 +306,32 @@ public class ChargingStationController {
 
     @PutMapping("/charge")
     public ResponseEntity<String> charge(@RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
-        // Check if user is logged in
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            throw new RuntimeException("Unauthorized");
-        }
-
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
-        ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
-        if(station.getStatus().equals(Estatus.NOT_CHARGING))
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
         {
-            station.charge();
-            m_chargingStationsRepository.save(station);
-            jsonObject.addProperty("message", "Charging...");
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
         }
         else
         {
-            String errorMessage;
-            httpStatus = HttpStatus.LOCKED;
-            errorMessage = "ChargingStation is charging.";
-            jsonObject.addProperty("error-message", errorMessage);
+            ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+            if(station.getStatus().equals(Estatus.NOT_CHARGING))
+            {
+                station.charge();
+                m_chargingStationsRepository.save(station);
+                jsonObject.addProperty("message", "Charging...");
+            }
+            else
+            {
+                String errorMessage;
+                httpStatus = HttpStatus.LOCKED;
+                errorMessage = "ChargingStation is charging.";
+                jsonObject.addProperty("error-message", errorMessage);
+            }
         }
 
         return ResponseEntity.status(httpStatus)
@@ -295,28 +341,32 @@ public class ChargingStationController {
 
     @PutMapping("/unCharge")
     public ResponseEntity<String> unCharge(@RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
-        // Check if user is logged in
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            throw new RuntimeException("Unauthorized");
-        }
-
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
-        ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
-        if(station.getStatus().equals(Estatus.CHARGING))
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
         {
-            station.unCharge();
-            m_chargingStationsRepository.save(station);
-            jsonObject.addProperty("message", "UnCharge.");
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
         }
         else
         {
-            String errorMessage;
-            httpStatus = HttpStatus.BAD_REQUEST;
-            errorMessage = "ChargingStation isn't charging.";
-            jsonObject.addProperty("error-message", errorMessage);
+            ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+            if(station.getStatus().equals(Estatus.CHARGING))
+            {
+                station.unCharge();
+                m_chargingStationsRepository.save(station);
+                jsonObject.addProperty("message", "UnCharge.");
+            }
+            else
+            {
+                String errorMessage;
+                httpStatus = HttpStatus.BAD_REQUEST;
+                errorMessage = "ChargingStation isn't charging.";
+                jsonObject.addProperty("error-message", errorMessage);
+            }
         }
 
         return ResponseEntity.status(httpStatus)
@@ -326,26 +376,30 @@ public class ChargingStationController {
 
     @PutMapping("/updatePricePerVolt")
     public ResponseEntity<String> updatePricePerVolt(@RequestParam("pricePerVolt") double pricePerVolt, @RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
-        // Check if user is logged in
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            throw new RuntimeException("Unauthorized");
-        }
-
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
-        ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
-        // Check if the input string is a valid price
-        if (pricePerVolt <= 0)
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
         {
-            httpStatus = HttpStatus.BAD_REQUEST;
-            jsonObject.addProperty("error", "Invalid price per volt");        }
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
+        }
         else
         {
-            station.setPricePerVolt(pricePerVolt);
-            m_chargingStationsRepository.save(station);
-            jsonObject.addProperty("message", "Update price per volt successfully.");
+            ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+            // Check if the input string is a valid price
+            if (pricePerVolt <= 0)
+            {
+                httpStatus = HttpStatus.BAD_REQUEST;
+                jsonObject.addProperty("error", "Invalid price per volt");        }
+            else
+            {
+                station.setPricePerVolt(pricePerVolt);
+                m_chargingStationsRepository.save(station);
+                jsonObject.addProperty("message", "Update price per volt successfully.");
+            }
         }
 
         return ResponseEntity.status(httpStatus)
