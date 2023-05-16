@@ -156,6 +156,37 @@ public class ChargingStationController {
                 .body(jsonObject.toString());
     }
 
+    @GetMapping(value = "/getAllUserChargingStations", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> getAllUserChargingStations(HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        List<ChargingStation> chargingStations = m_chargingStationsRepository.findByOwnerId((ObjectId) session.getAttribute("id"));
+
+        // Convert the list of charging stations to JSON
+        Gson gson = new Gson();
+        JsonArray jsonArray = new JsonArray();
+        int index = 0;
+        for (ChargingStation station : chargingStations) {
+            JsonObject chargingStationJson = new JsonObject();
+            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus());
+            chargingStationJson.addProperty(Integer.toString(index++), gson.toJson(chargingStationDTO));
+            jsonArray.add(chargingStationJson);
+        }
+        jsonObject.add("chargingStations", jsonArray);
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
     @CrossOrigin(origins = "*")
     @GetMapping(value = "/getChargingStation", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody

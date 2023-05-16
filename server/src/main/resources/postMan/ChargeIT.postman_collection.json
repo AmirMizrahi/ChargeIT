@@ -433,6 +433,26 @@
 					"response": []
 				},
 				{
+					"name": "getAllUserChargingStations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/getAllUserChargingStations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"getAllUserChargingStations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getChargingStation",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
