@@ -1,8 +1,7 @@
 package com.server.users;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
+import com.server.chargingStations.ChargingStationDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.bson.types.ObjectId;
@@ -14,6 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.session.data.mongo.config.annotation.web.http.EnableMongoHttpSession;
 import org.springframework.web.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -180,12 +182,45 @@ public class UserController {
 
         try
         {
-            User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
-            UserDTO userDTO = new UserDTO(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNumber());
-            Gson gson = new Gson();
-            JsonElement jsonElement = gson.toJsonTree(userDTO);
-            JsonObject userJson = jsonElement.getAsJsonObject();
-            jsonObject.add("user", userJson);
+            User user = m_userRepository.findById((ObjectId) session.getAttribute("id"))
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Get all charging stations owned by the user
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Cookie", request.getHeader("Cookie"));
+            HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+            String url = "http://localhost:8080/chargingStations/getAllUserChargingStations";
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+            if (response.getStatusCode() == HttpStatus.OK)
+            {
+                // Parse the charging stations from the response body
+                JsonObject chargingStationsJson = JsonParser.parseString(response.getBody()).getAsJsonObject();
+                JsonArray chargingStationsArray = chargingStationsJson.getAsJsonArray("chargingStations");
+
+                // Convert charging stations JSON to a list of ChargingStationDTO objects
+                List<ChargingStationDTO> chargingStations = new ArrayList<>();
+                Gson gson = new Gson();
+                for (JsonElement jsonElement : chargingStationsArray) {
+                    JsonObject chargingStationJson = jsonElement.getAsJsonObject();
+                    for (Map.Entry<String, JsonElement> entry : chargingStationJson.entrySet()) {
+                        String chargingStationJsonString = entry.getValue().getAsString();
+                        ChargingStationDTO chargingStationDTO = gson.fromJson(chargingStationJsonString, ChargingStationDTO.class);
+                        chargingStations.add(chargingStationDTO);
+                    }
+                }
+
+                // Create UserDTO with charging stations
+                UserDTO userDTO = new UserDTO(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNumber(), chargingStations);
+                JsonElement jsonElement = gson.toJsonTree(userDTO);
+                JsonObject userJson = jsonElement.getAsJsonObject();
+                jsonObject.add("user", userJson);
+            }
+            else
+            {
+                throw new RuntimeException("Failed to fetch user charging stations");
+            }
         }
         catch (RuntimeException runtimeException)
         {
