@@ -1,5 +1,7 @@
 package com.server.users;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -158,6 +160,37 @@ public class UserController {
         {
             httpStatus = (HttpStatus) response.getStatusCode();
             jsonObject.addProperty("error", "Failed to delete user.");
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @GetMapping(value = "/getUser")
+    public ResponseEntity<String> getUser(HttpServletRequest request) {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        try
+        {
+            User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
+            UserDTO userDTO = new UserDTO(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNumber());
+            Gson gson = new Gson();
+            JsonElement jsonElement = gson.toJsonTree(userDTO);
+            JsonObject userJson = jsonElement.getAsJsonObject();
+            jsonObject.add("user", userJson);
+        }
+        catch (RuntimeException runtimeException)
+        {
+            httpStatus = HttpStatus.NOT_FOUND;
+            jsonObject.addProperty("error", runtimeException.getMessage());
         }
 
         return ResponseEntity.status(httpStatus)

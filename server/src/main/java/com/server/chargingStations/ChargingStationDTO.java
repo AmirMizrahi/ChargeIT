@@ -1,11 +1,9 @@
 package com.server.chargingStations;
 
 import com.server.location.GeoLocation;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 /*import java.awt.image.BufferedImage;*/
 
-@Document(collection = "chargingStations")
 public class ChargingStationDTO {
     private String id;
     private final GeoLocation location;
