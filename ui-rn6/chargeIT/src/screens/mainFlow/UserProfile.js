@@ -1,19 +1,37 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useBackHandler } from "@react-native-community/hooks";
 import Buttons from "../../components/Buttons";
 import Spacer from "../../components/Spacer";
-import { Context as AuthContext } from "../../context/AuthContext";
 import { Feather } from "@expo/vector-icons";
+
+import { Context as AuthContext } from "../../context/AuthContext";
+import { Context as UsersContext } from "../../context/UsersContext";
 
 const UserProfile = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const { logout } = useContext(AuthContext);
+  const { state, getUserInfo } = useContext(UsersContext);
 
   // Cancel return to the authentication flow.
   useBackHandler(() => {
     return true;
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        debugger;
+        await getUserInfo();
+        console.log(state.userValues);
+        debugger;
+      } catch (error) {
+        console.log("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []); // runs only once when the component is mounted
 
   return (
     <View style={styles.container}>

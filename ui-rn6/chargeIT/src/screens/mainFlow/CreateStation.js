@@ -15,8 +15,8 @@ const CreateStation = ({ navigation, route }) => {
   const { getCurrentLocation, createChargingStation } =
     useContext(StationsContext);
   const [err] = trackMyLocation(useIsFocused(), getCurrentLocation);
-  const [price, setPrice] = useState("");
-  const [selectedValue, setSelectedValue] = useState("type0");
+  const [pricePerVolt, setPrice] = useState("");
+  const [chargerType, setSelectedValue] = useState("TYPE_0");
   const { latitude, longitude } = route.params;
 
   // const handleMapPress = (event) => {
@@ -55,21 +55,21 @@ const CreateStation = ({ navigation, route }) => {
             }}
           >
             <Picker
-              selectedValue={selectedValue}
+              selectedValue={chargerType}
               onValueChange={(itemValue, itemIndex) =>
                 setSelectedValue(itemValue)
               }
             >
-              <Picker.Item label="TYPE_0" value="type0" />
-              <Picker.Item label="TYPE_1" value="type1" />
+              <Picker.Item label="Type 0" value="TYPE_0" />
+              <Picker.Item label="Type 1" value="TYPE_1" />
             </Picker>
             <Buttons
               on_press={() =>
                 createChargingStation({
                   latitude,
                   longitude,
-                  price,
-                  selectedValue,
+                  pricePerVolt,
+                  chargerType,
                 })
               }
               btn_text={"Create"}

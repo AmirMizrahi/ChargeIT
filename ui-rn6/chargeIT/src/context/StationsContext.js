@@ -1,6 +1,5 @@
 import basicApi from "../api/basicApi";
 import createDataContext from "./createDataContext";
-import trackerApi from "../api/basicApi";
 
 const stationsReducer = (state, action) => {
   switch (action.type) {
@@ -25,16 +24,16 @@ const fetchChargingStations = (dispatch) => async () => {
 
 const createChargingStation =
   (dispatch) =>
-  async ({ latitude, longitude, price, selectedValue }) => {
+  async ({ latitude, longitude, pricePerVolt, chargerType }) => {
     const location = { latitude, longitude };
     debugger;
     try {
-      const response = await trackerApi.post(
+      const response = await basicApi.post(
         "/chargingStations/createChargingStation",
         {
           location,
-          price,
-          selectedValue,
+          pricePerVolt,
+          chargerType,
         }
       );
       // await AsyncStorage.setItem("token", response.data.token);
