@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useIsFocused, useFocusEffect } from "@react-navigation/native";
 import { View, Text, StyleSheet } from "react-native";
 import { useBackHandler } from "@react-native-community/hooks";
 import Buttons from "../../components/Buttons";
@@ -14,13 +15,23 @@ const UserProfile = ({ navigation }) => {
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
   const [phone, setPhone] = useState(null);
+  const [stations, setStations] = useState(null);
   const { logout } = useContext(AuthContext);
-  const { state, getUserInfo } = useContext(UsersContext);
+  const { state, getUserInfo, clearErrorMessage } = useContext(UsersContext);
+
+  const isFocused = useIsFocused();
 
   // Cancel return to the authentication flow.
   useBackHandler(() => {
     return true;
   });
+
+  //  Remove the errorMsg if available.
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => clearErrorMessage();
+    }, [])
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,17 +41,24 @@ const UserProfile = ({ navigation }) => {
         setFirstName(val.firstName);
         setLastName(val.lastName);
         setPhone(val.phoneNumber);
+
+        const chargingStationIDs = val.chargingStationDTOS.map(
+          (station) => station.id
+        );
+        setStations(chargingStationIDs);
       } catch (error) {
         console.log("Error fetching data:", error);
       }
     };
 
-    fetchData();
+    if (isFocused) {
+      fetchData();
+    }
     // setMail(state.userValues.email);
     // setFirstName(state.userValues.firstName);
     // setLastName(state.userValues.lastName);
     // setPhone(state.userValues.phoneNumber);
-  }, []); // runs only once when the component is mounted
+  }, [isFocused]); // runs only once when the component is mounted
 
   return (
     <View style={styles.container}>
@@ -71,6 +89,17 @@ const UserProfile = ({ navigation }) => {
         <Text style={styles.label}>Phone number:</Text>
         <Text style={styles.value}>{phone}</Text>
       </View>
+
+      <View style={styles.viewGeneral}>
+        <Feather name="battery-charging" style={styles.tinyImages} />
+        <Text style={styles.label}>My charging stations:</Text>
+        <Text style={styles.value}>{stations}</Text>
+      </View>
+
+      {state.errorMessage ? (
+        <Text style={styles.errorMessage}>{state.errorMessage}</Text>
+      ) : null}
+
       <Spacer></Spacer>
       <View style={styles.buttons}>
         <Buttons
@@ -118,6 +147,12 @@ const styles = StyleSheet.create({
   },
   buttons: {
     alignItems: "center",
+  },
+  errorMessage: {
+    fontSize: 16,
+    color: "red",
+    marginLeft: 15,
+    marginTop: 15,
   },
 });
 

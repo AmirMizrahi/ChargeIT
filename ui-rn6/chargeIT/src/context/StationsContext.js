@@ -47,8 +47,27 @@ const createChargingStation =
     }
   };
 
+const getAllStationsByUser = (dispatch) => async () => {
+  try {
+    const response = await basicApi.get(
+      "/chargingStations/getAllUserChargingStations"
+    );
+    return response.data.chargingStations;
+  } catch (err) {
+    dispatch({
+      type: "add_error",
+      payload: err.response.data.error,
+    });
+  }
+};
+
 export const { Context, Provider } = createDataContext(
   stationsReducer,
-  { getCurrentLocation, fetchChargingStations, createChargingStation },
+  {
+    getCurrentLocation,
+    fetchChargingStations,
+    createChargingStation,
+    getAllStationsByUser,
+  },
   { locations: [], currentLocation: null }
 );
