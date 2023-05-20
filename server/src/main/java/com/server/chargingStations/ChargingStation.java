@@ -17,16 +17,18 @@ public class ChargingStation {
     private final EchargerType chargerType;
     private Estatus status;
     private double pricePerVolt;
+    private String stationName;
 
     // TODO E - Add Reviews (list of strings?).
 
-    public ChargingStation(GeoLocation location, ObjectId ownerId, double pricePerVolt, EchargerType chargerType) {
+    public ChargingStation(GeoLocation location, ObjectId ownerId, double pricePerVolt, EchargerType chargerType, String stationName) {
         this.location = location;
         this.ownerId = ownerId;
         this.chargerType = chargerType;
         /*m_qrCodeImage = generateQRCodeImage();*/
         status = Estatus.NOT_CHARGING;
         this.pricePerVolt = pricePerVolt;
+        this.stationName = stationName;
     }
 
     public ObjectId getId() {
@@ -62,6 +64,14 @@ public class ChargingStation {
     }
 
     public void setPricePerVolt(double pricePerVolt) { this.pricePerVolt = pricePerVolt; }
+
+    public String getStationName() {
+        return stationName;
+    }
+
+    public void setStationName(String stationName) {
+        this.stationName = stationName;
+    }
 
     public void charge()
     {

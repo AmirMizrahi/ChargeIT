@@ -322,6 +322,57 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "updateUser",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/updateUser?password=123456&firstName=eden&lastName=natanzon&email=eden4@gmail.com&phoneNumber=0548098765",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"updateUser"
+							],
+							"query": [
+								{
+									"key": "password",
+									"value": "123456"
+								},
+								{
+									"key": "firstName",
+									"value": "eden"
+								},
+								{
+									"key": "lastName",
+									"value": "natanzon"
+								},
+								{
+									"key": "email",
+									"value": "eden4@gmail.com"
+								},
+								{
+									"key": "phoneNumber",
+									"value": "0548098765"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -335,7 +386,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 32.254,\r\n    \"longitude\": 34.929\r\n  },\r\n  \"pricePerVolt\": 0.25,\r\n  \"chargerType\": \"TYPE_0\"\r\n}\r\n",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 32.255,\r\n    \"longitude\": 34.929\r\n  },\r\n  \"pricePerVolt\": 0.25,\r\n  \"chargerType\": \"TYPE_0\",\r\n  \"stationName\": \"NATANZON station\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
