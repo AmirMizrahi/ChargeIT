@@ -19,6 +19,7 @@ import CreateStation from "./src/screens/mainFlow/CreateStation";
 
 import { Provider as AuthProvider } from "./src/context/AuthContext";
 import { Provider as StationsProvider } from "./src/context/StationsContext";
+import { Provider as UsersProvider } from "./src/context/UsersContext";
 
 import SelectLocationByMap from "./src/screens/mainFlow/SelectLocationByMap";
 
@@ -103,22 +104,22 @@ function TabNavigator() {
           tabBarVisible: false, //hide tab bar on this screen
         }}
       />
-        <Tab.Screen
-            name="StationWatchScreen"
-            component={StationWatchScreen}
-            options={{
-                tabBarButton: () => null,
-                tabBarVisible: false, //hide tab bar on this screen
-            }}
-        />
-        <Tab.Screen
-            name="StationSelectScreen"
-            component={StationSelectScreen}
-            options={{
-                tabBarButton: () => null,
-                tabBarVisible: false, //hide tab bar on this screen
-            }}
-        />
+      <Tab.Screen
+        name="StationWatchScreen"
+        component={StationWatchScreen}
+        options={{
+          tabBarButton: () => null,
+          tabBarVisible: false, //hide tab bar on this screen
+        }}
+      />
+      <Tab.Screen
+        name="StationSelectScreen"
+        component={StationSelectScreen}
+        options={{
+          tabBarButton: () => null,
+          tabBarVisible: false, //hide tab bar on this screen
+        }}
+      />
     </Tab.Navigator>
   );
 }
@@ -126,7 +127,7 @@ function TabNavigator() {
 const App = () => {
   return (
     <NavigationContainer>
-      <TabNavigator />
+      <StackNavigator />
     </NavigationContainer>
   );
 };
@@ -134,10 +135,12 @@ const App = () => {
 //export default App;
 export default () => {
   return (
-    <StationsProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </StationsProvider>
+    <UsersProvider>
+      <StationsProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </StationsProvider>
+    </UsersProvider>
   );
 };

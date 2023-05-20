@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TextInput,
   StyleSheet,
 } from "react-native";
+import { useRoute } from "@react-navigation/native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -14,6 +15,18 @@ import Buttons from "../../components/Buttons";
 
 const EditProfile = () => {
   const [userData, setUserData] = useState(null);
+
+  const route = useRoute();
+  const { mail, firstName, lastName, phone } = route.params;
+
+  useEffect(() => {
+    setUserData({
+      email: mail,
+      fname: firstName,
+      lname: lastName,
+      phone: phone,
+    });
+  }, []); // Run only once on component mount
 
   return (
     <View style={styles.container}>

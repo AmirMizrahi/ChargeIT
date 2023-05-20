@@ -49,7 +49,6 @@ const register =
       // });
       await AsyncStorage.setItem("token", response.data.token);
       console.log(await AsyncStorage.getItem("token"));
-      debugger;
       dispatch({ type: "signin", payload: response.data.token });
       navigation.navigate("TabNavigator", { screen: "UserProfile" }); // Need to add token logic...
       //console.log(response.data.token);

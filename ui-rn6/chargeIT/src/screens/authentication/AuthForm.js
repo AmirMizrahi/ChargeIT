@@ -60,10 +60,12 @@ const AuthForm = ({
           ) : null}
           <Spacer></Spacer>
 
-          <Buttons
-            btn_text={submitButtonText}
-            on_press={() => onSubmit({ email, password, navigation })}
-          />
+          <View style={{ alignItems: "center" }}>
+            <Buttons
+              btn_text={submitButtonText}
+              on_press={() => onSubmit({ email, password, navigation })}
+            />
+          </View>
         </View>
       </View>
     </ScrollView>
@@ -96,6 +98,7 @@ const styles = StyleSheet.create({
   },
   mainLoginView: {
     flex: 2,
+    justifyContent: "center",
     flexDirection: "column",
     backgroundColor: "#fff",
     paddingTop: 50,

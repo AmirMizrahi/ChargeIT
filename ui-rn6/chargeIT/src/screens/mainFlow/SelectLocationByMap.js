@@ -13,7 +13,10 @@ const SelectLocationByMap = ({ navigation }) => {
   const handleSavePress = () => {
     // Handle save location here
     console.log("Selected location:", location);
-    navigation.navigate("CreateStation");
+    navigation.navigate("CreateStation", {
+      latitude: location.latitude,
+      longitude: location.longitude,
+    });
   };
 
   return (

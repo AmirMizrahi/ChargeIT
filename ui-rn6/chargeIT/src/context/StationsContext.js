@@ -22,9 +22,30 @@ const fetchChargingStations = (dispatch) => async () => {
   return response.data.chargingStations;
 };
 
-const createChargingStation = (dispatch) => async () => {
-  //const response = await basicApi.get(/)
-};
+const createChargingStation =
+  (dispatch) =>
+  async ({ latitude, longitude, pricePerVolt, chargerType }) => {
+    const location = { latitude, longitude };
+    debugger;
+    try {
+      const response = await basicApi.post(
+        "/chargingStations/createChargingStation",
+        {
+          location,
+          pricePerVolt,
+          chargerType,
+        }
+      );
+      // await AsyncStorage.setItem("token", response.data.token);
+      // dispatch({ type: "signin", payload: response.data.token });
+      // navigation.navigate("TabNavigator", { screen: "UserProfile" });
+    } catch (err) {
+      dispatch({
+        type: "add_error",
+        payload: err.response.data.error,
+      });
+    }
+  };
 
 export const { Context, Provider } = createDataContext(
   stationsReducer,
