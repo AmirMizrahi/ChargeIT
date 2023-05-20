@@ -4,8 +4,7 @@ import createDataContext from "./createDataContext";
 const usersReducer = (state, action) => {
   switch (action.type) {
     case "get_user_values":
-      debugger;
-      return { userValues: action.payload };
+      return { ...state, userValues: action.payload };
     default:
       return state;
   }
@@ -24,10 +23,11 @@ const getUserInfo = (dispatch) => async () => {
       }
     }
 
-    dispatch({
-      type: "get_user_values",
-      payload: userValues,
-    });
+    return userValues;
+    // dispatch({
+    //   type: "get_user_values",
+    //   payload: userValues,
+    // });
   } catch (err) {
     dispatch({
       type: "add_error",
