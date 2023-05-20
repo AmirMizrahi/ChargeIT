@@ -49,7 +49,7 @@ public class ChargingStationController {
             catch (RuntimeException runtimeException)
             {
                 ChargingStation chargingStation = new ChargingStation(chargingStationJson.getLocation(), (ObjectId) session.getAttribute("id"),
-                        chargingStationJson.getPricePerVolt(), chargingStationJson.getChargerType());
+                        chargingStationJson.getPricePerVolt(), chargingStationJson.getChargerType(), chargingStationJson.getStationName());
                 m_chargingStationsRepository.save(chargingStation);
                 jsonObject.addProperty("message", "Created ChargingStation successfully.");
                 jsonObject.addProperty("chargingStationId", chargingStation.getId().toString());
@@ -152,7 +152,7 @@ public class ChargingStationController {
         int index = 0;
         for (ChargingStation station : chargingStations) {
             JsonObject chargingStationJson = new JsonObject();
-            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus());
+            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus(), station.getStationName());
             chargingStationJson.addProperty(Integer.toString(index++), gson.toJson(chargingStationDTO));
             jsonArray.add(chargingStationJson);
         }
@@ -186,7 +186,7 @@ public class ChargingStationController {
             int index = 0;
             for (ChargingStation station : chargingStations) {
                 JsonObject chargingStationJson = new JsonObject();
-                ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus());
+                ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus(), station.getStationName());
                 chargingStationJson.addProperty(Integer.toString(index++), gson.toJson(chargingStationDTO));
                 jsonArray.add(chargingStationJson);
             }
@@ -214,7 +214,7 @@ public class ChargingStationController {
         try
         {
             ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
-            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus());
+            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus(), station.getStationName());
             Gson gson = new Gson();
             JsonElement jsonElement = gson.toJsonTree(chargingStationDTO);
             JsonObject chargingStationJson = jsonElement.getAsJsonObject();
@@ -285,7 +285,7 @@ public class ChargingStationController {
             for (ChargingStation station : chargingStationsWithinRadius) {
                 JsonObject chargingStationJson = new JsonObject();
                 double distanceInKilometers = distanceBetweenPointsInKilometers(latitude, longitude, station.getLocation().getLatitude(), station.getLocation().getLongitude());
-                ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus());
+                ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus(), station.getStationName());
                 chargingStationJson.addProperty(Double.toString(distanceInKilometers), gson.toJson(chargingStationDTO));
                 jsonArray.add(chargingStationJson);
             }

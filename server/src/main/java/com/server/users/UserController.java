@@ -412,5 +412,102 @@ public class UserController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(jsonObject.toString());
     }
+
+    @PutMapping("/updateUser")
+    public ResponseEntity<String> updateUser(@RequestParam("password") String password, @RequestParam("firstName") String firstName,
+                                             @RequestParam("lastName") String lastName, @RequestParam("email") String email,
+                                             @RequestParam("phoneNumber") String phoneNumber, HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
+        {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
+        }
+        else
+        {
+            User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
+
+            //password
+            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+            user.setPassword(hashedPassword);
+            m_userRepository.save(user);
+            jsonObject.addProperty("message1", "Update password successfully.");
+
+            //firstName
+            // Check if the input string is a valid first name
+            if (!firstName.matches("[a-zA-Z]+"))
+            {
+                httpStatus = HttpStatus.BAD_REQUEST;
+                jsonObject.addProperty("error", "Invalid first name");        }
+            else
+            {
+                user.setFirstName(firstName);
+                m_userRepository.save(user);
+                jsonObject.addProperty("message2", "Update first Name successfully.");
+            }
+
+            //lastName
+            // Check if the input string is a valid last name
+            if (!lastName.matches("[a-zA-Z]+"))
+            {
+                httpStatus = HttpStatus.BAD_REQUEST;
+                jsonObject.addProperty("error", "Invalid last name");        }
+            else
+            {
+                user.setLastName(lastName);
+                m_userRepository.save(user);
+                jsonObject.addProperty("message3", "Update last Name successfully.");
+            }
+
+            //email
+            Optional<User> existingUser = m_userRepository.findByEmail(email);
+            if (existingUser.isPresent())
+            {
+                // email already exists in database, return error response
+                httpStatus = HttpStatus.CONFLICT;
+                jsonObject.addProperty("error", "Email already exists in the database");
+            }
+            else
+            {
+                // Check if email is valid
+                Pattern emailPattern = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}$");
+                Matcher emailMatcher = emailPattern.matcher(email);
+
+                if (!emailMatcher.matches())
+                {
+                    httpStatus = HttpStatus.BAD_REQUEST;
+                    jsonObject.addProperty("error", "Invalid email format");
+                }
+                else
+                {
+                    user.setEmail(email);
+                    m_userRepository.save(user);
+                    jsonObject.addProperty("message4", "Update email successfully.");
+                }
+            }
+
+            //phoneNumber
+            // Check if phone number is valid Israeli phone number
+            if (!phoneNumber.matches("^0([23489]|5[0248]|77)[1-9]\\d{6}$"))
+            {
+                httpStatus = HttpStatus.BAD_REQUEST;
+                jsonObject.addProperty("error", "Invalid phone number.");
+            }
+            else
+            {
+                user.setPhoneNumber(phoneNumber);
+                m_userRepository.save(user);
+                jsonObject.addProperty("message5", "Update phone Number successfully.");
+            }
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
 }
 

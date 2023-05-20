@@ -13,9 +13,11 @@ public class ChargingStationDTO {
     private Estatus status;
     private double pricePerVolt;
 
+    private String stationName;
+
     // TODO E - Add Reviews (list of strings?).
 
-    public ChargingStationDTO(String id, GeoLocation location, /*ObjectId ownerId,*/ double pricePerVolt, EchargerType chargerType, Estatus status) {
+    public ChargingStationDTO(String id, GeoLocation location, /*ObjectId ownerId,*/ double pricePerVolt, EchargerType chargerType, Estatus status, String stationName) {
         this.id = id;
         this.location = location;
         //this.ownerId = ownerId;
@@ -23,6 +25,7 @@ public class ChargingStationDTO {
         /*m_qrCodeImage = generateQRCodeImage();*/
         this.status = status;
         this.pricePerVolt = pricePerVolt;
+        this.stationName = stationName;
     }
 
     public String getId() {
@@ -55,6 +58,14 @@ public class ChargingStationDTO {
     }
 
     public void setPricePerVolt(double pricePerVolt) { this.pricePerVolt = pricePerVolt; }
+
+    public String getStationName() {
+        return stationName;
+    }
+
+    public void setStationName(String stationName) {
+        this.stationName = stationName;
+    }
 
     public void charge()
     {
