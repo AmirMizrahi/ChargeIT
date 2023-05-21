@@ -637,7 +637,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/chargingStations/unCharge?chargingStationId=6460e23e4f4e427aa3199489",
+							"raw": "http://localhost:8080/chargingStations/unCharge?chargingStationId=6469cca7f493376058c56e32",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -650,7 +650,7 @@
 							"query": [
 								{
 									"key": "chargingStationId",
-									"value": "6460e23e4f4e427aa3199489"
+									"value": "6469cca7f493376058c56e32"
 								}
 							]
 						}
