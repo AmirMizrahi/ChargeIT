@@ -9,10 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -321,6 +320,22 @@ public class ChargingStationController {
             ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
             if(station.getStatus().equals(Estatus.NOT_CHARGING))
             {
+                try
+                {
+                    //Test
+                    RestTemplate restTemplate = new RestTemplate();
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add("Cookie", request.getHeader("Cookie"));
+                    HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+                    String url = "http://localhost:8081/simulator/charge";
+                    restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+                    //EndTest
+                }
+                catch (Exception exception)
+                {
+
+                }
+
                 station.charge();
                 m_chargingStationsRepository.save(station);
                 jsonObject.addProperty("message", "Charging...");

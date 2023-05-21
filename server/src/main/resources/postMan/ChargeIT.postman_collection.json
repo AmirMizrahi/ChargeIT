@@ -386,7 +386,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 32.255,\r\n    \"longitude\": 34.929\r\n  },\r\n  \"pricePerVolt\": 0.25,\r\n  \"chargerType\": \"TYPE_0\",\r\n  \"stationName\": \"NATANZON station\"\r\n}\r\n",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 32.254,\r\n    \"longitude\": 34.929\r\n  },\r\n  \"pricePerVolt\": 0.25,\r\n  \"chargerType\": \"TYPE_0\",\r\n  \"stationName\": \"NATANZON station\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -602,7 +602,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/chargingStations/charge?chargingStationId=6460e23e4f4e427aa3199489",
+							"raw": "http://localhost:8080/chargingStations/charge?chargingStationId=6469cca7f493376058c56e32",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -615,7 +615,7 @@
 							"query": [
 								{
 									"key": "chargingStationId",
-									"value": "6460e23e4f4e427aa3199489"
+									"value": "6469cca7f493376058c56e32"
 								}
 							]
 						}
