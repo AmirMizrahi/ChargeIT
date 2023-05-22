@@ -4,10 +4,18 @@ import createDataContext from "./createDataContext";
 const usersReducer = (state, action) => {
   switch (action.type) {
     case "get_user_values":
-      return { ...state, userValues: action.payload };
+      return { errorMessage: "", userValues: action.payload };
+    case "add_error":
+      return { ...state, errorMessage: action.payload };
+    case "clear_error_message":
+      return { ...state, errorMessage: "" };
     default:
       return state;
   }
+};
+
+const clearErrorMessage = (dispatch) => () => {
+  dispatch({ type: "clear_error_message" });
 };
 
 // todo change!
@@ -38,6 +46,6 @@ const getUserInfo = (dispatch) => async () => {
 
 export const { Context, Provider } = createDataContext(
   usersReducer,
-  { getUserInfo },
-  { userValues: null }
+  { getUserInfo, clearErrorMessage },
+  { userValues: null, errorMessage: "" }
 );
