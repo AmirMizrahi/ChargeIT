@@ -9,9 +9,9 @@ export const StationWatchScreen = ({navigation, route}) => {
     Object.keys(route.params).map(key => {
         console.log(route);
         console.log(route.params);
-        if (key === 'location') {
-            stationDetails["Location"] = "Longitude: " + route.params[key].longitude + ", Latitude: " + route.params[key].latitude
-        }
+        // if (key === 'location') {
+        //     stationDetails["Location"] = "Longitude: " + route.params[key].longitude + ", Latitude: " + route.params[key].latitude
+        // }
         if (key === 'chargerType') {
             stationDetails["Charging Type"] = route.params[key];
         }
@@ -31,7 +31,7 @@ export const StationWatchScreen = ({navigation, route}) => {
             {Object.keys(stationDetails).map(key => {
                 return (
                     <View key={key}>
-                        <Text style={styles.stationStatus}>
+                        <Text style={key === 'stationNamecd ui' ? styles.stationName : styles.stationStatus}>
                             {key}: {stationDetails[key]}
                         </Text>
                     </View>

@@ -1,5 +1,6 @@
-import {Text, View} from "react-native";
+import {Text, TextBase, View} from "react-native";
 import React, {useState} from "react";
+import Spacer from "./Spacer";
 
 export const StationDetails = ((params) => {
     let station = {};
@@ -17,19 +18,21 @@ export const StationDetails = ((params) => {
 
     return (
         <View style={styles.wrapper}>
-        <View style={styles.stationContainer}>
-            {
-                Object.keys(station).map(key => {
-                    return (
-
-                        <Text style={styles.stationStatus} key={station.location}>
-                            {key.toUpperCase()}: {station[key]}
-                        </Text>
-                    );
-                })
-            }
-        </View>
-            <Text style={styles.stationLocation}>{parseFloat(params.station.distance).toFixed(2)} km</Text>
+            <View style={styles.stationContainer}>
+                {
+                    Object.keys(station).map(key => {
+                        return (
+                            <Text>
+                                <Text style={{fontWeight: "bold"}}> {key.toUpperCase()} </Text>
+                                <Text style={key === 'Status' && station[key] ==='Ready for use' ? styles.ready : styles.stationStatus} key={station.location}>
+                                     {station[key]}
+                                </Text>
+                            </Text>
+                        );
+                    })
+                }
+            </View>
+            <Text style={styles.stationLocation}>{parseFloat(params.station.distance).toFixed(2)} {"\n"}km away</Text>
         </View>
 
     )
@@ -61,6 +64,10 @@ export const styles = {
         alignContent: 'space-between',
         flexDirection: 'column',
     },
+    ready: {
+        backgroundColor: 'green',
+
+    },
     mainText: {
         fontSize: 30,
     },
@@ -74,7 +81,11 @@ export const styles = {
         borderColor: "#000000",
         padding: 10,
         marginBottom: 10,
-        maxWidth: 350
+        maxWidth: 350,
+        justifyContent: 'center',
+        textAlign: 'center',
+        justifyItems: 'center'
+
     },
     stationName: {
         fontSize: 16,
@@ -82,9 +93,9 @@ export const styles = {
     },
     stationLocation: {
         marginTop: 5,
-        flex:1,
+        flex: 1,
         fontSize: 14,
-        textAlign: 'right'
+        textAlign: 'right',
     },
     stationStatus: {
         marginTop: 5,

@@ -33,7 +33,7 @@ const fetchChargingStationsByDistance = (dispatch) => async (location) => {
     console.log("/chargingStations/getChargingStationsByRadius?" +
         "latitude="+parseFloat(location.latitude)+
         "&longitude="+parseFloat(location.longitude)+
-        "&radius=1000");
+        "&radius=100000");
     return response.data.chargingStations;
 };
 

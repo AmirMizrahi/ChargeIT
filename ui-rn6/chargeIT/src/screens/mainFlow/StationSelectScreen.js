@@ -1,4 +1,4 @@
-import {ActivityIndicator, Button, StyleSheet, Text, View} from "react-native";
+import {ActivityIndicator, Alert, Button, StyleSheet, Text, View} from "react-native";
 import React, {useContext, useEffect, useState} from "react";
 import {StationDetails} from "../../components/StationDetails";
 import {TouchableOpacity} from "react-native-gesture-handler";
@@ -8,7 +8,9 @@ import * as Location from 'expo-location';
 
 export const StationSelectScreen = ({navigation}) => {
     const [stationsList, setStations] = useState([]);
-    const {state, fetchChargingStations, getCurrentLocation, fetchChargingStationsByDistance} = useContext(StationsContext);
+    const {
+        fetchChargingStationsByDistance
+    } = useContext(StationsContext);
     useEffect(() => {
         const fetchMarkers = async () => {
             try {
@@ -33,10 +35,10 @@ export const StationSelectScreen = ({navigation}) => {
                 //     console.log(Object.keys(station)[0]);
                 // }
                 // console.log(stations);
-               // const jsonArray = JSON.parse(arrayOfStations);
+                // const jsonArray = JSON.parse(arrayOfStations);
 
 
-          //      setStations(stations);
+                //      setStations(stations);
             } catch (error) {
                 console.error(error);
             }
@@ -44,8 +46,13 @@ export const StationSelectScreen = ({navigation}) => {
         fetchMarkers();
     }, []);
 
-    if (!state) {
-        return <ActivityIndicator size="large" style={{marginTop: 200}}/>;
+    if (!stationsList[0]) {
+        return (
+            <View style={styles.mainView}>
+                <ActivityIndicator size="large" style={{marginTop: 200}}/>
+                <Text style={styles.smallText}>Searching for stations around you...</Text>
+            </View>
+        );
     } else {
         return (
             <View style={styles.mainView}>
@@ -53,9 +60,13 @@ export const StationSelectScreen = ({navigation}) => {
                 {
                     stationsList.map(station => {
                         return (
-                            <TouchableOpacity onPress={() => navigation.navigate('StationWatchScreen', station)}>
+                            <TouchableOpacity
+                                onPress={() => station.status === 'CHARGING' ? Alert.alert('Station is NOT available!', null, [{
+                                    text: 'OK',
+                                    onPress: () => console.log('OK Pressed')
+                                }]) : navigation.navigate('StationWatchScreen', station)}>
                                 <StationDetails
-                                    key={station.location}
+                                    key={station.id}
                                     station={station}>
                                 </StationDetails>
                             </TouchableOpacity>
