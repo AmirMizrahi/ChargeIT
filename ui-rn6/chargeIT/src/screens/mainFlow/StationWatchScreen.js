@@ -25,24 +25,25 @@ export const StationWatchScreen = ({navigation, route}) => {
 
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.mainText}>Charging Station Details:</Text>
+        <View style={styles.mainView}>
+            <Text style={styles.stationName}>Charging Station Details:</Text>
+            <View style={{paddingBottom: 20}}>
             {Object.keys(stationDetails).map(key => {
                 return (
-                    <View key={key} style={styles.smallText}>
-                        <Text>
+                    <View key={key}>
+                        <Text style={styles.stationStatus}>
                             {key}: {stationDetails[key]}
                         </Text>
                     </View>
                 );
             })}
+
+            </View>
             <Buttons btn_text={"Charge"} on_press={async () => {
                 //Alert.alert('Charging ...',null, [{text: 'OK', onPress: () => console.log('OK Pressed')}] )
 
                 try {
-                    await basicApi.post("/chargingStations/charge", {
-                        location: route.params['location']
-                    }).then(() => {
+                    await basicApi.put("/chargingStations/charge?chargingStationId="+route.params['id']).then(() => {
                         Alert.alert('Charging in progress...', null, [{
                             text: 'OK',
                             onPress: () => console.log('OK Pressed')
@@ -58,7 +59,7 @@ export const StationWatchScreen = ({navigation, route}) => {
             <Buttons btn_text={"Stop"} on_press={async () => {
                 try {
                     await basicApi.post("/chargingStations/unCharge", {
-                        location: route.params['location']
+                        location: '1'
                     }).then(() => {
                         Alert.alert('Charging session ended!', null, [{
                             text: 'OK',
@@ -75,40 +76,38 @@ export const StationWatchScreen = ({navigation, route}) => {
 
 
 const styles = StyleSheet.create({
-    button: {
-        justifyContent: 'center',
-        width: '95%',
-        backgroundColor: "#465bd8",
-        height: 50,
-        marginBottom: 30,
-        borderRadius: 10,
-    },
-    buttonDisabled: {
-        padding: '10px 30px',
-        cursor: 'not-allowed',
-    },
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        alignContent: 'space-between',
-        backgroundColor: '#465bd8',
-        color: 'white'
-
-    },
-    mainViewTextButton: {
-        flex: 1,
-        flexDirection: "column",
-        justifyContent: "flex-start",
+    mainView: {
         alignItems: "center",
-        backgroundColor: "#fff",
+        justifyContent: "center",
+        flex: 1,
     },
-    mainText: {
-        fontSize: 30,
-    },
-    smallText: {
+    noStationsText: {
         fontSize: 18,
         fontStyle: "italic",
         fontWeight: "400",
+    },
+    container: {
+        flex: 1,
+        padding: 10,
+    },
+    stationContainer: {
+        borderWidth: 1,
+        borderColor: "#000000",
+        padding: 10,
+        marginBottom: 10,
+    },
+    stationName: {
+        fontSize: 16,
+        fontWeight: "bold",
+        paddingBottom: 15
+    },
+    stationLocation: {
+        marginTop: 5,
+        fontSize: 14,
+    },
+    stationStatus: {
+        marginTop: 5,
+        fontSize: 14,
+        color: "gray",
     },
 });
