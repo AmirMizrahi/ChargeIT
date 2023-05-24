@@ -5,6 +5,8 @@ import Buttons from "../../components/Buttons";
 
 export const StationWatchScreen = ({navigation, route}) => {
     const [stationDetails, setStation] = useState({});
+    const [isDisabled, setIsDisabled] = useState(false);
+
 
     Object.keys(route.params).map(key => {
         console.log(route);
@@ -20,7 +22,6 @@ export const StationWatchScreen = ({navigation, route}) => {
         } else if (key === 'status') {
             stationDetails["Status"] = route.params['status'] === "NOT_CHARGING" ? "Ready for use" : "Not Available";
         }
-        console.log(stationDetails);
     });
 
 
@@ -50,7 +51,11 @@ export const StationWatchScreen = ({navigation, route}) => {
                         }])
                     })
                 } catch (err) {
-                    console.log(err)
+                    console.log(err+"hi")
+                    Alert.alert(err, null, [{
+                        text: 'OK',
+                        onPress: () => console.log('OK Pressed')
+                    }])
 
                 }
             }}>
@@ -58,15 +63,18 @@ export const StationWatchScreen = ({navigation, route}) => {
 
             <Buttons btn_text={"Stop"} on_press={async () => {
                 try {
-                    await basicApi.post("/chargingStations/unCharge", {
-                        location: '1'
-                    }).then(() => {
-                        Alert.alert('Charging session ended!', null, [{
+                    await basicApi.put("/chargingStations/unCharge?chargingStationId="+route.params['id']).then(() => {
+                        Alert.alert('Charging session ended', null, [{
                             text: 'OK',
                             onPress: () => console.log('OK Pressed')
                         }])
                     })
                 } catch (err) {
+                    console.log(err);
+                    Alert.alert('Something went wrong', null, [{
+                        text: 'OK',
+                        onPress: () => console.log('OK Pressed')
+                    }])
                 }
             }}>
             </Buttons>

@@ -49,6 +49,8 @@ export const styles = {
         width: 300,
         maxHeight: 150,
         borderColor: 'white',
+        borderRadius: 6,
+        borderStyle: 'insert',
         borderWidth: 2,
 
     },
@@ -77,14 +79,14 @@ export const styles = {
         textAlign: 'left',
     },
     stationContainer: {
-        borderWidth: 1,
-        borderColor: "#000000",
+
         padding: 10,
         marginBottom: 10,
         maxWidth: 350,
         justifyContent: 'center',
         textAlign: 'center',
-        justifyItems: 'center'
+        justifyItems: 'center',
+        borderRight: '4 bold'
 
     },
     stationName: {
@@ -95,7 +97,11 @@ export const styles = {
         marginTop: 5,
         flex: 1,
         fontSize: 14,
-        textAlign: 'right',
+        textAlign: 'center',
+        padding: 10,
+        borderColor: 'white',
+        borderRadius: 8,
+        borderWidth: 2
     },
     stationStatus: {
         marginTop: 5,
