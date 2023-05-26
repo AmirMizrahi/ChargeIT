@@ -63,7 +63,8 @@ export const StationWatchScreen = ({navigation, route}) => {
 
             <Buttons btn_text={"Stop"} on_press={async () => {
                 try {
-                    await basicApi.put("/chargingStations/unCharge?chargingStationId="+route.params['id']).then(() => {
+                    await basicApi.put("/chargingStations/unCharge?chargingStationId="+route.params['id']).then(answer => {
+                        console.log(answer);
                         Alert.alert('Charging session ended', null, [{
                             text: 'OK',
                             onPress: () => console.log('OK Pressed')

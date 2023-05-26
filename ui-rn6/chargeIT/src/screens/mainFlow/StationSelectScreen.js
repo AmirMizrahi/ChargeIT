@@ -2,13 +2,14 @@ import {ActivityIndicator, Alert, Button, StyleSheet, Text, View} from "react-na
 import React, {useContext, useEffect, useState} from "react";
 import {StationDetails} from "../../components/StationDetails";
 import {TouchableOpacity} from "react-native-gesture-handler";
-import basicApi from "../../api/basicApi";
 import {Context as StationsContext} from "../../context/StationsContext";
 import * as Location from 'expo-location';
 import {ScrollView} from "react-native";
+import {useIsFocused} from "@react-navigation/native";
 
 export const StationSelectScreen = ({navigation}) => {
     const [stationsList, setStations] = useState([]);
+    const isFocused = useIsFocused();
     const {
         fetchChargingStationsByDistance
     } = useContext(StationsContext);
@@ -46,7 +47,7 @@ export const StationSelectScreen = ({navigation}) => {
             }
         };
         fetchMarkers();
-    }, []);
+    }, [isFocused]);
 
     if (!stationsList[0]) {
         return (

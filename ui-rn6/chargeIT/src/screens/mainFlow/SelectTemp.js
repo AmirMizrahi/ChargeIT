@@ -20,11 +20,10 @@ const SelectTemp = ({ navigation }) => {
         {err ? (
           <Text style={styles.errMsg}> Please enable location services</Text>
         ) : null}
-        <Text style={styles.noStationsText}>Need to get your car charged?</Text>
         <Spacer></Spacer>
         <Buttons
-          btn_text={"Find Charging Stations Around Me"}
-          on_press={() => navigation.navigate("StationSelectScreen")}
+          btn_text={"Watch Stations List"}
+          on_press={() => navigation.push("StationSelectScreen")}
         />
         <Spacer></Spacer>
       </View>
