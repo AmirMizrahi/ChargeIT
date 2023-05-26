@@ -33,27 +33,26 @@ const fetchChargingStationsByDistance = (dispatch) => async (location) => {
     console.log("/chargingStations/getChargingStationsByRadius?" +
         "latitude="+parseFloat(location.latitude)+
         "&longitude="+parseFloat(location.longitude)+
-        "&radius=1000");
+        "&radius=100000");
     return response.data.chargingStations;
 };
 
 const createChargingStation =
     (dispatch) =>
-        async ({latitude, longitude, pricePerVolt, chargerType}) => {
+        async ({latitude, longitude, pricePerVolt, chargerType, stationName}) => {
             const location = {latitude, longitude};
-            debugger;
+            console.log(stationName);
             try {
-                const response = await basicApi.post(
+                await basicApi.post(
                     "/chargingStations/createChargingStation",
                     {
                         location,
                         pricePerVolt,
                         chargerType,
+                        stationName
                     }
-                );
-                // await AsyncStorage.setItem("token", response.data.token);
-                // dispatch({ type: "signin", payload: response.data.token });
-                // navigation.navigate("TabNavigator", { screen: "UserProfile" });
+                ).then(res => console.log(res)  );
+
             } catch (err) {
                 dispatch({
                     type: "add_error",

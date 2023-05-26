@@ -1,14 +1,18 @@
-import {ActivityIndicator, Button, StyleSheet, Text, View} from "react-native";
+import {ActivityIndicator, Alert, Button, StyleSheet, Text, View} from "react-native";
 import React, {useContext, useEffect, useState} from "react";
 import {StationDetails} from "../../components/StationDetails";
 import {TouchableOpacity} from "react-native-gesture-handler";
-import basicApi from "../../api/basicApi";
 import {Context as StationsContext} from "../../context/StationsContext";
 import * as Location from 'expo-location';
+import {ScrollView} from "react-native";
+import {useIsFocused} from "@react-navigation/native";
 
 export const StationSelectScreen = ({navigation}) => {
     const [stationsList, setStations] = useState([]);
-    const {state, fetchChargingStations, getCurrentLocation, fetchChargingStationsByDistance} = useContext(StationsContext);
+    const isFocused = useIsFocused();
+    const {
+        fetchChargingStationsByDistance
+    } = useContext(StationsContext);
     useEffect(() => {
         const fetchMarkers = async () => {
             try {
@@ -19,6 +23,7 @@ export const StationSelectScreen = ({navigation}) => {
 
                 let stations = {};
                 const arrayOfStations = await fetchChargingStationsByDistance(newLocation);
+                console.log(arrayOfStations);
                 const jsonArray = arrayOfStations.map((obj) => {
                         let sta = JSON.parse(Object.values(obj)[0]);
                         return {...sta, distance: Object.keys(obj)[0]}
@@ -33,35 +38,46 @@ export const StationSelectScreen = ({navigation}) => {
                 //     console.log(Object.keys(station)[0]);
                 // }
                 // console.log(stations);
-               // const jsonArray = JSON.parse(arrayOfStations);
+                // const jsonArray = JSON.parse(arrayOfStations);
 
 
-          //      setStations(stations);
+                //      setStations(stations);
             } catch (error) {
                 console.error(error);
             }
         };
         fetchMarkers();
-    }, []);
+    }, [isFocused]);
 
-    if (!state) {
-        return <ActivityIndicator size="large" style={{marginTop: 200}}/>;
+    if (!stationsList[0]) {
+        return (
+            <View style={styles.mainView}>
+                <ActivityIndicator size="large" style={{marginTop: 200}}/>
+                <Text style={styles.smallText}>Searching for stations around you...</Text>
+            </View>
+        );
     } else {
         return (
             <View style={styles.mainView}>
-                <Text style={styles.stationName}>Available Stations:</Text>
+                <Text style={styles.stationName}>Stations Around You</Text>
+                <ScrollView style={styles.scroll}>
                 {
                     stationsList.map(station => {
                         return (
-                            <TouchableOpacity onPress={() => navigation.navigate('StationWatchScreen', station)}>
+                            <TouchableOpacity
+                                onPress={() => station.status === 'CHARGING' ? Alert.alert('Station is NOT available!', null, [{
+                                    text: 'OK',
+                                    onPress: () => console.log('OK Pressed')
+                                }]) : navigation.navigate('StationWatchScreen', station)}>
                                 <StationDetails
-                                    key={station.location}
+                                    key={station.id}
                                     station={station}>
                                 </StationDetails>
                             </TouchableOpacity>
                         );
                     })
                 }
+                </ScrollView>
             </View>
         );
     }
@@ -80,6 +96,9 @@ const getStations = () => {
 
 
 const styles = StyleSheet.create({
+    scroll: {
+      paddingTop: 10
+    },
     button: {
         justifyContent: 'center',
         width: '95%',
@@ -124,6 +143,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         flex: 1,
+        marginTop: 100
     },
     noStationsText: {
         fontSize: 18,

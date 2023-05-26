@@ -5,13 +5,15 @@ import Buttons from "../../components/Buttons";
 
 export const StationWatchScreen = ({navigation, route}) => {
     const [stationDetails, setStation] = useState({});
+    const [isDisabled, setIsDisabled] = useState(false);
+
 
     Object.keys(route.params).map(key => {
         console.log(route);
         console.log(route.params);
-        if (key === 'location') {
-            stationDetails["Location"] = "Longitude: " + route.params[key].longitude + ", Latitude: " + route.params[key].latitude
-        }
+        // if (key === 'location') {
+        //     stationDetails["Location"] = "Longitude: " + route.params[key].longitude + ", Latitude: " + route.params[key].latitude
+        // }
         if (key === 'chargerType') {
             stationDetails["Charging Type"] = route.params[key];
         }
@@ -20,7 +22,6 @@ export const StationWatchScreen = ({navigation, route}) => {
         } else if (key === 'status') {
             stationDetails["Status"] = route.params['status'] === "NOT_CHARGING" ? "Ready for use" : "Not Available";
         }
-        console.log(stationDetails);
     });
 
 
@@ -31,7 +32,7 @@ export const StationWatchScreen = ({navigation, route}) => {
             {Object.keys(stationDetails).map(key => {
                 return (
                     <View key={key}>
-                        <Text style={styles.stationStatus}>
+                        <Text style={key === 'stationNamecd ui' ? styles.stationName : styles.stationStatus}>
                             {key}: {stationDetails[key]}
                         </Text>
                     </View>
@@ -50,7 +51,11 @@ export const StationWatchScreen = ({navigation, route}) => {
                         }])
                     })
                 } catch (err) {
-                    console.log(err)
+                    console.log(err+"hi")
+                    Alert.alert(err, null, [{
+                        text: 'OK',
+                        onPress: () => console.log('OK Pressed')
+                    }])
 
                 }
             }}>
@@ -58,15 +63,19 @@ export const StationWatchScreen = ({navigation, route}) => {
 
             <Buttons btn_text={"Stop"} on_press={async () => {
                 try {
-                    await basicApi.post("/chargingStations/unCharge", {
-                        location: '1'
-                    }).then(() => {
-                        Alert.alert('Charging session ended!', null, [{
+                    await basicApi.put("/chargingStations/unCharge?chargingStationId="+route.params['id']).then(answer => {
+                        console.log(answer);
+                        Alert.alert('Charging session ended', null, [{
                             text: 'OK',
                             onPress: () => console.log('OK Pressed')
                         }])
                     })
                 } catch (err) {
+                    console.log(err);
+                    Alert.alert('Something went wrong', null, [{
+                        text: 'OK',
+                        onPress: () => console.log('OK Pressed')
+                    }])
                 }
             }}>
             </Buttons>
