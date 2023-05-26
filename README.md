@@ -1,4 +1,6 @@
-# Chargit
+<p align="center">
+    <img width="50%" src="./server/src/main/resources/images/chargeIT.jpg">
+</p>
 
 Chargit is an app that helps electric vehicle (EV) owners find and navigate to the nearest charging station. Chargit provides a user-friendly interface to locate charging stations, view station details, and navigate to the stations. This project is aimed at improving the user experience of EV owners while using a charging station.
 
