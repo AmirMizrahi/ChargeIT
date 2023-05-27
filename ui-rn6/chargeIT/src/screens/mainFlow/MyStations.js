@@ -60,7 +60,7 @@ const MyStations = ({navigation}) => {
             return (
                 <View style={styles.mainView}>
                     <Text style={styles.title}>My Stations</Text>
-                    <ScrollView style={styles.scroll}>
+                    <ScrollView contentContainerStyle={styles.scroll}>
                     <View>
                         {usersStationsAvailable.map(renderStation)}
                     </View>
@@ -102,8 +102,8 @@ const styles = StyleSheet.create({
     },
     title: {
         textAlign: 'center',
-        fontSize: 23
-
+        fontSize: 23,
+        textShadowColor: 'gray'
     },
     noStationsText: {
         fontSize: 18,
@@ -139,7 +139,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     scroll: {
-        paddingTop: 10
+        paddingTop: 10,
+        paddingBottom: 10
     },
 
     wrapper: {

@@ -87,10 +87,10 @@ function TabNavigator() {
         }}
       />
       <Tab.Screen
-        name="SelectTemp"
+        name="Charge"
         component={SelectTemp}
         options={{
-          title: "Temp Map",
+          title: "Charge",
           tabBarIcon: (tabInfo) => (
             <MaterialIcons name="map" size={24} color={tabInfo.tintColor} />
           ),

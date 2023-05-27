@@ -60,7 +60,7 @@ export const StationSelectScreen = ({navigation}) => {
         return (
             <View style={styles.mainView}>
                 <Text style={styles.stationName}>Stations Around You</Text>
-                <ScrollView style={styles.scroll}>
+                <ScrollView contentContainerStyle={styles.scroll}>
                 {
                     stationsList.map(station => {
                         return (
@@ -97,7 +97,8 @@ const getStations = () => {
 
 const styles = StyleSheet.create({
     scroll: {
-      paddingTop: 10
+      paddingTop: 10,
+      paddingBottom: 10
     },
     button: {
         justifyContent: 'center',

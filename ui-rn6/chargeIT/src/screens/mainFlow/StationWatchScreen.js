@@ -5,7 +5,7 @@ import Buttons from "../../components/Buttons";
 
 export const StationWatchScreen = ({navigation, route}) => {
     const [stationDetails, setStation] = useState({});
-    const [isDisabled, setIsDisabled] = useState(false);
+    const [isCharging, setIsCharging] = useState(false);
 
 
     Object.keys(route.params).map(key => {
@@ -40,11 +40,12 @@ export const StationWatchScreen = ({navigation, route}) => {
             })}
 
             </View>
-            <Buttons btn_text={"Charge"} on_press={async () => {
+            { !isCharging && <Buttons btn_text={"Charge"} on_press={async () => {
                 //Alert.alert('Charging ...',null, [{text: 'OK', onPress: () => console.log('OK Pressed')}] )
 
                 try {
                     await basicApi.put("/chargingStations/charge?chargingStationId="+route.params['id']).then(() => {
+                        setIsCharging(true);
                         Alert.alert('Charging in progress...', null, [{
                             text: 'OK',
                             onPress: () => console.log('OK Pressed')
@@ -59,12 +60,13 @@ export const StationWatchScreen = ({navigation, route}) => {
 
                 }
             }}>
-            </Buttons>
+            </Buttons> }
 
-            <Buttons btn_text={"Stop"} on_press={async () => {
+            {isCharging && <Buttons btn_text={"Stop"} on_press={async () => {
                 try {
                     await basicApi.put("/chargingStations/unCharge?chargingStationId="+route.params['id']).then(answer => {
                         console.log(answer);
+                        setIsCharging(false);
                         Alert.alert('Charging session ended', null, [{
                             text: 'OK',
                             onPress: () => console.log('OK Pressed')
@@ -78,7 +80,7 @@ export const StationWatchScreen = ({navigation, route}) => {
                     }])
                 }
             }}>
-            </Buttons>
+            </Buttons> }
         </View>
     );
 };
