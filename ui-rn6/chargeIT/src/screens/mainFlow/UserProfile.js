@@ -62,39 +62,41 @@ const UserProfile = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Hello, {firstName ?? 'User'}!</Text>
+
       <Text style={{ marginTop: 20, fontSize: 18, fontWeight: "bold" }}>
         {userData ? userData.fname : ""} {userData ? userData.lname : ""}
       </Text>
 
       <View style={styles.viewGeneral}>
         <Feather name="mail" style={styles.tinyImages} />
-        <Text style={styles.label}>Email:</Text>
+        <Text style={styles.label}>Email: </Text>
         <Text style={styles.value}>{mail}</Text>
       </View>
 
       <View style={styles.viewGeneral}>
         <Feather name="edit" style={styles.tinyImages} />
-        <Text style={styles.label}>First name:</Text>
+        <Text style={styles.label}>First name: </Text>
         <Text style={styles.value}>{firstName}</Text>
       </View>
 
       <View style={styles.viewGeneral}>
         <Feather name="edit" style={styles.tinyImages} />
-        <Text style={styles.label}>Last name:</Text>
+        <Text style={styles.label}>Last name: </Text>
         <Text style={styles.value}>{lastName}</Text>
       </View>
 
       <View style={styles.viewGeneral}>
         <Feather name="phone" style={styles.tinyImages} />
-        <Text style={styles.label}>Phone number:</Text>
+        <Text style={styles.label}>Phone number: </Text>
         <Text style={styles.value}>{phone}</Text>
       </View>
 
-      <View style={styles.viewGeneral}>
-        <Feather name="battery-charging" style={styles.tinyImages} />
-        <Text style={styles.label}>My charging stations:</Text>
-        <Text style={styles.value}>{stations}</Text>
-      </View>
+      {/*<View style={styles.viewGeneral}>*/}
+      {/*  <Feather name="battery-charging" style={styles.tinyImages} />*/}
+      {/*  <Text style={styles.label}>My charging stations:</Text>*/}
+      {/*  <Text style={styles.value}>{stations}</Text>*/}
+      {/*</View>*/}
 
       {state.errorMessage ? (
         <Text style={styles.errorMessage}>{state.errorMessage}</Text>
@@ -123,11 +125,20 @@ const UserProfile = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  title: {
+    paddingTop: 20,
+    textAlign: 'center',
+    fontSize: 23,
+    textShadowColor: 'gray',
+  },
   container: {
-    flex: 1,
-    padding: 20,
+    display: 'flex',
+    padding: 50,
     backgroundColor: "#fff",
     margin: 20,
+    alignContent: 'space-between',
+    justifyContent: 'center'
+
   },
   label: {
     fontWeight: "bold",
@@ -147,6 +158,7 @@ const styles = StyleSheet.create({
   },
   buttons: {
     alignItems: "center",
+    paddingTop: 50
   },
   errorMessage: {
     fontSize: 16,

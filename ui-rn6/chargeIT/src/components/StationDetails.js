@@ -5,6 +5,9 @@ import Spacer from "./Spacer";
 export const StationDetails = ((params) => {
     let station = {};
     Object.keys(params.station).map(key => {
+        if (key === 'stationName') {
+            station["Name"] = params.station[key];
+        }
         if (key === 'chargerType') {
             station["Charging Type"] = params.station[key];
         }
@@ -22,12 +25,14 @@ export const StationDetails = ((params) => {
                 {
                     Object.keys(station).map(key => {
                         return (
-                            <Text>
-                                <Text style={{fontWeight: "bold"}}> {key.toUpperCase()} </Text>
-                                <Text style={key === 'Status' && station[key] ==='Ready for use' ? styles.ready : styles.stationStatus} key={station.location}>
-                                     {station[key]}
+                                <Text>
+                                    <Text style={{fontWeight: "bold"}}> {key.toUpperCase()} </Text>
+                                    <Text
+                                        style={key === 'Status' && station[key] === 'Ready for use' ? styles.ready : styles.stationStatus}
+                                        key={station.location}>
+                                        {station[key]}
+                                    </Text>
                                 </Text>
-                            </Text>
                         );
                     })
                 }
