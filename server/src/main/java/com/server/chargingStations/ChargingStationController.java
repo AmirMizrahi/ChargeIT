@@ -52,12 +52,31 @@ public class ChargingStationController {
                 m_chargingStationsRepository.save(chargingStation);
                 jsonObject.addProperty("message", "Created ChargingStation successfully.");
                 jsonObject.addProperty("chargingStationId", chargingStation.getId().toString());
+                try
+                {
+                    sendChargingStationIDToSimulator(chargingStation.getId().toString());
+                }
+                catch (Exception exception)
+                {
+                    // Handle exception.
+                }
             }
         }
-
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(jsonObject.toString());
+    }
+
+    private void sendChargingStationIDToSimulator(String chargingStationId) {
+        String applicationBUrl = "http://localhost:8081/simulator/chargingStations";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        String requestBody = "{\"chargingStationId\": \"" + chargingStationId + "\"}";
+        HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> responseEntity = restTemplate.exchange(applicationBUrl, HttpMethod.POST, requestEntity, String.class);
+        String response = responseEntity.getBody();
+        //System.out.println("Response from Simulator: " + response);
     }
 
     @DeleteMapping("/delete")
@@ -322,14 +341,12 @@ public class ChargingStationController {
             {
                 try
                 {
-                    //Test
                     RestTemplate restTemplate = new RestTemplate();
                     HttpHeaders headers = new HttpHeaders();
                     headers.add("Cookie", request.getHeader("Cookie"));
                     HttpEntity<String> httpEntity = new HttpEntity<>(headers);
-                    String url = "http://localhost:8081/simulator/charge";
+                    String url = "http://localhost:8081/simulator/charge?chargingStationId=" + chargingStationId;
                     restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
-                    //EndTest
                 }
                 catch (Exception exception)
                 {
@@ -371,9 +388,31 @@ public class ChargingStationController {
             ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
             if(station.getStatus().equals(Estatus.CHARGING))
             {
+                int percentToAskPayFor = 0;
+
+                try
+                {
+                    RestTemplate restTemplate = new RestTemplate();
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add("Cookie", request.getHeader("Cookie"));
+                    HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+                    String url = "http://localhost:8081/simulator/unCharge";
+                    restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+
+                    String applicationBUrl = "http://localhost:8081/simulator/unCharge";
+                    ResponseEntity<Integer> response = restTemplate.exchange(applicationBUrl, HttpMethod.PUT, httpEntity, Integer.class);
+                    percentToAskPayFor = response.getBody();
+                    //System.out.println("Please Pay: " + percentToAskPayFor* station.getPricePerVolt());
+                }
+                catch (Exception exception)
+                {
+
+                }
+
                 station.unCharge();
                 m_chargingStationsRepository.save(station);
                 jsonObject.addProperty("message", "UnCharge.");
+                jsonObject.addProperty("payment", (percentToAskPayFor * station.getPricePerVolt()));
             }
             else
             {
