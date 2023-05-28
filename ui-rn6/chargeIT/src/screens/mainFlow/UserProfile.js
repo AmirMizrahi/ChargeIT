@@ -4,7 +4,9 @@ import { View, Text, StyleSheet } from "react-native";
 import { useBackHandler } from "@react-native-community/hooks";
 import Buttons from "../../components/Buttons";
 import Spacer from "../../components/Spacer";
+import Popup from "../../components/Popup";
 import { Feather } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Context as AuthContext } from "../../context/AuthContext";
 import { Context as UsersContext } from "../../context/UsersContext";
@@ -21,6 +23,16 @@ const UserProfile = ({ navigation }) => {
 
   const isFocused = useIsFocused();
 
+  const [popupVisible, setPopupVisible] = useState(false);
+
+  const openPopup = () => {
+    setPopupVisible(true);
+  };
+
+  const closePopup = () => {
+    AsyncStorage.removeItem("token");
+    setPopupVisible(false);
+  };
   // Cancel return to the authentication flow.
   useBackHandler(() => {
     return true;
@@ -54,15 +66,19 @@ const UserProfile = ({ navigation }) => {
     if (isFocused) {
       fetchData();
     }
+
+    if (state.errorMessage) {
+      setPopupVisible(true);
+    }
     // setMail(state.userValues.email);
     // setFirstName(state.userValues.firstName);
     // setLastName(state.userValues.lastName);
     // setPhone(state.userValues.phoneNumber);
-  }, [isFocused]); // runs only once when the component is mounted
+  }, [isFocused, state.errorMessage]); // runs only once when the component is mounted
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Hello, {firstName ?? 'User'}!</Text>
+      <Text style={styles.title}>Hello, {firstName ?? "User"}!</Text>
 
       <Text style={{ marginTop: 20, fontSize: 18, fontWeight: "bold" }}>
         {userData ? userData.fname : ""} {userData ? userData.lname : ""}
@@ -99,7 +115,16 @@ const UserProfile = ({ navigation }) => {
       {/*</View>*/}
 
       {state.errorMessage ? (
-        <Text style={styles.errorMessage}>{state.errorMessage}</Text>
+        <>
+          <Text style={styles.errorMessage}>{state.errorMessage}</Text>
+          <Popup
+            visible={popupVisible}
+            onClose={closePopup}
+            navigation={navigation}
+            txt="Session is over. Please login again."
+            navigateTo={"Login"}
+          />
+        </>
       ) : null}
 
       <Spacer></Spacer>
@@ -127,18 +152,17 @@ const UserProfile = ({ navigation }) => {
 const styles = StyleSheet.create({
   title: {
     paddingTop: 20,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 23,
-    textShadowColor: 'gray',
+    textShadowColor: "gray",
   },
   container: {
-    display: 'flex',
+    display: "flex",
     padding: 50,
     backgroundColor: "#fff",
     margin: 20,
-    alignContent: 'space-between',
-    justifyContent: 'center'
-
+    alignContent: "space-between",
+    justifyContent: "center",
   },
   label: {
     fontWeight: "bold",
@@ -158,7 +182,7 @@ const styles = StyleSheet.create({
   },
   buttons: {
     alignItems: "center",
-    paddingTop: 50
+    paddingTop: 50,
   },
   errorMessage: {
     fontSize: 16,

@@ -30,7 +30,7 @@ const Onboarding = ({ navigation }) => {
         <View style={styles.mainViewTextButton}>
           <Text style={styles.mainText}>ChargeIT</Text>
           <Text style={styles.smallText}>
-            Hi Maayan you kaki face hello :) im onboarding screen
+            Welcome to ChargeIT - New way to charge your car!
           </Text>
         </View>
 

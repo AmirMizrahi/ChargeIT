@@ -16,6 +16,7 @@ import { StationSelectScreen } from "./src/screens/mainFlow/StationSelectScreen"
 import SelectTemp from "./src/screens/mainFlow/SelectTemp";
 import EditProfile from "./src/screens/authentication/EditProfile";
 import CreateStation from "./src/screens/mainFlow/CreateStation";
+import Popup from "./src/components/Popup";
 
 import { Provider as AuthProvider } from "./src/context/AuthContext";
 import { Provider as StationsProvider } from "./src/context/StationsContext";
