@@ -53,7 +53,6 @@ const register =
       navigation.navigate("TabNavigator", { screen: "UserProfile" }); // Need to add token logic...
       //console.log(response.data.token);
     } catch (err) {
-      debugger;
       dispatch({
         type: "add_error",
         payload: err.response.data.error,

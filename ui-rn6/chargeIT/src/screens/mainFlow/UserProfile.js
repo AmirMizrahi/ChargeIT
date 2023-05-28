@@ -62,7 +62,7 @@ const UserProfile = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Hello, {firstName ?? 'User'}!</Text>
+      <Text style={styles.title}>Hello, {firstName ?? 'User'}</Text>
 
       <Text style={{ marginTop: 20, fontSize: 18, fontWeight: "bold" }}>
         {userData ? userData.fname : ""} {userData ? userData.lname : ""}
@@ -112,6 +112,7 @@ const UserProfile = ({ navigation }) => {
               firstName: firstName,
               lastName: lastName,
               phone: phone,
+              password: password
             })
           }
         />

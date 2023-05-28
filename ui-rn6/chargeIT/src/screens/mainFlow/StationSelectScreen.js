@@ -70,7 +70,7 @@ export const StationSelectScreen = ({navigation}) => {
                                     onPress: () => console.log('OK Pressed')
                                 }]) : navigation.navigate('StationWatchScreen', station)}>
                                 <StationDetails
-                                    key={station.id}
+                                    key={station.id + Math.random() * 100}
                                     station={station}>
                                 </StationDetails>
                             </TouchableOpacity>

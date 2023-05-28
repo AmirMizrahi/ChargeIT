@@ -49,7 +49,7 @@ const Map = () => {
       >
         {markerList.map((marker) => (
           <Marker
-            key={marker.location.latitude}
+            key={marker.location.latitude + Math.random() * 100}
             title={marker.chargerType}
             description={marker.status}
             coordinate={{

@@ -34,7 +34,7 @@ export const StationDetails = (params) => {
                     ? styles.ready
                     : styles.stationStatus
                 }
-                key={station.location}
+                key={station.location + Math.random() * 100}
               >
                 {station[key]}
               </Text>
