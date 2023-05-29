@@ -21,11 +21,11 @@ const SelectTemp = ({ navigation }) => {
           <Text style={styles.errMsg}> Please enable location services</Text>
         ) : null}
         <Spacer></Spacer>
-        <View  style={{alignItems: 'center'}}>
-        <Buttons
-          btn_text={"Watch Stations List"}
-          on_press={() => navigation.push("StationSelectScreen")}
-        />
+        <View style={{ alignItems: "center" }}>
+          <Buttons
+            btn_text={"Watch Stations List"}
+            on_press={() => navigation.navigate("StationSelectScreen")}
+          />
         </View>
         <Spacer></Spacer>
       </View>
