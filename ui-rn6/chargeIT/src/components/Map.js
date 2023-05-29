@@ -44,12 +44,12 @@ const Map = () => {
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}
-        followsUserLocation={true}
+        followsUserLocation={false}
         showsUserLocation={true}
       >
         {markerList.map((marker) => (
           <Marker
-            key={marker.location.latitude}
+            key={marker.id}
             title={marker.chargerType}
             description={marker.status}
             coordinate={{
@@ -64,7 +64,7 @@ const Map = () => {
 
 const styles = StyleSheet.create({
   map: {
-    height: 500,
+    height: 600,
   },
 });
 
