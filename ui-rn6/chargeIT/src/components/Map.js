@@ -49,8 +49,8 @@ const Map = () => {
       >
         {markerList.map((marker) => (
           <Marker
-            key={marker.location.latitude}
-            title={marker.chargerType}
+            key={marker.id}
+            title={marker.stationName}
             description={marker.status}
             coordinate={{
               latitude: marker.location.latitude,
