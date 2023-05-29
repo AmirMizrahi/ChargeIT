@@ -19,7 +19,6 @@ const MyStations = ({ navigation }) => {
       try {
         const result = await getAllStationsByUser();
         if (result.length > 0) {
-          setAreStationsAvailable(false);
           setAreStationsAvailable(true);
           setUsersStationsAvailable(result);
           console.log(result);
