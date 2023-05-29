@@ -24,19 +24,18 @@ export const StationDetails = (params) => {
   return (
     <View style={styles.wrapper}>
       <View style={styles.stationContainer}>
-        {Object.keys(station).map((key) => {
+        {Object.keys(station).map((field) => {
           return (
-            <Text>
-              <Text style={{ fontWeight: "bold" }}> {key.toUpperCase()} </Text>
+            <Text key={field}>
+              <Text style={{ fontWeight: "bold" }}> {field.toUpperCase()} </Text>
               <Text
                 style={
-                  key === "Status" && station[key] === "Ready for use"
+                  field === "Status" && station[field] === "Ready for use"
                     ? styles.ready
                     : styles.stationStatus
                 }
-                key={station.location}
               >
-                {station[key]}
+                {station[field]}
               </Text>
             </Text>
           );

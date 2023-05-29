@@ -31,12 +31,14 @@ const EditProfile = ({navigation}) => {
     }, []); // Run only once on component mount
 
     const updateUser = async () => {
+        console.log(userData);
+        console.log(route.params);
         try {
             await basicApi.put("/users/updateUser?email=" + userData.mail +
                 "&firstName=" + userData.fname +
                 "&lastName=" + userData.lname +
                 "&phoneNumber=" + userData.phone +
-                "&password=" + userData.password
+                "&password=" + userData.password ?? route.params.password
             );
         }catch (err) {
             console.log(err);

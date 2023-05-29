@@ -11,13 +11,11 @@ import Registration from "./src/screens/authentication/Registration";
 import UserProfile from "./src/screens/mainFlow/UserProfile";
 import MyStations from "./src/screens/mainFlow/MyStations";
 import ResolveAuthScreen from "./src/screens/authentication/ResolveAuthScreen";
-import { StationWatchScreen } from "./src/screens/mainFlow/StationWatchScreen";
-import { StationSelectScreen } from "./src/screens/mainFlow/StationSelectScreen";
+import StationWatchScreen from "./src/screens/mainFlow/StationWatchScreen";
+import StationSelectScreen from "./src/screens/mainFlow/StationSelectScreen";
 import SelectTemp from "./src/screens/mainFlow/SelectTemp";
 import EditProfile from "./src/screens/authentication/EditProfile";
 import CreateStation from "./src/screens/mainFlow/CreateStation";
-import Popup from "./src/components/Popup";
-
 import { Provider as AuthProvider } from "./src/context/AuthContext";
 import { Provider as StationsProvider } from "./src/context/StationsContext";
 import { Provider as UsersProvider } from "./src/context/UsersContext";
@@ -34,11 +32,6 @@ function StackNavigator() {
       <Stack.Screen name="Onboarding" component={Onboarding} />
       <Stack.Screen name="Resolve" component={ResolveAuthScreen} />
       <Stack.Screen name="TabNavigator" component={TabNavigator} />
-      <Stack.Screen name="StationWatchScreen" component={StationWatchScreen} />
-      <Stack.Screen
-        name="StationSelectScreen"
-        component={StationSelectScreen}
-      />
     </Stack.Navigator>
   );
 }
@@ -106,16 +99,16 @@ function TabNavigator() {
         }}
       />
       <Tab.Screen
-        name="StationWatchScreen"
-        component={StationWatchScreen}
+        name="StationSelectScreen"
+        component={StationSelectScreen}
         options={{
           tabBarButton: () => null,
           tabBarVisible: false, //hide tab bar on this screen
         }}
       />
       <Tab.Screen
-        name="StationSelectScreen"
-        component={StationSelectScreen}
+        name="StationWatchScreen"
+        component={StationWatchScreen}
         options={{
           tabBarButton: () => null,
           tabBarVisible: false, //hide tab bar on this screen

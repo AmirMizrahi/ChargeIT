@@ -44,7 +44,7 @@ const Map = () => {
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}
-        followsUserLocation={true}
+        followsUserLocation={false}
         showsUserLocation={true}
       >
         {markerList.map((marker) => (
@@ -64,7 +64,7 @@ const Map = () => {
 
 const styles = StyleSheet.create({
   map: {
-    height: 500,
+    height: 600,
   },
 });
 

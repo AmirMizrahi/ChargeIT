@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import {TouchableOpacity} from "react-native-gesture-handler";
 
 const SelectLocationByMap = ({ navigation }) => {
   const [location, setLocation] = useState(null);
@@ -30,7 +29,7 @@ const SelectLocationByMap = ({ navigation }) => {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
-        followsUserLocation={true}
+        followsUserLocation={false}
         showsUserLocation={true}
         onPress={handleMapPress}
       >
@@ -42,11 +41,13 @@ const SelectLocationByMap = ({ navigation }) => {
           />
         )}
       </MapView>
-      { location != null && <View style={styles.buttonContainer}>
-        <Text style={styles.button} onPress={handleSavePress}>
-          Save Location
-        </Text>
-      </View>}
+      {location != null && (
+        <View style={styles.buttonContainer}>
+          <Text style={styles.button} onPress={handleSavePress}>
+            Save Location
+          </Text>
+        </View>
+      )}
       <View style={styles.textContainer}>
         <Text style={styles.text}>Please Select Location</Text>
       </View>
