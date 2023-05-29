@@ -18,22 +18,25 @@ export const StationWatchScreen = ({navigation, route}) => {
         if (key === 'chargerType') {
             stationDetails["Charging Type"] = route.params[key];
         }
-        if (key === 'pricePerVolt') {
+        else if (key === 'stationName') {
+            stationDetails["Station Name"] = route.params[key];
+        }
+        else  if (key === 'pricePerVolt') {
             stationDetails["Price Per Volt"] = route.params[key] + "$";
         } else if (key === 'status') {
-            stationDetails["Status"] = route.params['status'] === "NOT_CHARGING" ? "Ready for use" : "Not Available";
+            stationDetails["Status"] = route.params['status'] === "NOT_CHARGING" ? "Available" : "Not Available";
         }
     });
 
 
     return (
         <View style={styles.mainView}>
-            <Text style={styles.stationName}>Charging Station Details:</Text>
+            <Text style={styles.stationName}>Charging Station Details</Text>
             <View style={{paddingBottom: 20}}>
                 {Object.keys(stationDetails).map(key => {
                     return (
                         <View key={key}>
-                            <Text style={key === 'stationName' ? styles.stationName : styles.stationStatus}>
+                            <Text  style={key === 'stationName' ? styles.stationName : styles.stationStatus}>
                                 {key}: {stationDetails[key]}
                             </Text>
                         </View>
@@ -47,10 +50,7 @@ export const StationWatchScreen = ({navigation, route}) => {
                 try {
                     await basicApi.put("/chargingStations/charge?chargingStationId=" + route.params['id']).then(() => {
                         setIsCharging(true);
-                        Alert.alert('Charging in progress...', null, [{
-                            text: 'OK',
-                            onPress: () => console.log('OK Pressed')
-                        }])
+                        setTotalPrice(0);
                     })
                 } catch (err) {
                     console.log(err + "hi")
@@ -83,12 +83,16 @@ export const StationWatchScreen = ({navigation, route}) => {
                 }
             }}>
             </Buttons>}
-            {totalPrice > 0  ?
+            {totalPrice  ?
                 <Text style={{textAlign: 'center'}}>
                     <Text>Total to Pay: </Text>
                     <Text style={{fontWeight: 'bold'}}>{totalPrice}$</Text>
                 </Text> : null
             }
+            { isCharging && <Text style={styles.ischarging}>
+                Station is charging . . .
+            </Text> }
+           
         </View>
     );
 };
@@ -99,6 +103,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         flex: 1,
+    },
+    ischarging: {
+        fontSize: 16,
+        fontStyle: "italic",
+        fontWeight: "400",
     },
     noStationsText: {
         fontSize: 18,
@@ -116,8 +125,9 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     stationName: {
-        fontSize: 16,
+        fontSize: 19,
         fontWeight: "bold",
+        textAlign: "center",
         paddingBottom: 15
     },
     stationLocation: {
@@ -126,7 +136,8 @@ const styles = StyleSheet.create({
     },
     stationStatus: {
         marginTop: 5,
-        fontSize: 14,
+        fontSize: 17,
         color: "gray",
+        textAlign: 'center'
     },
 });

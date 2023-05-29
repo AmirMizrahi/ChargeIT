@@ -17,13 +17,12 @@ export const StationSelectScreen = ({navigation}) => {
         const fetchMarkers = async () => {
             try {
                 let location = await Location.getCurrentPositionAsync({});
-                console.log(location.coords.latitude);
 
                 let newLocation = {longitude: location.coords.longitude, latitude: location.coords.latitude};
 
                 let stations = {};
                 const arrayOfStations = await fetchChargingStationsByDistance(newLocation);
-                console.log(arrayOfStations);
+                //console.log(arrayOfStations);
                 const jsonArray = arrayOfStations.map((obj) => {
                         let sta = JSON.parse(Object.values(obj)[0]);
                         return {...sta, distance: Object.keys(obj)[0]}
@@ -64,13 +63,12 @@ export const StationSelectScreen = ({navigation}) => {
                 {
                     stationsList.map(station => {
                         return (
-                            <TouchableOpacity
+                            <TouchableOpacity key={station.id}
                                 onPress={() => station.status === 'CHARGING' ? Alert.alert('Station is NOT available!', null, [{
                                     text: 'OK',
                                     onPress: () => console.log('OK Pressed')
                                 }]) : navigation.navigate('StationWatchScreen', station)}>
                                 <StationDetails
-                                    key={station.id + Math.random() * 100}
                                     station={station}>
                                 </StationDetails>
                             </TouchableOpacity>

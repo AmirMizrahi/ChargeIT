@@ -30,7 +30,7 @@ const SelectLocationByMap = ({ navigation }) => {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
-        followsUserLocation={true}
+        followsUserLocation={false}
         showsUserLocation={true}
         onPress={handleMapPress}
       >
