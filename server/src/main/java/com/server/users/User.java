@@ -25,6 +25,8 @@ public class User {
     //@Indexed(unique = true)
     private String phoneNumber;
 
+    private IsraeliCreditCard israeliCreditCard;
+
     public User(String password,String email) {
         //this.userName = userName;
         this.password = password;
@@ -32,6 +34,7 @@ public class User {
         this.lastName = "";
         this.email = email;
         this.phoneNumber = "";
+        this.israeliCreditCard = null;
     }
 
     // Getters and setters
@@ -75,5 +78,13 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public IsraeliCreditCard getIsraeliCreditCard() {
+        return israeliCreditCard;
+    }
+
+    public void setIsraeliCreditCard(IsraeliCreditCard israeliCreditCard) {
+        this.israeliCreditCard = israeliCreditCard;
     }
 }

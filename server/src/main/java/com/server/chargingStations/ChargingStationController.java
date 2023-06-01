@@ -1,10 +1,8 @@
 package com.server.chargingStations;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.server.location.GeoLocation;
+import com.server.location.GeoUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.bson.types.ObjectId;
@@ -16,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static com.server.ServerConfig.MAX_DISTANCE_FROM_STATION_IN_METERS;
 import static com.server.location.GeoUtils.distanceBetweenPointsInKilometers;
 
 @RestController
@@ -323,7 +323,7 @@ public class ChargingStationController {
     }
 
     @PutMapping("/charge")
-    public ResponseEntity<String> charge(@RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
+    public ResponseEntity<String> charge(@RequestParam("chargingStationId") String chargingStationId, @RequestBody GeoLocation currentGeoLocation, HttpServletRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
@@ -339,23 +339,56 @@ public class ChargingStationController {
             ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
             if(station.getStatus().equals(Estatus.NOT_CHARGING))
             {
-                try
+                if(GeoUtils.distanceBetweenPointsInKilometers(station.getLocation().getLatitude(), station.getLocation().getLongitude(),
+                        currentGeoLocation.getLatitude(), currentGeoLocation.getLongitude()) * 1000 <= MAX_DISTANCE_FROM_STATION_IN_METERS)
                 {
+                    //Get user
                     RestTemplate restTemplate = new RestTemplate();
                     HttpHeaders headers = new HttpHeaders();
                     headers.add("Cookie", request.getHeader("Cookie"));
                     HttpEntity<String> httpEntity = new HttpEntity<>(headers);
-                    String url = "http://localhost:8081/simulator/charge?chargingStationId=" + chargingStationId;
-                    restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+                    String url = "http://localhost:8080/users/getUser";
+                    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+                    if(response.getStatusCode() == HttpStatus.OK)
+                    {
+                        JsonObject responseJson = JsonParser.parseString(response.getBody()).getAsJsonObject();
+                        JsonElement isValidIsraeliCreditCardElement = responseJson.getAsJsonObject("user").get("isValidIsraeliCreditCard");
+                        boolean isValidIsraeliCreditCard = isValidIsraeliCreditCardElement.getAsBoolean();
+                        if(isValidIsraeliCreditCard)
+                        {
+                            try {
+                                restTemplate = new RestTemplate();
+                                headers = new HttpHeaders();
+                                headers.add("Cookie", request.getHeader("Cookie"));
+                                httpEntity = new HttpEntity<>(headers);
+                                url = "http://localhost:8081/simulator/charge?chargingStationId=" + chargingStationId;
+                                restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+                            } catch (Exception exception) {
+
+                            }
+
+                            station.charge();
+                            m_chargingStationsRepository.save(station);
+                            jsonObject.addProperty("message", "Charging...");
+                        }
+                        else
+                        {
+                            httpStatus = HttpStatus.UNAUTHORIZED;
+                            jsonObject.addProperty("error", "In order to charge you need a valid israeli CreditCard.");
+                        }
+                    }
+                    else
+                    {
+                        httpStatus = (HttpStatus) response.getStatusCode();
+                        jsonObject.addProperty("error", "Failed to get user for the CreditCard check.");
+                    }
                 }
-                catch (Exception exception)
+                else
                 {
-
+                    httpStatus = HttpStatus.FORBIDDEN;
+                    jsonObject.addProperty("error-message", "You need to be in the range of 50 meters from the charging station in order to charge.");
                 }
-
-                station.charge();
-                m_chargingStationsRepository.save(station);
-                jsonObject.addProperty("message", "Charging...");
             }
             else
             {
@@ -372,7 +405,7 @@ public class ChargingStationController {
     }
 
     @PutMapping("/unCharge")
-    public ResponseEntity<String> unCharge(@RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
+    public ResponseEntity<String> unCharge(@RequestParam("chargingStationId") String chargingStationId, @RequestBody GeoLocation currentGeoLocation, HttpServletRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
@@ -388,31 +421,37 @@ public class ChargingStationController {
             ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
             if(station.getStatus().equals(Estatus.CHARGING))
             {
-                int percentToAskPayFor = 0;
-
-                try
+                if(GeoUtils.distanceBetweenPointsInKilometers(station.getLocation().getLatitude(), station.getLocation().getLongitude(),
+                        currentGeoLocation.getLatitude(), currentGeoLocation.getLongitude()) * 1000 <= MAX_DISTANCE_FROM_STATION_IN_METERS)
                 {
-                    RestTemplate restTemplate = new RestTemplate();
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.add("Cookie", request.getHeader("Cookie"));
-                    HttpEntity<String> httpEntity = new HttpEntity<>(headers);
-                    String url = "http://localhost:8081/simulator/unCharge";
-                    restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+                    int percentToAskPayFor = 0;
 
-                    String applicationBUrl = "http://localhost:8081/simulator/unCharge";
-                    ResponseEntity<Integer> response = restTemplate.exchange(applicationBUrl, HttpMethod.PUT, httpEntity, Integer.class);
-                    percentToAskPayFor = response.getBody();
-                    //System.out.println("Please Pay: " + percentToAskPayFor* station.getPricePerVolt());
+                    try {
+                        RestTemplate restTemplate = new RestTemplate();
+                        HttpHeaders headers = new HttpHeaders();
+                        headers.add("Cookie", request.getHeader("Cookie"));
+                        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+                        String url = "http://localhost:8081/simulator/unCharge";
+                        restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+
+                        String applicationBUrl = "http://localhost:8081/simulator/unCharge";
+                        ResponseEntity<Integer> response = restTemplate.exchange(applicationBUrl, HttpMethod.PUT, httpEntity, Integer.class);
+                        percentToAskPayFor = response.getBody();
+                        //System.out.println("Please Pay: " + percentToAskPayFor* station.getPricePerVolt());
+                    } catch (Exception exception) {
+
+                    }
+
+                    station.unCharge();
+                    m_chargingStationsRepository.save(station);
+                    jsonObject.addProperty("message", "UnCharge.");
+                    jsonObject.addProperty("payment", (percentToAskPayFor * station.getPricePerVolt()));
                 }
-                catch (Exception exception)
+                else
                 {
-
+                    httpStatus = HttpStatus.FORBIDDEN;
+                    jsonObject.addProperty("error-message", "You need to be in the range of 50 meters from the charging station in order to unCharge.");
                 }
-
-                station.unCharge();
-                m_chargingStationsRepository.save(station);
-                jsonObject.addProperty("message", "UnCharge.");
-                jsonObject.addProperty("payment", (percentToAskPayFor * station.getPricePerVolt()));
             }
             else
             {
