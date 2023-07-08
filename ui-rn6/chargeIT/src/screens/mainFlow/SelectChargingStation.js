@@ -70,7 +70,7 @@ const SelectTemp = ({ navigation }) => {
       </View>
       <Spacer />
       <View style={styles.mainView}>
-        <Text style={styles.stationTitle}>Stations Around You</Text>
+        <Text style={styles.stationTitle}>Stations Around You:</Text>
         <ScrollView contentContainerStyle={styles.stationListContainer}>
           {stationsList.map((station) => {
             return (
