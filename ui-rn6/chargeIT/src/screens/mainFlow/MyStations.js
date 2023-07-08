@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useIsFocused, useFocusEffect } from "@react-navigation/native";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Buttons from "../../components/Buttons";
 import Spacer from "../../components/Spacer";
 import { Context as StationsContext } from "../../context/StationsContext";
@@ -42,18 +42,25 @@ const MyStations = ({ navigation }) => {
       stationDetails;
 
     return (
-      <View key={id} style={styles.wrapper}>
-        <View style={styles.stationContainer}>
-          <Text style={styles.stationName}>{stationName}</Text>
-          <Text style={styles.stationStatus}>Charger type: {chargerType}</Text>
-          <Text style={styles.stationStatus}>
-            Status: {status === "NOT_CHARGING" ? "Ready for use" : "Charging"}
-          </Text>
-          <Text style={styles.stationStatus}>
-            Price per Volt: {pricePerVolt}$
-          </Text>
+      <TouchableOpacity
+        key={id}
+        onPress={() => navigation.navigate("EditStation", { stationId: id })}
+      >
+        <View key={id} style={styles.wrapper}>
+          <View style={styles.stationContainer}>
+            <Text style={styles.stationName}>{stationName}</Text>
+            <Text style={styles.stationStatus}>
+              Charger type: {chargerType}
+            </Text>
+            <Text style={styles.stationStatus}>
+              Status: {status === "NOT_CHARGING" ? "Ready for use" : "Charging"}
+            </Text>
+            <Text style={styles.stationStatus}>
+              Price per Volt: {pricePerVolt}$
+            </Text>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 

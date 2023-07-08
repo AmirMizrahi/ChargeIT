@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialIcons } from "@expo/vector-icons";
+import { I18nManager } from "react-native";
 
 import Splash from "./src/screens/authentication/Splash";
 import Onboarding from "./src/screens/authentication/Onboarding";
@@ -10,6 +11,7 @@ import Login from "./src/screens/authentication/Login";
 import Registration from "./src/screens/authentication/Registration";
 import UserProfile from "./src/screens/mainFlow/UserProfile";
 import MyStations from "./src/screens/mainFlow/MyStations";
+import EditStation from "./src/screens/station/EditStation";
 import ResolveAuthScreen from "./src/screens/authentication/ResolveAuthScreen";
 import StationWatchScreen from "./src/screens/mainFlow/StationWatchScreen";
 import StationSelectScreen from "./src/screens/mainFlow/StationSelectScreen";
@@ -21,6 +23,9 @@ import { Provider as StationsProvider } from "./src/context/StationsContext";
 import { Provider as UsersProvider } from "./src/context/UsersContext";
 
 import SelectLocationByMap from "./src/screens/mainFlow/SelectLocationByMap";
+
+I18nManager.forceRTL(false);
+I18nManager.allowRTL(false);
 
 const Stack = createNativeStackNavigator();
 function StackNavigator() {
@@ -70,6 +75,14 @@ function TabNavigator() {
               color={tabInfo.tintColor}
             />
           ),
+        }}
+      />
+      <Tab.Screen
+        name="EditStation"
+        component={EditStation}
+        options={{
+          tabBarButton: () => null,
+          tabBarVisible: false, //hide tab bar on this screen
         }}
       />
       <Tab.Screen
