@@ -13,6 +13,8 @@ import * as Location from "expo-location";
 import { ScrollView } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 
+//Depricated!
+
 const StationSelectScreen = ({ navigation }) => {
   const [stationsList, setStations] = useState([]);
   const isFocused = useIsFocused();
