@@ -15,7 +15,7 @@ import EditStation from "./src/screens/station/EditStation";
 import ResolveAuthScreen from "./src/screens/authentication/ResolveAuthScreen";
 import StationWatchScreen from "./src/screens/mainFlow/StationWatchScreen";
 import StationSelectScreen from "./src/screens/mainFlow/StationSelectScreen";
-import SelectTemp from "./src/screens/mainFlow/SelectTemp";
+import SelectChargingStation from "./src/screens/mainFlow/SelectChargingStation";
 import EditProfile from "./src/screens/authentication/EditProfile";
 import CreateStation from "./src/screens/mainFlow/CreateStation";
 import { Provider as AuthProvider } from "./src/context/AuthContext";
@@ -95,7 +95,7 @@ function TabNavigator() {
       />
       <Tab.Screen
         name="Charge"
-        component={SelectTemp}
+        component={SelectChargingStation}
         options={{
           title: "Charge",
           tabBarIcon: (tabInfo) => (
