@@ -37,7 +37,7 @@ const EditProfile = ({navigation}) => {
             await basicApi.put("/users/updateUser" +
                 "?email=" + (userData.mail ? userData.mail : "") +
                 "&firstName=" + (userData.fname ? userData.fname : "") +
-                "&lastName=" + (userData.lname ?+ userData.lname : "") +
+                "&lastName=" + (userData.lname ? userData.lname : "") +
                 "&phoneNumber=" + (userData.phone ? userData.phone : "") +
                 "&password=" + (userData.password ? userData.password : "")
             );
@@ -144,6 +144,7 @@ const EditProfile = ({navigation}) => {
                     value={userData ? userData.password : ""}
                     onChangeText={(txt) => setUserData({...userData, password: txt})}
                     style={styles.textInput}
+                    secureTextEntry={true}
                 />
             </View>
             <Buttons btn_text="Update" on_press={() => updateUser()}/>
@@ -158,19 +159,6 @@ const styles = StyleSheet.create({
         flex: 1,
         marginLeft: 20,
     },
-    commandButton: {
-        padding: 15,
-        borderRadius: 10,
-        backgroundColor: "#FF6347",
-        alignItems: "center",
-        marginTop: 10,
-    },
-    panel: {
-        padding: 20,
-        backgroundColor: "#FFFFFF",
-        paddingTop: 20,
-        width: "100%",
-    },
     header: {
         backgroundColor: "#FFFFFF",
         shadowColor: "#333333",
@@ -181,51 +169,12 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
     },
-    panelHeader: {
-        alignItems: "center",
-    },
-    panelHandle: {
-        width: 40,
-        height: 8,
-        borderRadius: 4,
-        backgroundColor: "#00000040",
-        marginBottom: 10,
-    },
-    panelTitle: {
-        fontSize: 27,
-        height: 35,
-    },
-    panelSubtitle: {
-        fontSize: 14,
-        color: "gray",
-        height: 30,
-        marginBottom: 10,
-    },
-    panelButton: {
-        padding: 13,
-        borderRadius: 10,
-        backgroundColor: "#2e64e5",
-        alignItems: "center",
-        marginVertical: 7,
-    },
-    panelButtonTitle: {
-        fontSize: 17,
-        fontWeight: "bold",
-        color: "white",
-    },
     action: {
         flexDirection: "row",
         marginTop: 10,
         marginBottom: 10,
         borderBottomWidth: 1,
         borderBottomColor: "#f2f2f2",
-        paddingBottom: 5,
-    },
-    actionError: {
-        flexDirection: "row",
-        marginTop: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: "#FF0000",
         paddingBottom: 5,
     },
     textInput: {
