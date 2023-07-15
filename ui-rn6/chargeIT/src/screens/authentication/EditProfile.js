@@ -16,11 +16,11 @@ import basicApi from "../../api/basicApi";
 
 const EditProfile = ({navigation}) => {
     const [userData, setUserData] = useState(null);
-
     const route = useRoute();
     const {mail, firstName, lastName, phone, password} = route.params;
 
     useEffect(() => {
+        debugger;
         setUserData({
             mail: mail,
             fname: firstName,
@@ -34,11 +34,12 @@ const EditProfile = ({navigation}) => {
         console.log(userData);
         console.log(route.params);
         try {
-            await basicApi.put("/users/updateUser?email=" + userData.mail +
-                "&firstName=" + userData.fname +
-                "&lastName=" + userData.lname +
-                "&phoneNumber=" + userData.phone +
-                "&password=" + userData.password ?? route.params.password
+            await basicApi.put("/users/updateUser" +
+                "?email=" + (userData.mail ? userData.mail : "") +
+                "&firstName=" + (userData.fname ? userData.fname : "") +
+                "&lastName=" + (userData.lname ?+ userData.lname : "") +
+                "&phoneNumber=" + (userData.phone ? userData.phone : "") +
+                "&password=" + (userData.password ? userData.password : "")
             );
         }catch (err) {
             console.log(err);
@@ -137,7 +138,7 @@ const EditProfile = ({navigation}) => {
             <View style={styles.action}>
                 <FontAwesome name="user-o" color="#333333" size={20}/>
                 <TextInput
-                    placeholder="Password"
+                    placeholder="New Password"
                     placeholderTextColor="#666666"
                     autoCorrect={false}
                     value={userData ? userData.password : ""}

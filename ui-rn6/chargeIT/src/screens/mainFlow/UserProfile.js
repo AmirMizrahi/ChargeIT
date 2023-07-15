@@ -136,13 +136,12 @@ const UserProfile = ({ navigation }) => {
               mail: mail,
               firstName: firstName,
               lastName: lastName,
-              phone: phone,
-              password: password
+              phone: phone
             })
           }
         />
         <Buttons
-          btn_text={"Sign Out"}
+          btn_text={"Sign Out"}j
           on_press={() => logout({ navigation })}
         />
       </View>
