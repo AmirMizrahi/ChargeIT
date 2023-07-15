@@ -218,7 +218,14 @@ public class UserController {
                     }
 
                     // Create UserDTO with charging stations
-                    UserDTO userDTO = new UserDTO(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNumber(), chargingStations);
+                    boolean isValidIsraeliCreditCard = false;
+
+                    if(user.getIsraeliCreditCard() != null)
+                    {
+                        isValidIsraeliCreditCard = user.getIsraeliCreditCard().isValid();
+                    }
+
+                    UserDTO userDTO = new UserDTO(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNumber(), chargingStations, isValidIsraeliCreditCard);
                     JsonElement jsonElement = gson.toJsonTree(userDTO);
                     JsonObject userJson = jsonElement.getAsJsonObject();
                     jsonObject.add("user", userJson);
@@ -431,77 +438,126 @@ public class UserController {
         {
             User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
 
-            //password
-            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-            user.setPassword(hashedPassword);
-            m_userRepository.save(user);
-            jsonObject.addProperty("message1", "Update password successfully.");
-
-            //firstName
-            // Check if the input string is a valid first name
-            if (!firstName.matches("[a-zA-Z]+"))
+            if(!password.isEmpty())
             {
-                httpStatus = HttpStatus.BAD_REQUEST;
-                jsonObject.addProperty("error", "Invalid first name");        }
-            else
-            {
-                user.setFirstName(firstName);
+                //password
+                String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+                user.setPassword(hashedPassword);
                 m_userRepository.save(user);
-                jsonObject.addProperty("message2", "Update first Name successfully.");
+                jsonObject.addProperty("message1", "Update password successfully.");
             }
 
-            //lastName
-            // Check if the input string is a valid last name
-            if (!lastName.matches("[a-zA-Z]+"))
+            if(!firstName.isEmpty())
             {
-                httpStatus = HttpStatus.BAD_REQUEST;
-                jsonObject.addProperty("error", "Invalid last name");        }
-            else
-            {
-                user.setLastName(lastName);
-                m_userRepository.save(user);
-                jsonObject.addProperty("message3", "Update last Name successfully.");
-            }
-
-            //email
-            Optional<User> existingUser = m_userRepository.findByEmail(email);
-            if (existingUser.isPresent())
-            {
-                // email already exists in database, return error response
-                httpStatus = HttpStatus.CONFLICT;
-                jsonObject.addProperty("error", "Email already exists in the database");
-            }
-            else
-            {
-                // Check if email is valid
-                Pattern emailPattern = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}$");
-                Matcher emailMatcher = emailPattern.matcher(email);
-
-                if (!emailMatcher.matches())
+                //firstName
+                // Check if the input string is a valid first name
+                if (!firstName.matches("[a-zA-Z]+"))
                 {
                     httpStatus = HttpStatus.BAD_REQUEST;
-                    jsonObject.addProperty("error", "Invalid email format");
+                    jsonObject.addProperty("error", "Invalid first name");        }
+                else
+                {
+                    user.setFirstName(firstName);
+                    m_userRepository.save(user);
+                    jsonObject.addProperty("message2", "Update first Name successfully.");
+                }
+            }
+
+            if(!lastName.isEmpty())
+            {
+                //lastName
+                // Check if the input string is a valid last name
+                if (!lastName.matches("[a-zA-Z]+"))
+                {
+                    httpStatus = HttpStatus.BAD_REQUEST;
+                    jsonObject.addProperty("error", "Invalid last name");        }
+                else
+                {
+                    user.setLastName(lastName);
+                    m_userRepository.save(user);
+                    jsonObject.addProperty("message3", "Update last Name successfully.");
+                }
+            }
+
+            if(!email.isEmpty())
+            {
+                //email
+                Optional<User> existingUser = m_userRepository.findByEmail(email);
+                if (existingUser.isPresent())
+                {
+                    // email already exists in database, return error response
+                    httpStatus = HttpStatus.CONFLICT;
+                    jsonObject.addProperty("error", "Email already exists in the database");
                 }
                 else
                 {
-                    user.setEmail(email);
-                    m_userRepository.save(user);
-                    jsonObject.addProperty("message4", "Update email successfully.");
+                    // Check if email is valid
+                    Pattern emailPattern = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}$");
+                    Matcher emailMatcher = emailPattern.matcher(email);
+
+                    if (!emailMatcher.matches())
+                    {
+                        httpStatus = HttpStatus.BAD_REQUEST;
+                        jsonObject.addProperty("error", "Invalid email format");
+                    }
+                    else
+                    {
+                        user.setEmail(email);
+                        m_userRepository.save(user);
+                        jsonObject.addProperty("message4", "Update email successfully.");
+                    }
                 }
             }
 
-            //phoneNumber
-            // Check if phone number is valid Israeli phone number
-            if (!phoneNumber.matches("^0([23489]|5[0248]|77)[1-9]\\d{6}$"))
+            if(!phoneNumber.isEmpty())
+            {
+                //phoneNumber
+                // Check if phone number is valid Israeli phone number
+                if (!phoneNumber.matches("^0([23489]|5[0248]|77)[1-9]\\d{6}$"))
+                {
+                    httpStatus = HttpStatus.BAD_REQUEST;
+                    jsonObject.addProperty("error", "Invalid phone number.");
+                }
+                else
+                {
+                    user.setPhoneNumber(phoneNumber);
+                    m_userRepository.save(user);
+                    jsonObject.addProperty("message5", "Update phone Number successfully.");
+                }
+            }
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @PutMapping("/updateCreditCard")
+    public ResponseEntity<String> updateUserCreditCard(@RequestBody IsraeliCreditCard israeliCreditCard, HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
+        {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
+        }
+        else
+        {
+            // Check if credit card is valid Israeli credit card
+            if (!israeliCreditCard.isValid())
             {
                 httpStatus = HttpStatus.BAD_REQUEST;
-                jsonObject.addProperty("error", "Invalid phone number.");
+                jsonObject.addProperty("error", "Invalid credit card.");
             }
             else
             {
-                user.setPhoneNumber(phoneNumber);
+                User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
+                user.setIsraeliCreditCard(israeliCreditCard);
                 m_userRepository.save(user);
-                jsonObject.addProperty("message5", "Update phone Number successfully.");
+                jsonObject.addProperty("message", "Update credit card successfully.");
             }
         }
 

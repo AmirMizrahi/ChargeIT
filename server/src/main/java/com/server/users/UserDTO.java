@@ -14,14 +14,17 @@ public class UserDTO {
     private String email;
     private String phoneNumber;
     private List<ChargingStationDTO> chargingStationDTOS;
+    private boolean isValidIsraeliCreditCard;
 
-    public UserDTO(String firstName, String lastName, String email, String phoneNumber, List<ChargingStationDTO> chargingStationDTOS) {
+    public UserDTO(String firstName, String lastName, String email, String phoneNumber, List<ChargingStationDTO> chargingStationDTOS,
+                   boolean isValidIsraeliCreditCard) {
         //this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.chargingStationDTOS = chargingStationDTOS;
+        this.isValidIsraeliCreditCard = isValidIsraeliCreditCard;
     }
 
     // Getters and setters
@@ -69,5 +72,13 @@ public class UserDTO {
 
     public void setChargingStationDTOS(List<ChargingStationDTO> chargingStationDTOS) {
         this.chargingStationDTOS = chargingStationDTOS;
+    }
+
+    public boolean isValidIsraeliCreditCard() {
+        return isValidIsraeliCreditCard;
+    }
+
+    public void setValidIsraeliCreditCard(boolean validIsraeliCreditCard) {
+        isValidIsraeliCreditCard = validIsraeliCreditCard;
     }
 }
