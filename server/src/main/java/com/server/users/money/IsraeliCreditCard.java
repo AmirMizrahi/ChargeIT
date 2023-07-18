@@ -1,4 +1,4 @@
-package com.server.users;
+package com.server.users.money;
 
 import java.util.regex.Pattern;
 

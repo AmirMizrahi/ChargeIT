@@ -3,6 +3,7 @@ package com.server.chargingStations;
 import com.google.gson.*;
 import com.server.location.GeoLocation;
 import com.server.location.GeoUtils;
+import com.server.users.money.MoneyTransaction;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.bson.types.ObjectId;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -446,6 +448,25 @@ public class ChargingStationController {
                     m_chargingStationsRepository.save(station);
                     jsonObject.addProperty("message", "UnCharge.");
                     jsonObject.addProperty("payment", (percentToAskPayFor * station.getPricePerVolt()));
+
+                    // Update MoneyTransaction
+                    MoneyTransaction moneyTransaction = new MoneyTransaction(percentToAskPayFor * station.getPricePerVolt());
+
+                    // Call the updateMoneyTransaction endpoint to update the transaction
+                    String updateTransactionUrl = "http://localhost:8080/users/updateMoneyTransaction";
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add("Cookie", request.getHeader("Cookie"));
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+                    HttpEntity<MoneyTransaction> updateTransactionRequest = new HttpEntity<>(moneyTransaction, headers);
+                    RestTemplate restTemplate = new RestTemplate();
+
+                    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(updateTransactionUrl)
+                            .queryParam("customerId", (ObjectId) session.getAttribute("id"))
+                            .queryParam("ownerId", station.getOwnerId());
+
+                    String urlWithParams = builder.toUriString();
+                    ResponseEntity<String> response = restTemplate.exchange(urlWithParams, HttpMethod.PUT, updateTransactionRequest, String.class);
+                    // End update MoneyTransaction
                 }
                 else
                 {

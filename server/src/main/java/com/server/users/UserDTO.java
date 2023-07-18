@@ -1,6 +1,7 @@
 package com.server.users;
 
 import com.server.chargingStations.ChargingStationDTO;
+import com.server.users.money.MoneyTransaction;
 import java.util.List;
 
 public class UserDTO {
@@ -15,9 +16,11 @@ public class UserDTO {
     private String phoneNumber;
     private List<ChargingStationDTO> chargingStationDTOS;
     private boolean isValidIsraeliCreditCard;
+    private List<MoneyTransaction> profits;
+    private List<MoneyTransaction> payments;
 
     public UserDTO(String firstName, String lastName, String email, String phoneNumber, List<ChargingStationDTO> chargingStationDTOS,
-                   boolean isValidIsraeliCreditCard) {
+                   boolean isValidIsraeliCreditCard, List<MoneyTransaction> profits, List<MoneyTransaction> payments) {
         //this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -25,6 +28,8 @@ public class UserDTO {
         this.phoneNumber = phoneNumber;
         this.chargingStationDTOS = chargingStationDTOS;
         this.isValidIsraeliCreditCard = isValidIsraeliCreditCard;
+        this.profits = profits;
+        this.payments = payments;
     }
 
     // Getters and setters
@@ -80,5 +85,21 @@ public class UserDTO {
 
     public void setValidIsraeliCreditCard(boolean validIsraeliCreditCard) {
         isValidIsraeliCreditCard = validIsraeliCreditCard;
+    }
+
+    public List<MoneyTransaction> getProfits() {
+        return profits;
+    }
+
+    public void setProfits(List<MoneyTransaction> profits) {
+        this.profits = profits;
+    }
+
+    public List<MoneyTransaction> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<MoneyTransaction> payments) {
+        this.payments = payments;
     }
 }
