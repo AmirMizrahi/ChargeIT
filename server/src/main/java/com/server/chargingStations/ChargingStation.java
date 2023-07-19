@@ -4,6 +4,8 @@ import com.server.location.GeoLocation;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.ArrayList;
+import java.util.List;
 
 /*import java.awt.image.BufferedImage;*/
 
@@ -18,8 +20,7 @@ public class ChargingStation {
     private Estatus status;
     private double pricePerVolt;
     private String stationName;
-
-    // TODO E - Add Reviews (list of strings?).
+    private List<Review> reviews;
 
     public ChargingStation(GeoLocation location, ObjectId ownerId, double pricePerVolt, EchargerType chargerType, String stationName) {
         this.location = location;
@@ -29,6 +30,7 @@ public class ChargingStation {
         status = Estatus.NOT_CHARGING;
         this.pricePerVolt = pricePerVolt;
         this.stationName = stationName;
+        this.reviews = new ArrayList<>();
     }
 
     public ObjectId getId() {
@@ -81,6 +83,12 @@ public class ChargingStation {
     public void unCharge()
     {
         status = Estatus.NOT_CHARGING;
+    }
+    public List<Review> getReviews() {
+        return reviews;
+    }
+    public void addReview(Review review) {
+        reviews.add(review);
     }
 
     /*public BufferedImage getQRCodeImage() {

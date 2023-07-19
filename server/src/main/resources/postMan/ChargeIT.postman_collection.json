@@ -724,6 +724,53 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "addReview",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/addReview?grade=5&review=test2&chargingStationId=6475ef469c513479468ac747&nickname=anonymous",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"addReview"
+							],
+							"query": [
+								{
+									"key": "grade",
+									"value": "5"
+								},
+								{
+									"key": "review",
+									"value": "test2"
+								},
+								{
+									"key": "chargingStationId",
+									"value": "6475ef469c513479468ac747"
+								},
+								{
+									"key": "nickname",
+									"value": "anonymous"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
