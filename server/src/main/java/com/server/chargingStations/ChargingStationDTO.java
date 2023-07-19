@@ -1,7 +1,7 @@
 package com.server.chargingStations;
 
 import com.server.location.GeoLocation;
-
+import java.util.List;
 /*import java.awt.image.BufferedImage;*/
 
 public class ChargingStationDTO {
@@ -12,12 +12,10 @@ public class ChargingStationDTO {
     private final EchargerType chargerType;
     private Estatus status;
     private double pricePerVolt;
-
     private String stationName;
+    private List<Review> reviews;
 
-    // TODO E - Add Reviews (list of strings?).
-
-    public ChargingStationDTO(String id, GeoLocation location, /*ObjectId ownerId,*/ double pricePerVolt, EchargerType chargerType, Estatus status, String stationName) {
+    public ChargingStationDTO(String id, GeoLocation location, /*ObjectId ownerId,*/ double pricePerVolt, EchargerType chargerType, Estatus status, String stationName, List<Review> reviews) {
         this.id = id;
         this.location = location;
         //this.ownerId = ownerId;
@@ -26,6 +24,7 @@ public class ChargingStationDTO {
         this.status = status;
         this.pricePerVolt = pricePerVolt;
         this.stationName = stationName;
+        this.reviews = reviews;
     }
 
     public String getId() {
@@ -77,7 +76,11 @@ public class ChargingStationDTO {
         status = Estatus.NOT_CHARGING;
     }
 
-    /*public BufferedImage getQRCodeImage() {
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+/*public BufferedImage getQRCodeImage() {
         return m_qrCodeImage;
     }*/
 
