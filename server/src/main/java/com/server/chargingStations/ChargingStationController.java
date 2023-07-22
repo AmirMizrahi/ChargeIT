@@ -3,6 +3,7 @@ package com.server.chargingStations;
 import com.google.gson.*;
 import com.server.location.GeoLocation;
 import com.server.location.GeoUtils;
+import com.server.users.money.MoneyTransaction;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.bson.types.ObjectId;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -170,7 +172,7 @@ public class ChargingStationController {
         int index = 0;
         for (ChargingStation station : chargingStations) {
             JsonObject chargingStationJson = new JsonObject();
-            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus(), station.getStationName());
+            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus(), station.getStationName(), station.getReviews());
             chargingStationJson.addProperty(Integer.toString(index++), gson.toJson(chargingStationDTO));
             jsonArray.add(chargingStationJson);
         }
@@ -204,7 +206,7 @@ public class ChargingStationController {
             int index = 0;
             for (ChargingStation station : chargingStations) {
                 JsonObject chargingStationJson = new JsonObject();
-                ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus(), station.getStationName());
+                ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus(), station.getStationName(), station.getReviews());
                 chargingStationJson.addProperty(Integer.toString(index++), gson.toJson(chargingStationDTO));
                 jsonArray.add(chargingStationJson);
             }
@@ -232,7 +234,7 @@ public class ChargingStationController {
         try
         {
             ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
-            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus(), station.getStationName());
+            ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus(), station.getStationName(), station.getReviews());
             Gson gson = new Gson();
             JsonElement jsonElement = gson.toJsonTree(chargingStationDTO);
             JsonObject chargingStationJson = jsonElement.getAsJsonObject();
@@ -303,7 +305,7 @@ public class ChargingStationController {
             for (ChargingStation station : chargingStationsWithinRadius) {
                 JsonObject chargingStationJson = new JsonObject();
                 double distanceInKilometers = distanceBetweenPointsInKilometers(latitude, longitude, station.getLocation().getLatitude(), station.getLocation().getLongitude());
-                ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus(), station.getStationName());
+                ChargingStationDTO chargingStationDTO = new ChargingStationDTO(station.getId().toString(), station.getLocation(), station.getPricePerVolt(), station.getChargerType(), station.getStatus(), station.getStationName(), station.getReviews());
                 chargingStationJson.addProperty(Double.toString(distanceInKilometers), gson.toJson(chargingStationDTO));
                 jsonArray.add(chargingStationJson);
             }
@@ -446,6 +448,25 @@ public class ChargingStationController {
                     m_chargingStationsRepository.save(station);
                     jsonObject.addProperty("message", "UnCharge.");
                     jsonObject.addProperty("payment", (percentToAskPayFor * station.getPricePerVolt()));
+
+                    // Update MoneyTransaction
+                    MoneyTransaction moneyTransaction = new MoneyTransaction(percentToAskPayFor * station.getPricePerVolt());
+
+                    // Call the updateMoneyTransaction endpoint to update the transaction
+                    String updateTransactionUrl = "http://localhost:8080/users/updateMoneyTransaction";
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add("Cookie", request.getHeader("Cookie"));
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+                    HttpEntity<MoneyTransaction> updateTransactionRequest = new HttpEntity<>(moneyTransaction, headers);
+                    RestTemplate restTemplate = new RestTemplate();
+
+                    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(updateTransactionUrl)
+                            .queryParam("customerId", (ObjectId) session.getAttribute("id"))
+                            .queryParam("ownerId", station.getOwnerId());
+
+                    String urlWithParams = builder.toUriString();
+                    ResponseEntity<String> response = restTemplate.exchange(urlWithParams, HttpMethod.PUT, updateTransactionRequest, String.class);
+                    // End update MoneyTransaction
                 }
                 else
                 {
@@ -493,6 +514,33 @@ public class ChargingStationController {
                 m_chargingStationsRepository.save(station);
                 jsonObject.addProperty("message", "Update price per volt successfully.");
             }
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @PutMapping("/addReview")
+    public ResponseEntity<String> addReview(@RequestParam("grade") int grade, @RequestParam("review") String review, @RequestParam("nickname") String nickname, @RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
+        {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
+        }
+        else
+        {
+            ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+
+            Review review1 = new Review(review, grade, nickname);
+            station.addReview(review1);
+            m_chargingStationsRepository.save(station);
+            jsonObject.addProperty("message", "Add review successfully.");
         }
 
         return ResponseEntity.status(httpStatus)

@@ -2,6 +2,8 @@ package com.server.users;
 
 import com.google.gson.*;
 import com.server.chargingStations.ChargingStationDTO;
+import com.server.users.money.IsraeliCreditCard;
+import com.server.users.money.MoneyTransaction;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.bson.types.ObjectId;
@@ -225,7 +227,7 @@ public class UserController {
                         isValidIsraeliCreditCard = user.getIsraeliCreditCard().isValid();
                     }
 
-                    UserDTO userDTO = new UserDTO(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNumber(), chargingStations, isValidIsraeliCreditCard);
+                    UserDTO userDTO = new UserDTO(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNumber(), chargingStations, isValidIsraeliCreditCard, user.getProfits(), user.getPayments());
                     JsonElement jsonElement = gson.toJsonTree(userDTO);
                     JsonObject userJson = jsonElement.getAsJsonObject();
                     jsonObject.add("user", userJson);
@@ -423,7 +425,8 @@ public class UserController {
     @PutMapping("/updateUser")
     public ResponseEntity<String> updateUser(@RequestParam("password") String password, @RequestParam("firstName") String firstName,
                                              @RequestParam("lastName") String lastName, @RequestParam("email") String email,
-                                             @RequestParam("phoneNumber") String phoneNumber, HttpServletRequest request) {
+                                             @RequestParam("phoneNumber") String phoneNumber, HttpServletRequest request,
+                                             @RequestBody(required = false) IsraeliCreditCard israeliCreditCard) {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
@@ -525,6 +528,23 @@ public class UserController {
                     jsonObject.addProperty("message5", "Update phone Number successfully.");
                 }
             }
+
+            if(israeliCreditCard != null)
+            {
+                //creditCard
+                // Check if credit card is valid Israeli credit card
+                if (!israeliCreditCard.isValid())
+                {
+                    httpStatus = HttpStatus.BAD_REQUEST;
+                    jsonObject.addProperty("error", "Invalid credit card.");
+                }
+                else
+                {
+                    user.setIsraeliCreditCard(israeliCreditCard);
+                    m_userRepository.save(user);
+                    jsonObject.addProperty("message6", "Update credit card successfully.");
+                }
+            }
         }
 
         return ResponseEntity.status(httpStatus)
@@ -565,5 +585,48 @@ public class UserController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(jsonObject.toString());
     }
+
+    @PutMapping("/updateMoneyTransaction")
+    public ResponseEntity<String> updateMoneyTransaction(HttpServletRequest request,
+                                                         @RequestBody MoneyTransaction moneyTransaction,
+                                                         @RequestParam("customerId") String customerId,
+                                                         @RequestParam("ownerId") String ownerId) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
+        {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
+        }
+        else
+        {
+            // Retrieve customer and owner from database using the provided ObjectId values
+            User customer = m_userRepository.findById(new ObjectId(customerId)).orElseThrow(() -> new RuntimeException("User not found"));
+            User owner = m_userRepository.findById(new ObjectId(ownerId)).orElseThrow(() -> new RuntimeException("User not found"));
+
+            if (customer == null || owner == null) {
+                httpStatus = HttpStatus.NOT_FOUND;
+                jsonObject.addProperty("error", "User(s) not found.");
+            } else {
+                // Add the money transaction to the customer and owner
+                customer.addPayment(moneyTransaction);
+                owner.addProfit(moneyTransaction);
+
+                // Save the updated users in the database
+                m_userRepository.save(customer);
+                m_userRepository.save(owner);
+
+                jsonObject.addProperty("message", "Money transaction updated successfully.");
+            }
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
 }
 

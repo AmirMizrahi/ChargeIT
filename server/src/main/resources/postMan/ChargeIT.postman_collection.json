@@ -330,7 +330,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\r\n  \"cardNumber\": \"4580000000000000\",\r\n  \"expirationDate\": \"12/25\",\r\n  \"cvv\": 123,\r\n  \"idNumber\": \"123456789\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -719,6 +719,53 @@
 								{
 									"key": "chargingStationId",
 									"value": "6460e23e4f4e427aa3199489"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addReview",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chargingStations/addReview?grade=5&review=test2&chargingStationId=6475ef469c513479468ac747&nickname=anonymous",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chargingStations",
+								"addReview"
+							],
+							"query": [
+								{
+									"key": "grade",
+									"value": "5"
+								},
+								{
+									"key": "review",
+									"value": "test2"
+								},
+								{
+									"key": "chargingStationId",
+									"value": "6475ef469c513479468ac747"
+								},
+								{
+									"key": "nickname",
+									"value": "anonymous"
 								}
 							]
 						}
