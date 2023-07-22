@@ -330,7 +330,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\r\n  \"cardNumber\": \"4580000000000000\",\r\n  \"expirationDate\": \"12/25\",\r\n  \"cvv\": 123,\r\n  \"idNumber\": \"123456789\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

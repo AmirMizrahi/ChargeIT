@@ -425,7 +425,8 @@ public class UserController {
     @PutMapping("/updateUser")
     public ResponseEntity<String> updateUser(@RequestParam("password") String password, @RequestParam("firstName") String firstName,
                                              @RequestParam("lastName") String lastName, @RequestParam("email") String email,
-                                             @RequestParam("phoneNumber") String phoneNumber, HttpServletRequest request) {
+                                             @RequestParam("phoneNumber") String phoneNumber, HttpServletRequest request,
+                                             @RequestBody(required = false) IsraeliCreditCard israeliCreditCard) {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
@@ -525,6 +526,23 @@ public class UserController {
                     user.setPhoneNumber(phoneNumber);
                     m_userRepository.save(user);
                     jsonObject.addProperty("message5", "Update phone Number successfully.");
+                }
+            }
+
+            if(israeliCreditCard != null)
+            {
+                //creditCard
+                // Check if credit card is valid Israeli credit card
+                if (!israeliCreditCard.isValid())
+                {
+                    httpStatus = HttpStatus.BAD_REQUEST;
+                    jsonObject.addProperty("error", "Invalid credit card.");
+                }
+                else
+                {
+                    user.setIsraeliCreditCard(israeliCreditCard);
+                    m_userRepository.save(user);
+                    jsonObject.addProperty("message6", "Update credit card successfully.");
                 }
             }
         }
