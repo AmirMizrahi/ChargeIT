@@ -389,7 +389,7 @@ public class ChargingStationController {
                 else
                 {
                     httpStatus = HttpStatus.FORBIDDEN;
-                    jsonObject.addProperty("error-message", "You need to be in the range of 50 meters from the charging station in order to charge.");
+                    jsonObject.addProperty("errorMessage", "You need to be in the range of 50 meters from the charging station in order to charge.");
                 }
             }
             else
@@ -397,7 +397,7 @@ public class ChargingStationController {
                 String errorMessage;
                 httpStatus = HttpStatus.LOCKED;
                 errorMessage = "ChargingStation is charging.";
-                jsonObject.addProperty("error-message", errorMessage);
+                jsonObject.addProperty("errorMessage", errorMessage);
             }
         }
 
@@ -471,7 +471,7 @@ public class ChargingStationController {
                 else
                 {
                     httpStatus = HttpStatus.FORBIDDEN;
-                    jsonObject.addProperty("error-message", "You need to be in the range of 50 meters from the charging station in order to unCharge.");
+                    jsonObject.addProperty("errorMessage", "You need to be in the range of 50 meters from the charging station in order to unCharge.");
                 }
             }
             else
@@ -479,7 +479,7 @@ public class ChargingStationController {
                 String errorMessage;
                 httpStatus = HttpStatus.BAD_REQUEST;
                 errorMessage = "ChargingStation isn't charging.";
-                jsonObject.addProperty("error-message", errorMessage);
+                jsonObject.addProperty("errorMessage", errorMessage);
             }
         }
 
