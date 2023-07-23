@@ -18,7 +18,7 @@ const UserProfile = ({navigation}) => {
     const [firstName, setFirstName] = useState(null);
     const [lastName, setLastName] = useState(null);
     const [phone, setPhone] = useState(null);
-    const [isCreditCardEntered, setIsCreditCardEntered] = useState(null);
+    const [isCreditCardEntered, setIsCreditCardEntered] = useState(false);
     const [stations, setStations] = useState(null);
     const {logout} = useContext(AuthContext);
     const {state, getUserInfo, clearErrorMessage} = useContext(UsersContext);
@@ -79,7 +79,6 @@ const UserProfile = ({navigation}) => {
         // setPhone(state.userValues.phoneNumber);
     }, [isFocused, state.errorMessage]); // runs only once when the component is mounted
 
-    console.log(isCreditCardEntered);
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Hello, {firstName ?? 'User'}</Text>
@@ -116,8 +115,8 @@ const UserProfile = ({navigation}) => {
                 <Feather name="credit-card" style={styles.tinyImages}/>
                 <Text style={styles.label}>Credit-card inserted? </Text>
                 <BouncyCheckbox
-                    disabled={true}
-                    isChecked={isCreditCardEntered}/>
+                    isChecked={isCreditCardEntered}
+                    disableBuiltInState/>
             </View>
 
             {/*<View style={styles.viewGeneral}>*/}
