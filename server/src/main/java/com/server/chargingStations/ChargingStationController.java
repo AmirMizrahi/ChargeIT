@@ -504,15 +504,119 @@ public class ChargingStationController {
         {
             ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
             // Check if the input string is a valid price
-            if (pricePerVolt <= 0)
+            if(station.getOwnerId().equals((ObjectId) session.getAttribute("id")))
             {
-                httpStatus = HttpStatus.BAD_REQUEST;
-                jsonObject.addProperty("error", "Invalid price per volt");        }
+                if (pricePerVolt <= 0)
+                {
+                    httpStatus = HttpStatus.BAD_REQUEST;
+                    jsonObject.addProperty("error", "Invalid price per volt");
+                }
+                else
+                {
+                    station.setPricePerVolt(pricePerVolt);
+                    m_chargingStationsRepository.save(station);
+                    jsonObject.addProperty("message", "Update price per volt successfully.");
+                }
+            }
             else
             {
-                station.setPricePerVolt(pricePerVolt);
-                m_chargingStationsRepository.save(station);
-                jsonObject.addProperty("message", "Update price per volt successfully.");
+                httpStatus = HttpStatus.FORBIDDEN;
+                jsonObject.addProperty("message", "You do not have permission to update this charging station");
+            }
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @PutMapping("/updateStationName")
+    public ResponseEntity<String> updateStationName(@RequestParam("stationName") String stationName, @RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
+        {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
+        }
+        else
+        {
+            ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+            if(station.getOwnerId().equals((ObjectId) session.getAttribute("id")))
+            {
+                if (stationName.isEmpty())
+                {
+                    httpStatus = HttpStatus.BAD_REQUEST;
+                    jsonObject.addProperty("error", "Invalid station name");
+                }
+                else
+                {
+                    station.setStationName(stationName);
+                    m_chargingStationsRepository.save(station);
+                    jsonObject.addProperty("message", "Update station name successfully.");
+                }
+            }
+            else
+            {
+                httpStatus = HttpStatus.FORBIDDEN;
+                jsonObject.addProperty("message", "You do not have permission to update this charging station");
+            }
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @PutMapping("/updateChargingStation")
+    public ResponseEntity<String> updateChargingStation(@RequestParam("pricePerVolt") double pricePerVolt, @RequestParam("stationName") String stationName, @RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
+        {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
+        }
+        else
+        {
+            ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
+            // Check if the input string is a valid price
+            if(station.getOwnerId().equals((ObjectId) session.getAttribute("id")))
+            {
+                if (pricePerVolt <= 0)
+                {
+                    httpStatus = HttpStatus.BAD_REQUEST;
+                    jsonObject.addProperty("error", "Invalid price per volt");
+                }
+                else
+                {
+                    station.setPricePerVolt(pricePerVolt);
+                    m_chargingStationsRepository.save(station);
+                    jsonObject.addProperty("message1", "Update price per volt successfully.");
+                }
+
+                if (stationName.isEmpty())
+                {
+                    httpStatus = HttpStatus.BAD_REQUEST;
+                    jsonObject.addProperty("error", "Invalid station name");
+                }
+                else
+                {
+                    station.setStationName(stationName);
+                    m_chargingStationsRepository.save(station);
+                    jsonObject.addProperty("message2", "Update station name successfully.");
+                }
+            }
+            else
+            {
+                httpStatus = HttpStatus.FORBIDDEN;
+                jsonObject.addProperty("message", "You do not have permission to update this charging station");
             }
         }
 
