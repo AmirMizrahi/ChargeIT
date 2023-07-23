@@ -6,7 +6,8 @@ import {
     TextInput,
     StyleSheet,
 } from "react-native";
-import {useRoute} from "@react-navigation/native";
+import {useFocusEffect, useRoute} from "@react-navigation/native";
+import {formatCardNumber,updateUser} from "../../hooks/userUtils";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -15,12 +16,20 @@ import Buttons from "../../components/Buttons";
 import basicApi from "../../api/basicApi";
 
 const EditProfile = ({navigation}) => {
+    const [errorMessage, setErrorMessage] = useState(null);
     const [userData, setUserData] = useState(null);
+    const [formattedCardNumber, setFormattedCardNumber] = useState('');
     const route = useRoute();
     const {mail, firstName, lastName, phone, password} = route.params;
 
+    // Remove the errorMsg if available.
+    useFocusEffect(
+        React.useCallback(() => {
+            return () => setErrorMessage(null);
+        }, [])
+    );
+
     useEffect(() => {
-        debugger;
         setUserData({
             mail: mail,
             fname: firstName,
@@ -29,24 +38,6 @@ const EditProfile = ({navigation}) => {
             password: password
         });
     }, []); // Run only once on component mount
-
-    const updateUser = async () => {
-        console.log(userData);
-        console.log(route.params);
-        try {
-            await basicApi.put("/users/updateUser" +
-                "?email=" + (userData.mail ? userData.mail : "") +
-                "&firstName=" + (userData.fname ? userData.fname : "") +
-                "&lastName=" + (userData.lname ? userData.lname : "") +
-                "&phoneNumber=" + (userData.phone ? userData.phone : "") +
-                "&password=" + (userData.password ? userData.password : "")
-            );
-        }catch (err) {
-            console.log(err);
-        }
-        navigation.navigate('UserProfile');
-    }
-
 
     return (
         <View style={styles.container}>
@@ -147,7 +138,68 @@ const EditProfile = ({navigation}) => {
                     secureTextEntry={true}
                 />
             </View>
-            <Buttons btn_text="Update" on_press={() => updateUser()}/>
+            <View style={styles.paymentView}>
+                <Text style={styles.paymentText}>Payment option:</Text>
+                <View style={styles.action}>
+                    <Feather name="credit-card" color="#333333" size={20}/>
+                    <TextInput
+                        placeholder="Credit Number"
+                        placeholderTextColor="#666666"
+                        autoCorrect={false}
+                        onChangeText={(input) => formatCardNumber(input, setUserData, setFormattedCardNumber)}
+                        value={formattedCardNumber}
+                        maxLength={19}
+                        keyboardType={"number-pad"}
+                        style={styles.textInput}
+                    />
+                </View>
+                <View style={styles.action}>
+                    <Feather name="calendar" color="#333333" size={20}/>
+                    <TextInput
+                        placeholder="MM"
+                        placeholderTextColor="#666666"
+                        autoCorrect={false}
+                        onChangeText={(txt) => setUserData({...userData, creditMonth: txt})}
+                        maxLength={2}
+                        keyboardType={"number-pad"}
+                        style={styles.textInput}
+                    />
+                    <TextInput
+                        placeholder="YY"
+                        placeholderTextColor="#666666"
+                        autoCorrect={false}
+                        onChangeText={(txt) => setUserData({...userData, creditYear: txt})}
+                        maxLength={2}
+                        keyboardType={"number-pad"}
+                        style={styles.textInput}
+                    />
+                    <TextInput
+                        placeholder="CVV"
+                        placeholderTextColor="#666666"
+                        autoCorrect={false}
+                        onChangeText={(txt) => setUserData({...userData, cvv: txt})}
+                        maxLength={3}
+                        keyboardType={"number-pad"}
+                        style={styles.textInput}
+                    />
+                </View>
+                <View style={styles.action}>
+                    <Feather name="edit" color="#333333" size={20}/>
+                    <TextInput
+                        placeholder="ID Number"
+                        placeholderTextColor="#666666"
+                        autoCorrect={false}
+                        onChangeText={(txt) => setUserData({...userData, idNumber: txt})}
+                        maxLength={9}
+                        keyboardType={"number-pad"}
+                        style={styles.textInput}
+                    />
+                </View>
+            </View>
+            {errorMessage ? (
+                <Text style={styles.errorMessage}>{errorMessage}</Text>
+            ) : null}
+            <Buttons btn_text="Update" on_press={() => updateUser(userData,navigation, setErrorMessage)}/>
         </View>
     );
 };
@@ -182,5 +234,17 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === "ios" ? 0 : -12,
         paddingLeft: 10,
         color: "#333333",
+    },
+    paymentView: {
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 10
+    },
+    errorMessage: {
+        fontSize: 16,
+        color: "red",
+        marginLeft: 15,
+        marginTop: 15,
     },
 });

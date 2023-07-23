@@ -3,6 +3,7 @@ import {View, Text, TextInput, StyleSheet, Platform} from "react-native";
 import {Picker} from "@react-native-picker/picker";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useRoute} from "@react-navigation/native";
+import {formatCardNumber, updateUser} from "../../hooks/userUtils";
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
@@ -10,7 +11,6 @@ import Buttons from "../../components/Buttons";
 import basicApi from "../../api/basicApi";
 
 const AfterRegistrationDetailsCompletion = ({navigation}) => {
-    debugger;
     const [userData, setUserData] = useState(null);
     const [formattedCardNumber, setFormattedCardNumber] = useState('');
     const route = useRoute();
@@ -22,42 +22,6 @@ const AfterRegistrationDetailsCompletion = ({navigation}) => {
             mail: email
         });
     }, []); // Run only once on component mount
-
-    const updateUser = async () => {
-        let expirationDate;
-
-        // Card expiration date is MM/YY
-        if (userData.creditMonth && userData.creditYear){
-            expirationDate = userData.creditMonth + "/" + userData.creditYear;
-        }
-
-        try {
-            await basicApi.put("/users/updateUser" +
-                "?email=" + (userData.mail ? userData.mail : "") +
-                "&firstName=" + (userData.fname ? userData.fname : "") +
-                "&lastName=" + (userData.lname ? userData.lname : "") +
-                "&phoneNumber=" + (userData.phone ? userData.phone : "") +
-                "&password=" + (userData.password ? userData.password : "") +
-                "&idNumber=" + (userData.idNumber ? userData.idNumber : "") +
-                "&cardNumber=" + (userData.cardNumber ? userData.cardNumber : "") +
-                "&expirationDate=" + (expirationDate ? expirationDate : "") +
-                "&cvv=" + (userData.cvv ? userData.cvv : "")
-            );
-        } catch (err) {
-            console.log(err);
-        }
-        navigation.navigate("TabNavigator", {screen: "UserProfile"})
-    }
-
-    // Space between each 4 digits of credit card number
-    const formatCardNumber = (input) => {
-        const digitsOnly = input.replace(/\D/g, '');
-        const groups = digitsOnly.match(/(\d{1,4})/g);
-        const formattedValue = groups ? groups.join(' ') : '';
-
-        setUserData({cardNumber:digitsOnly});
-        setFormattedCardNumber(formattedValue);
-    };
 
     return (
         <SafeAreaView style={styles.generalContainer}>
@@ -121,7 +85,7 @@ const AfterRegistrationDetailsCompletion = ({navigation}) => {
                         placeholder="Credit Number"
                         placeholderTextColor="#666666"
                         autoCorrect={false}
-                        onChangeText={formatCardNumber}
+                        onChangeText={(input) => formatCardNumber(input, setUserData, setFormattedCardNumber)}
                         value={formattedCardNumber}
                         maxLength={19}
                         keyboardType={"number-pad"}
@@ -173,7 +137,7 @@ const AfterRegistrationDetailsCompletion = ({navigation}) => {
             </View>
             <View style={styles.buttonView}>
                 <Buttons btn_text="Finish my Profile"
-                         on_press={() => updateUser()}/>
+                         on_press={() => updateUser(userData, navigation)}/>
                 <Buttons btn_text="Maybe later..."
                          on_press={() => navigation.navigate("TabNavigator", {screen: "UserProfile"})}/>
             </View>

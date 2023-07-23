@@ -53,12 +53,12 @@ const StationWatchScreen = ({ navigation, route }) => {
           btn_text={"Charge"}
           on_press={async () => {
             //Alert.alert('Charging ...',null, [{text: 'OK', onPress: () => console.log('OK Pressed')}] )
-
+            debugger;
             try {
               await basicApi
                 .put(
-                  "/chargingStations/charge?chargingStationId=" +
-                    route.params["id"]
+                  "/chargingStations/charge?chargingStationId=" + route.params["id"],
+                    route.params["location"]   // Location inside the body of request.
                 )
                 .then(() => {
                   setIsCharging(true);

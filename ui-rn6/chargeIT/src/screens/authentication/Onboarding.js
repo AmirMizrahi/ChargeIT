@@ -18,7 +18,7 @@ const Onboarding = ({ navigation }) => {
         style={{ flex: 3, flexDirection: "column", backgroundColor: "#ddd" }}
       >
         <ImageBackground
-          source={require("../../assets/images/onboardingPic.png")}
+          source={require("../../assets/images/whiteChargeITLogo.jpeg")}
           resizeMode="contain"
           style={styles.image}
         />
@@ -28,7 +28,6 @@ const Onboarding = ({ navigation }) => {
       <View style={{ flex: 2, backgroundColor: "#fff" }}>
         {/* Text*/}
         <View style={styles.mainViewTextButton}>
-          <Text style={styles.mainText}>ChargeIT</Text>
           <Text style={styles.smallText}>
             Welcome to ChargeIT - New way to charge your car!
           </Text>
@@ -68,9 +67,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#fff",
-  },
-  mainText: {
-    fontSize: 30,
   },
   smallText: {
     maxWidth: "50%",
