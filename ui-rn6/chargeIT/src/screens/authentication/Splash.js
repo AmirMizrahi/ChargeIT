@@ -16,9 +16,9 @@ const Splash = ({navigation}) => {
             />
             <Image
                 style={styles.logo}
-                source={require("../../assets/images/logo-test-background.png")}
+                source={require("../../assets/images/blueChargeITLogo.jpeg")}
             />
-            <Text style={styles.title}>ChargeIT</Text>
+            {/*<Text style={styles.title}>ChargeIT</Text>*/}
         </View>
     )
 }
@@ -32,15 +32,15 @@ const styles = StyleSheet.create({
         backgroundColor:'#465bd8'
     },
     logo: {
-        width:50,
-        height:50,
+        // width:50,
+        // height:50,
         backgroundColor: 'rgba(52, 52, 52, 0.8)'
     },
-    title: {
-        color:'white',
-        fontSize:30,
-       // fontFamily:"sans-serif-condensed"
-    }
+    // title: {
+    //     color:'white',
+    //     fontSize:30,
+    //    // fontFamily:"sans-serif-condensed"
+    // }
 })
 
 export default Splash;

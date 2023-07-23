@@ -1,195 +1,207 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useIsFocused, useFocusEffect } from "@react-navigation/native";
-import { View, Text, StyleSheet } from "react-native";
-import { useBackHandler } from "@react-native-community/hooks";
+import React, {useState, useEffect, useContext} from "react";
+import {useIsFocused, useFocusEffect} from "@react-navigation/native";
+import {View, Text, StyleSheet} from "react-native";
+import {useBackHandler} from "@react-native-community/hooks";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 import Buttons from "../../components/Buttons";
 import Spacer from "../../components/Spacer";
 import Popup from "../../components/Popup";
-import { Feather } from "@expo/vector-icons";
+import {Feather} from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { Context as AuthContext } from "../../context/AuthContext";
-import { Context as UsersContext } from "../../context/UsersContext";
+import {Context as AuthContext} from "../../context/AuthContext";
+import {Context as UsersContext} from "../../context/UsersContext";
 
-const UserProfile = ({ navigation }) => {
-  const [userData, setUserData] = useState(null);
-  const [mail, setMail] = useState(null);
-  const [firstName, setFirstName] = useState(null);
-  const [lastName, setLastName] = useState(null);
-  const [phone, setPhone] = useState(null);
-  const [stations, setStations] = useState(null);
-  const { logout } = useContext(AuthContext);
-  const { state, getUserInfo, clearErrorMessage } = useContext(UsersContext);
+const UserProfile = ({navigation}) => {
+    const [userData, setUserData] = useState(null);
+    const [mail, setMail] = useState(null);
+    const [firstName, setFirstName] = useState(null);
+    const [lastName, setLastName] = useState(null);
+    const [phone, setPhone] = useState(null);
+    const [isCreditCardEntered, setIsCreditCardEntered] = useState(null);
+    const [stations, setStations] = useState(null);
+    const {logout} = useContext(AuthContext);
+    const {state, getUserInfo, clearErrorMessage} = useContext(UsersContext);
 
-  const isFocused = useIsFocused();
+    const isFocused = useIsFocused();
 
-  const [popupVisible, setPopupVisible] = useState(false);
+    const [popupVisible, setPopupVisible] = useState(false);
 
-  const openPopup = () => {
-    setPopupVisible(true);
-  };
-
-  const closePopup = () => {
-    AsyncStorage.removeItem("token");
-    setPopupVisible(false);
-  };
-  // Cancel return to the authentication flow.
-  useBackHandler(() => {
-    return true;
-  });
-
-  //  Remove the errorMsg if available.
-  useFocusEffect(
-    React.useCallback(() => {
-      return () => clearErrorMessage();
-    }, [])
-  );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const val = await getUserInfo();
-        setMail(val.email);
-        setFirstName(val.firstName);
-        setLastName(val.lastName);
-        setPhone(val.phoneNumber);
-
-        const chargingStationIDs = val.chargingStationDTOS.map(
-          (station) => station.id
-        );
-        setStations(chargingStationIDs);
-      } catch (error) {
-        console.log("Error fetching data:", error);
-      }
+    const openPopup = () => {
+        setPopupVisible(true);
     };
 
-    if (isFocused) {
-      fetchData();
-    }
+    const closePopup = () => {
+        AsyncStorage.removeItem("token");
+        setPopupVisible(false);
+    };
+    // Cancel return to the authentication flow.
+    useBackHandler(() => {
+        return true;
+    });
 
-    if (state.errorMessage) {
-      setPopupVisible(true);
-    }
-    // setMail(state.userValues.email);
-    // setFirstName(state.userValues.firstName);
-    // setLastName(state.userValues.lastName);
-    // setPhone(state.userValues.phoneNumber);
-  }, [isFocused, state.errorMessage]); // runs only once when the component is mounted
+    //  Remove the errorMsg if available.
+    useFocusEffect(
+        React.useCallback(() => {
+            return () => clearErrorMessage();
+        }, [])
+    );
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Hello, {firstName ?? 'User'}</Text>
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const val = await getUserInfo();
+                setMail(val.email);
+                setFirstName(val.firstName);
+                setLastName(val.lastName);
+                setPhone(val.phoneNumber);
+                setIsCreditCardEntered(val.isValidIsraeliCreditCard);
 
-      <Text style={{ marginTop: 20, fontSize: 18, fontWeight: "bold" }}>
-        {userData ? userData.fname : ""} {userData ? userData.lname : ""}
-      </Text>
+                const chargingStationIDs = val.chargingStationDTOS.map(
+                    (station) => station.id
+                );
+                setStations(chargingStationIDs);
+            } catch (error) {
+                console.log("Error fetching data:", error);
+            }
+        };
 
-      <View style={styles.viewGeneral}>
-        <Feather name="mail" style={styles.tinyImages} />
-        <Text style={styles.label}>Email: </Text>
-        <Text style={styles.value}>{mail}</Text>
-      </View>
+        if (isFocused) {
+            fetchData();
+        }
 
-      <View style={styles.viewGeneral}>
-        <Feather name="edit" style={styles.tinyImages} />
-        <Text style={styles.label}>First name: </Text>
-        <Text style={styles.value}>{firstName}</Text>
-      </View>
+        if (state.errorMessage) {
+            setPopupVisible(true);
+        }
+        // setMail(state.userValues.email);
+        // setFirstName(state.userValues.firstName);
+        // setLastName(state.userValues.lastName);
+        // setPhone(state.userValues.phoneNumber);
+    }, [isFocused, state.errorMessage]); // runs only once when the component is mounted
 
-      <View style={styles.viewGeneral}>
-        <Feather name="edit" style={styles.tinyImages} />
-        <Text style={styles.label}>Last name: </Text>
-        <Text style={styles.value}>{lastName}</Text>
-      </View>
+    console.log(isCreditCardEntered);
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>Hello, {firstName ?? 'User'}</Text>
 
-      <View style={styles.viewGeneral}>
-        <Feather name="phone" style={styles.tinyImages} />
-        <Text style={styles.label}>Phone number: </Text>
-        <Text style={styles.value}>{phone}</Text>
-      </View>
+            <Text style={{marginTop: 20, fontSize: 18, fontWeight: "bold"}}>
+                {userData ? userData.fname : ""} {userData ? userData.lname : ""}
+            </Text>
 
-      {/*<View style={styles.viewGeneral}>*/}
-      {/*  <Feather name="battery-charging" style={styles.tinyImages} />*/}
-      {/*  <Text style={styles.label}>My charging stations:</Text>*/}
-      {/*  <Text style={styles.value}>{stations}</Text>*/}
-      {/*</View>*/}
+            <View style={styles.viewGeneral}>
+                <Feather name="mail" style={styles.tinyImages}/>
+                <Text style={styles.label}>Email: </Text>
+                <Text style={styles.value}>{mail}</Text>
+            </View>
 
-      {state.errorMessage ? (
-        <>
-          <Text style={styles.errorMessage}>{state.errorMessage}</Text>
-          <Popup
-            visible={popupVisible}
-            onClose={closePopup}
-            navigation={navigation}
-            txt="Session is over. Please login again."
-            navigateTo={"Login"}
-          />
-        </>
-      ) : null}
+            <View style={styles.viewGeneral}>
+                <Feather name="edit" style={styles.tinyImages}/>
+                <Text style={styles.label}>First name: </Text>
+                <Text style={styles.value}>{firstName}</Text>
+            </View>
 
-      <Spacer></Spacer>
-      <View style={styles.buttons}>
-        <Buttons
-          btn_text={"Update Profile"}
-          on_press={() =>
-            navigation.navigate("EditProfile", {
-              mail: mail,
-              firstName: firstName,
-              lastName: lastName,
-              phone: phone
-            })
-          }
-        />
-        <Buttons
-          btn_text={"Sign Out"}j
-          on_press={() => logout({ navigation })}
-        />
-      </View>
-    </View>
-  );
+            <View style={styles.viewGeneral}>
+                <Feather name="edit" style={styles.tinyImages}/>
+                <Text style={styles.label}>Last name: </Text>
+                <Text style={styles.value}>{lastName}</Text>
+            </View>
+
+            <View style={styles.viewGeneral}>
+                <Feather name="phone" style={styles.tinyImages}/>
+                <Text style={styles.label}>Phone number: </Text>
+                <Text style={styles.value}>{phone}</Text>
+            </View>
+
+            <View style={styles.viewGeneral}>
+                <Feather name="credit-card" style={styles.tinyImages}/>
+                <Text style={styles.label}>Credit-card inserted? </Text>
+                <BouncyCheckbox
+                    disabled={true}
+                    isChecked={isCreditCardEntered}/>
+            </View>
+
+            {/*<View style={styles.viewGeneral}>*/}
+            {/*  <Feather name="battery-charging" style={styles.tinyImages} />*/}
+            {/*  <Text style={styles.label}>My charging stations:</Text>*/}
+            {/*  <Text style={styles.value}>{stations}</Text>*/}
+            {/*</View>*/}
+
+            {state.errorMessage ? (
+                <>
+                    <Text style={styles.errorMessage}>{state.errorMessage}</Text>
+                    <Popup
+                        visible={popupVisible}
+                        onClose={closePopup}
+                        navigation={navigation}
+                        txt="Session is over. Please login again."
+                        navigateTo={"Login"}
+                    />
+                </>
+            ) : null}
+
+            <Spacer></Spacer>
+            <View style={styles.buttons}>
+                <Buttons
+                    btn_text={"Update Profile"}
+                    on_press={() =>
+                        navigation.navigate("EditProfile", {
+                            mail: mail,
+                            firstName: firstName,
+                            lastName: lastName,
+                            phone: phone
+                        })
+                    }
+                />
+                <Buttons
+                    btn_text={"Sign Out"} j
+                    on_press={() => logout({navigation})}
+                />
+            </View>
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
-  title: {
-    paddingTop: 20,
-    textAlign: "center",
-    fontSize: 23,
-    textShadowColor: "gray",
-  },
-  container: {
-    display: "flex",
-    padding: 50,
-    backgroundColor: "#fff",
-    margin: 20,
-    alignContent: "space-between",
-    justifyContent: "center",
-  },
-  label: {
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  value: {
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  viewGeneral: {
-    flexDirection: "row",
-  },
-  tinyImages: {
-    color: "#333333",
-    fontSize: 20,
-    marginRight: 10,
-  },
-  buttons: {
-    alignItems: "center",
-    paddingTop: 50,
-  },
-  errorMessage: {
-    fontSize: 16,
-    color: "red",
-    marginLeft: 15,
-    marginTop: 15,
-  },
+    title: {
+        paddingTop: 20,
+        textAlign: "center",
+        fontSize: 23,
+        textShadowColor: "gray",
+    },
+    container: {
+        display: "flex",
+        padding: 50,
+        backgroundColor: "#fff",
+        margin: 20,
+        alignContent: "space-between",
+        justifyContent: "center",
+    },
+    label: {
+        fontWeight: "bold",
+        fontSize: 16,
+    },
+    value: {
+        fontSize: 16,
+        marginBottom: 20,
+    },
+    viewGeneral: {
+        flexDirection: "row",
+    },
+    tinyImages: {
+        color: "#333333",
+        fontSize: 20,
+        marginRight: 10,
+    },
+    buttons: {
+        alignItems: "center",
+        paddingTop: 50,
+    },
+    errorMessage: {
+        fontSize: 16,
+        color: "red",
+        marginLeft: 15,
+        marginTop: 15,
+    },
 });
 
 export default UserProfile;

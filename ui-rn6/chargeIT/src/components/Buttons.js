@@ -12,7 +12,7 @@ const Buttons = ({ on_press, btn_text }) => {
 const styles = StyleSheet.create({
   button: {
     justifyContent: "center",
-    width: "80%",
+    width: "70%",
     backgroundColor: "#465bd8",
     height: 50,
     marginBottom: 30,
