@@ -13,7 +13,7 @@ const CreateStation = ({navigation, route}) => {
     const [pricePerVolt, setPrice] = useState("");
     const [stationName, setName] = useState("");
     const [chargerType, setSelectedValue] = useState("TYPE_0");
-    const {latitude, longitude} = route.params;
+   // const {latitude, longitude} = route.params;
 
     return (
         <View style={styles.mainView}>

@@ -1,15 +1,16 @@
 import React from "react";
-import {NavigationContainer} from "@react-navigation/native";
-import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import {MaterialIcons} from "@expo/vector-icons";
-import {I18nManager} from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { MaterialIcons } from "@expo/vector-icons";
+import { I18nManager } from "react-native";
 
 import Splash from "./src/screens/authentication/Splash";
 import Onboarding from "./src/screens/authentication/Onboarding";
 import Login from "./src/screens/authentication/Login";
 import Registration from "./src/screens/authentication/Registration";
-import AfterRegistrationDetailsCompletion from "./src/screens/authentication/AfterRegistrationDetailsCompletion"
+import AfterRegistrationDetailsCompletion from "./src/screens/authentication/AfterRegistrationDetailsCompletion";
 import UserProfile from "./src/screens/mainFlow/UserProfile";
 import MyStations from "./src/screens/mainFlow/MyStations";
 import EditStation from "./src/screens/station/EditStation";
@@ -19,10 +20,11 @@ import StationSelectScreen from "./src/screens/mainFlow/StationSelectScreen";
 import SelectChargingStation from "./src/screens/mainFlow/SelectChargingStation";
 import EditProfile from "./src/screens/authentication/EditProfile";
 import CreateStation from "./src/screens/mainFlow/CreateStation";
-import {Provider as AuthProvider} from "./src/context/AuthContext";
-import {Provider as StationsProvider} from "./src/context/StationsContext";
-import {Provider as UsersProvider} from "./src/context/UsersContext";
+import { Provider as AuthProvider } from "./src/context/AuthContext";
+import { Provider as StationsProvider } from "./src/context/StationsContext";
+import { Provider as UsersProvider } from "./src/context/UsersContext";
 
+import MyAccount from "./src/screens/sideMenu/MyAccount";
 import SelectLocationByMap from "./src/screens/mainFlow/SelectLocationByMap";
 
 I18nManager.forceRTL(false);
@@ -32,14 +34,17 @@ const Stack = createNativeStackNavigator();
 
 function StackNavigator() {
     return (
-        <Stack.Navigator screenOptions={{headerShown: false}}>
-            <Stack.Screen name="Splash" component={Splash}/>
-            <Stack.Screen name="Login" component={Login}/>
-            <Stack.Screen name="Registration" component={Registration}/>
-            <Stack.Screen name="DetailsCompletion" component={AfterRegistrationDetailsCompletion}/>
-            <Stack.Screen name="Onboarding" component={Onboarding}/>
-            <Stack.Screen name="Resolve" component={ResolveAuthScreen}/>
-            <Stack.Screen name="TabNavigator" component={TabNavigator}/>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Splash" component={Splash} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Registration" component={Registration} />
+            <Stack.Screen
+                name="DetailsCompletion"
+                component={AfterRegistrationDetailsCompletion}
+            />
+            <Stack.Screen name="Onboarding" component={Onboarding} />
+            <Stack.Screen name="Resolve" component={ResolveAuthScreen} />
+            <Stack.Screen name="MainNavigator" component={MainNavigator} />
         </Stack.Navigator>
     );
 }
@@ -48,23 +53,23 @@ const Tab = createBottomTabNavigator();
 
 function TabNavigator() {
     return (
-        <Tab.Navigator screenOptions={{headerShown: false}}>
-            <Tab.Screen
-                name="CreateStation"
-                component={CreateStation}
-                options={{
-                    tabBarButton: () => null,
-                    tabBarVisible: false, //hide tab bar on this screen
-                }}
-            />
+        <Tab.Navigator screenOptions={{ headerShown: false }}>
             <Tab.Screen
                 name="UserProfile"
                 component={UserProfile}
                 options={{
                     title: "My Profile",
                     tabBarIcon: (tabInfo) => (
-                        <MaterialIcons name="home" size={24} color={tabInfo.tintColor}/>
+                        <MaterialIcons name="home" size={24} color={tabInfo.tintColor} />
                     ),
+                }}
+            />
+            <Tab.Screen
+                name="CreateStation"
+                component={CreateStation}
+                options={{
+                    tabBarButton: () => null,
+                    tabBarVisible: false, //hide tab bar on this screen
                 }}
             />
             <Tab.Screen
@@ -103,7 +108,7 @@ function TabNavigator() {
                 options={{
                     title: "Charge",
                     tabBarIcon: (tabInfo) => (
-                        <MaterialIcons name="map" size={24} color={tabInfo.tintColor}/>
+                        <MaterialIcons name="map" size={24} color={tabInfo.tintColor} />
                     ),
                 }}
             />
@@ -135,21 +140,39 @@ function TabNavigator() {
     );
 }
 
+const Drawer = createDrawerNavigator();
+
+function DrawerNavigator() {
+    return (
+        <Drawer.Navigator>
+            <Drawer.Screen name="TabNavigator" component={TabNavigator} />
+            <Drawer.Screen name="MyAccount" component={MyAccount} />
+        </Drawer.Navigator>
+    );
+}
+
+function MainNavigator() {
+    return (
+        <DrawerNavigator>
+            <Drawer.Screen name="MainTabNavigator" component={TabNavigator} />
+        </DrawerNavigator>
+    );
+}
+
 const App = () => {
     return (
         <NavigationContainer>
-            <StackNavigator/>
+            <StackNavigator />
         </NavigationContainer>
     );
 };
 
-//export default App;
 export default () => {
     return (
         <UsersProvider>
             <StationsProvider>
                 <AuthProvider>
-                    <App/>
+                    <App />
                 </AuthProvider>
             </StationsProvider>
         </UsersProvider>
