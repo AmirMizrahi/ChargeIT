@@ -15,6 +15,8 @@ public class ChargingStation {
     private ObjectId id;
     private final GeoLocation location;
     private final ObjectId ownerId;
+    private ObjectId whoChargesAtTheStation;
+
     /*private final BufferedImage m_qrCodeImage;*/
     private final EchargerType chargerType;
     private Estatus status;
@@ -25,6 +27,7 @@ public class ChargingStation {
     public ChargingStation(GeoLocation location, ObjectId ownerId, double pricePerVolt, EchargerType chargerType, String stationName) {
         this.location = location;
         this.ownerId = ownerId;
+        this.whoChargesAtTheStation = null;
         this.chargerType = chargerType;
         /*m_qrCodeImage = generateQRCodeImage();*/
         status = Estatus.NOT_CHARGING;
@@ -47,6 +50,14 @@ public class ChargingStation {
 
     public ObjectId getOwnerId() {
         return ownerId;
+    }
+
+    public ObjectId getWhoChargesAtTheStation() {
+        return whoChargesAtTheStation;
+    }
+
+    public void setWhoChargesAtTheStation(ObjectId whoChargesAtTheStation) {
+        this.whoChargesAtTheStation = whoChargesAtTheStation;
     }
 
     public EchargerType getChargerType() {
@@ -75,14 +86,16 @@ public class ChargingStation {
         this.stationName = stationName;
     }
 
-    public void charge()
+    public void charge(ObjectId whoChargesAtTheStation)
     {
         status = Estatus.CHARGING;
+        this.whoChargesAtTheStation = whoChargesAtTheStation;
     }
 
     public void unCharge()
     {
         status = Estatus.NOT_CHARGING;
+        this.whoChargesAtTheStation = null;
     }
     public List<Review> getReviews() {
         return reviews;

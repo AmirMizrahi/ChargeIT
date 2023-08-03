@@ -35,6 +35,8 @@ public class User {
 
     private List<MoneyTransaction> payments;
 
+    private boolean isCharging;
+
     public User(String password,String email) {
         //this.userName = userName;
         this.password = password;
@@ -45,6 +47,7 @@ public class User {
         this.israeliCreditCard = null;
         this.profits = new ArrayList<>();
         this.payments = new ArrayList<>();
+        this.isCharging = false;
     }
 
     // Getters and setters
@@ -112,5 +115,13 @@ public class User {
 
     public void addPayment(MoneyTransaction transaction) {
         payments.add(transaction);
+    }
+
+    public boolean isCharging() {
+        return isCharging;
+    }
+
+    public void setCharging(boolean charging) {
+        isCharging = charging;
     }
 }

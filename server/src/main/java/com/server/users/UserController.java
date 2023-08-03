@@ -249,6 +249,74 @@ public class UserController {
                 .body(jsonObject.toString());
     }
 
+    @GetMapping("/getChargingStatus")
+    public ResponseEntity<String> getChargingStatus(HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
+        {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
+        }
+        else
+        {
+            User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
+            jsonObject.addProperty("isCharging", user.isCharging());
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    @GetMapping("/getChargingStationIDuserCurrentlyUse")
+    public ResponseEntity<String> getChargingStationIDuserCurrentlyUse(HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
+        {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
+        }
+        else
+        {
+            String ChargingStasionID = "";
+            User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
+
+            if(user.isCharging())
+            {
+                try {
+                    RestTemplate restTemplate = new RestTemplate();
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add("Cookie", request.getHeader("Cookie"));
+                    HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+                    String url = "http://localhost:8080/chargingStations/getwhichChargingStationUserUses";
+                    ResponseEntity<String> response =  restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+                    if(response.getStatusCode() == HttpStatus.OK)
+                    {
+                        // Extract the chargingStationUserUses value from the JSON response
+                        JsonObject jsonResponse = new JsonParser().parse(response.getBody()).getAsJsonObject();
+                        ChargingStasionID = jsonResponse.get("chargingStationUserUses").getAsString();
+                    }
+                } catch (Exception exception) {
+
+                }
+            }
+            jsonObject.addProperty("ChargingStasionID", ChargingStasionID);
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
     @PutMapping("/updateUserPassword")
     public ResponseEntity<String> updateUserPassword(@RequestParam("password") String password, HttpServletRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
@@ -628,5 +696,29 @@ public class UserController {
                 .body(jsonObject.toString());
     }
 
+    @PutMapping("/updateChargingStatus")
+    public ResponseEntity<String> updateChargingStatus(HttpServletRequest request, @RequestParam("isCharging") boolean isCharging) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
+        {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
+        }
+        else
+        {
+            User user = m_userRepository.findById((ObjectId) session.getAttribute("id")).orElseThrow(() -> new RuntimeException("User not found"));
+            user.setCharging(isCharging);
+            m_userRepository.save(user);
+            jsonObject.addProperty("message", "Update charging status successfully.");
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
 }
 
