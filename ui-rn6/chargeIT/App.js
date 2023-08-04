@@ -2,6 +2,7 @@ import React from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import {MaterialIcons} from "@expo/vector-icons";
 import {I18nManager} from "react-native";
 
@@ -19,6 +20,8 @@ import StationSelectScreen from "./src/screens/mainFlow/StationSelectScreen";
 import SelectChargingStation from "./src/screens/mainFlow/SelectChargingStation";
 import EditProfile from "./src/screens/authentication/EditProfile";
 import CreateStation from "./src/screens/mainFlow/CreateStation";
+import Bill from "./src/screens/statistics/Bill";
+
 import {Provider as AuthProvider} from "./src/context/AuthContext";
 import {Provider as StationsProvider} from "./src/context/StationsContext";
 import {Provider as UsersProvider} from "./src/context/UsersContext";
@@ -29,6 +32,8 @@ I18nManager.forceRTL(false);
 I18nManager.allowRTL(false);
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
 function StackNavigator() {
     return (
@@ -40,23 +45,23 @@ function StackNavigator() {
             <Stack.Screen name="Onboarding" component={Onboarding}/>
             <Stack.Screen name="Resolve" component={ResolveAuthScreen}/>
             <Stack.Screen name="TabNavigator" component={TabNavigator}/>
+            <Stack.Screen name="DrawerNavigator" component={DrawerNavigator}/>
         </Stack.Navigator>
     );
 }
 
-const Tab = createBottomTabNavigator();
+function DrawerNavigator() {
+    return (
+        <Drawer.Navigator screenOptions={{headerTitle:""}}>
+            <Drawer.Screen name="TabNavigator" component={TabNavigator} options={{drawerItemStyle: {display: 'none'}}}/>
+            <Drawer.Screen name="Bill" component={Bill} />
+        </Drawer.Navigator>
+    );
+}
 
 function TabNavigator() {
     return (
         <Tab.Navigator screenOptions={{headerShown: false}}>
-            <Tab.Screen
-                name="CreateStation"
-                component={CreateStation}
-                options={{
-                    tabBarButton: () => null,
-                    tabBarVisible: false, //hide tab bar on this screen
-                }}
-            />
             <Tab.Screen
                 name="UserProfile"
                 component={UserProfile}
@@ -65,6 +70,14 @@ function TabNavigator() {
                     tabBarIcon: (tabInfo) => (
                         <MaterialIcons name="home" size={24} color={tabInfo.tintColor}/>
                     ),
+                }}
+            />
+            <Tab.Screen
+                name="CreateStation"
+                component={CreateStation}
+                options={{
+                    tabBarButton: () => null,
+                    tabBarVisible: false, //hide tab bar on this screen
                 }}
             />
             <Tab.Screen

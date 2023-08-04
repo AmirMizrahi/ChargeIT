@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useContext} from "react";
 import {useIsFocused, useFocusEffect} from "@react-navigation/native";
 import {View, Text, StyleSheet} from "react-native";
-import {useBackHandler} from "@react-native-community/hooks";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import Buttons from "../../components/Buttons";
 import Spacer from "../../components/Spacer";
@@ -35,10 +34,6 @@ const UserProfile = ({navigation}) => {
         AsyncStorage.removeItem("token");
         setPopupVisible(false);
     };
-    // Cancel return to the authentication flow.
-    useBackHandler(() => {
-        return true;
-    });
 
     //  Remove the errorMsg if available.
     useFocusEffect(
@@ -73,10 +68,14 @@ const UserProfile = ({navigation}) => {
         if (state.errorMessage) {
             setPopupVisible(true);
         }
-        // setMail(state.userValues.email);
-        // setFirstName(state.userValues.firstName);
-        // setLastName(state.userValues.lastName);
-        // setPhone(state.userValues.phoneNumber);
+
+        // Cancel return to the authentication flow:
+        navigation.addListener('beforeRemove', (e) => {
+            if (e.data.action.type === "GO_BACK"){
+                e.preventDefault();
+            }
+        })
+
     }, [isFocused, state.errorMessage]); // runs only once when the component is mounted
 
     return (

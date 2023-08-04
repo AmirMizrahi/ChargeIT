@@ -9,7 +9,6 @@ import AuthForm from "./AuthForm";
 
 const Registration = ({ navigation }) => {
   const { state, register, clearErrorMessage } = useContext(AuthContext);
-
   // Remove the errorMsg if available.
   useFocusEffect(
     React.useCallback(() => {

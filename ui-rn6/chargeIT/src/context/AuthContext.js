@@ -24,7 +24,7 @@ const tryLocalLogin =
             const token = await AsyncStorage.getItem("token");
             if (token) {
                 dispatch({type: "signin", payload: token});
-                navigation.navigate("TabNavigator", {screen: "UserProfile"}); // Need to add token logic...
+                navigation.navigate("DrawerNavigator", {screen: "TabNavigator"}); // Need to add token logic...
             } else {
                 navigation.navigate("Registration"); // Need to add token logic...
             }
@@ -65,7 +65,7 @@ const signin =
                 });
                 await AsyncStorage.setItem("token", response.data.token);
                 dispatch({type: "signin", payload: response.data.token});
-                navigation.navigate("TabNavigator", {screen: "UserProfile"});
+                navigation.navigate("DrawerNavigator", {screen: "TabNavigator"});
             } catch (err) {
                 dispatch({
                     type: "add_error",
@@ -80,7 +80,7 @@ const logout =
             try {
                 await AsyncStorage.removeItem("token");
                 dispatch({type: "signout"});
-                navigation.navigate("Onboarding"); // Need to add token logic...
+                navigation.navigate("Onboarding");
             } catch (err) {
             }
         };

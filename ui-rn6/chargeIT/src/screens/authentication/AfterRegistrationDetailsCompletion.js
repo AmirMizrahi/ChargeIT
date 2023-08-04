@@ -139,7 +139,7 @@ const AfterRegistrationDetailsCompletion = ({navigation}) => {
                 <Buttons btn_text="Finish my Profile"
                          on_press={() => updateUser(userData, navigation)}/>
                 <Buttons btn_text="Maybe later..."
-                         on_press={() => navigation.navigate("TabNavigator", {screen: "UserProfile"})}/>
+                         on_press={() => navigation.navigate("DrawerNavigator", {screen: "TabNavigator"})}/>
             </View>
         </SafeAreaView>
     );
