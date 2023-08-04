@@ -149,6 +149,38 @@
 					"response": []
 				},
 				{
+					"name": "getChargingStationIDuserCurrentlyUse",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/getChargingStationIDuserCurrentlyUse",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"getChargingStationIDuserCurrentlyUse"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "updateUserPassword",
 					"request": {
 						"method": "PUT",
@@ -415,7 +447,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 32.052386,\r\n    \"longitude\": 34.766146\r\n  },\r\n  \"pricePerVolt\": 3.25,\r\n  \"chargerType\": \"TYPE_0\",\r\n  \"stationName\": \"EDEN station 0\"\r\n}\r\n",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 32.050275,\r\n    \"longitude\": 34.75892\r\n  },\r\n  \"pricePerVolt\": 3.25,\r\n  \"chargerType\": \"TYPE_0\",\r\n  \"stationName\": \"AMIR station 2\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -550,7 +582,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/chargingStations/getChargingStation?chargingStationId=64bba697e967a45e60ba3bf8",
+							"raw": "http://localhost:8080/chargingStations/getChargingStation?chargingStationId=6475ef469c513479468ac747",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -563,7 +595,7 @@
 							"query": [
 								{
 									"key": "chargingStationId",
-									"value": "64bba697e967a45e60ba3bf8"
+									"value": "6475ef469c513479468ac747"
 								}
 							]
 						}
@@ -849,6 +881,101 @@
 									"key": "nickname",
 									"value": "anonymous"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Simulator",
+			"item": [
+				{
+					"name": "charge Copy",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"latitude\": 32.050274,\r\n  \"longitude\": 34.75891\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/simulator/charge?chargingStationId=6475ef469c513479468ac747",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"simulator",
+								"charge"
+							],
+							"query": [
+								{
+									"key": "chargingStationId",
+									"value": "6475ef469c513479468ac747"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unCharge Copy",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"latitude\": 32.050274,\r\n  \"longitude\": 34.75891\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/simulator/unCharge?chargingStationId=6475ef469c513479468ac747",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"simulator",
+								"unCharge"
+							],
+							"query": [
+								{
+									"key": "chargingStationId",
+									"value": "6475ef469c513479468ac747"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllChargingStations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/simulator/allChargingStations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"simulator",
+								"allChargingStations"
 							]
 						}
 					},

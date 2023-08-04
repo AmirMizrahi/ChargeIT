@@ -324,6 +324,51 @@ public class ChargingStationController {
 
     }
 
+    @CrossOrigin(origins = "*")
+    @GetMapping(value = "/getwhichChargingStationUserUses", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> getwhichChargingStationUserUses(HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
+        {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
+        }
+        else
+        {
+            // Retrieve the user ID from the session
+            String userId = session.getAttribute("id").toString();
+
+            // Iterate through all charging stations to find the one with matching user ID
+            String chargingStationUserUses = ""; // Initialize it as an empty string, or you can set it to null if desired.
+            List<ChargingStation> chargingStations = m_chargingStationsRepository.findAll();
+
+            for (ChargingStation chargingStation : chargingStations) {
+                if (chargingStation.getWhoChargesAtTheStation().equals(new ObjectId(userId))) {
+                    chargingStationUserUses = chargingStation.getId().toString();
+                    break; // Break out of the loop if a matching charging station is found.
+                }
+            }
+
+            if (!chargingStationUserUses.isEmpty()) {
+                httpStatus = HttpStatus.OK;
+                jsonObject.addProperty("chargingStationUserUses", chargingStationUserUses);
+            } else {
+                // If no matching charging station is found, you can return an appropriate response.
+                httpStatus = HttpStatus.NOT_FOUND;
+                jsonObject.addProperty("message", "No charging station found for the user.");
+            }
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
     @PutMapping("/charge")
     public ResponseEntity<String> charge(@RequestParam("chargingStationId") String chargingStationId, @RequestBody GeoLocation currentGeoLocation, HttpServletRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
@@ -370,9 +415,46 @@ public class ChargingStationController {
 
                             }
 
-                            station.charge();
-                            m_chargingStationsRepository.save(station);
-                            jsonObject.addProperty("message", "Charging...");
+                            //check user is not charging
+                            boolean isCharging = false;
+                            try {
+                                restTemplate = new RestTemplate();
+                                headers = new HttpHeaders();
+                                headers.add("Cookie", request.getHeader("Cookie"));
+                                httpEntity = new HttpEntity<>(headers);
+                                url = "http://localhost:8080/users/getChargingStatus";
+                                response =  restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+                                // Extract the isCharging value from the JSON response
+                                JsonObject jsonResponse = new JsonParser().parse(response.getBody()).getAsJsonObject();
+                                isCharging = jsonResponse.get("isCharging").getAsBoolean();
+                            } catch (Exception exception) {
+
+                            }
+
+                            if(!isCharging)
+                            {
+                                //update the user charging status
+                                try {
+                                    restTemplate = new RestTemplate();
+                                    headers = new HttpHeaders();
+                                    headers.add("Cookie", request.getHeader("Cookie"));
+                                    httpEntity = new HttpEntity<>(headers);
+                                    url = "http://localhost:8080/users/updateChargingStatus?isCharging=" + true;
+                                    restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+                                } catch (Exception exception) {
+
+                                }
+
+                                station.charge((ObjectId) session.getAttribute("id"));
+                                m_chargingStationsRepository.save(station);
+                                jsonObject.addProperty("message", "Charging...");
+                            }
+                            else
+                            {
+                                httpStatus = HttpStatus.UNAUTHORIZED;
+                                jsonObject.addProperty("error", "User already charging.");
+                            }
                         }
                         else
                         {
@@ -440,6 +522,18 @@ public class ChargingStationController {
                         ResponseEntity<Integer> response = restTemplate.exchange(applicationBUrl, HttpMethod.PUT, httpEntity, Integer.class);
                         percentToAskPayFor = response.getBody();
                         //System.out.println("Please Pay: " + percentToAskPayFor* station.getPricePerVolt());
+                    } catch (Exception exception) {
+
+                    }
+
+                    //update the user charging status
+                    try {
+                        RestTemplate restTemplate = new RestTemplate();
+                        HttpHeaders headers = new HttpHeaders();
+                        headers.add("Cookie", request.getHeader("Cookie"));
+                        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+                        String url = "http://localhost:8080/users/updateChargingStatus?isCharging=" + false;
+                        restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
                     } catch (Exception exception) {
 
                     }
