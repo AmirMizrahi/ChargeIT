@@ -15,12 +15,14 @@ import { Context as StationsContext } from "../../context/StationsContext";
 import trackMyLocation from "../../hooks/trackMyLocation";
 import * as Location from "expo-location";
 import { StationDetails } from "../../components/StationDetails";
+import Buttons from "../../components/Buttons";
 
 const SelectTemp = ({ navigation }) => {
-  const { getCurrentLocation, fetchChargingStationsByDistance } =
-    useContext(StationsContext);
+  const { discharge, getCurrentLocation, fetchChargingStationsByDistance, getStationToDischarge } = useContext(StationsContext);
   const [err] = trackMyLocation(useIsFocused(), getCurrentLocation);
   const [stationsList, setStations] = useState([]);
+  const [selectedChargingStationId, setSelectedChargingStationId] = useState()
+  const [selectedChargingStationName, setSelectedChargingStationName] = useState()
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -43,12 +45,36 @@ const SelectTemp = ({ navigation }) => {
         });
 
         setStations(jsonArray);
+
+        // Check if needed to show discharge button
+
       } catch (error) {
         console.error(error);
       }
     };
+
+    // Check if there is a station which the current user is connected to, and if so => get it's id.
+    // If station is available, show a discharge button.
+    const isDischargeButtonAvailable = async () => {
+      try {
+        const dischargedStation = await getStationToDischarge();
+        if (dischargedStation && dischargedStation.data && dischargedStation.data.id) {
+          setSelectedChargingStationId(dischargedStation.data.id);
+          setSelectedChargingStationName(dischargedStation.data.name);
+        }
+        else {
+          setSelectedChargingStationId(null);
+          setSelectedChargingStationName(null);
+        }
+      }
+      catch (error) {
+        console.error(error);
+      }
+    }
+
     fetchStationsOnLoad();
-  }, [isFocused]);
+    isDischargeButtonAvailable();
+  }, [isFocused, selectedChargingStationId]);
 
   const navigateToStationWatchScreen = (station) => {
     if (station.status === "CHARGING") {
@@ -70,6 +96,15 @@ const SelectTemp = ({ navigation }) => {
       </View>
       <Spacer />
       <View style={styles.mainView}>
+        {
+          selectedChargingStationName ?
+              <Buttons btn_text={"Discharge " + selectedChargingStationName} on_press={() => {
+                discharge({selectedChargingStationId, selectedChargingStationId}) //todo changer!!!!
+                setSelectedChargingStationName(null)
+              }} />
+              : null
+        }
+
         <Text style={styles.stationTitle}>Stations Around You:</Text>
         <ScrollView contentContainerStyle={styles.stationListContainer}>
           {stationsList.map((station) => {

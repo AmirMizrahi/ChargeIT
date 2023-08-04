@@ -12,10 +12,8 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+
+import java.util.*;
 
 import static com.server.ServerConfig.MAX_DISTANCE_FROM_STATION_IN_METERS;
 import static com.server.location.GeoUtils.distanceBetweenPointsInKilometers;
@@ -325,7 +323,7 @@ public class ChargingStationController {
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping(value = "/getwhichChargingStationUserUses", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/getWhichChargingStationUserUses", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<String> getwhichChargingStationUserUses(HttpServletRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
@@ -344,19 +342,20 @@ public class ChargingStationController {
             String userId = session.getAttribute("id").toString();
 
             // Iterate through all charging stations to find the one with matching user ID
-            String chargingStationUserUses = ""; // Initialize it as an empty string, or you can set it to null if desired.
+            String id = null, name = null; // Initialize it as an empty string, or you can set it to null if desired.
             List<ChargingStation> chargingStations = m_chargingStationsRepository.findAll();
 
             for (ChargingStation chargingStation : chargingStations) {
-                if (chargingStation.getWhoChargesAtTheStation().equals(new ObjectId(userId))) {
-                    chargingStationUserUses = chargingStation.getId().toString();
+                if (Objects.equals(chargingStation.getWhoChargesAtTheStation(), (new ObjectId(userId)))) {
+                    id = chargingStation.getId().toString();
+                    name = chargingStation.getStationName();
                     break; // Break out of the loop if a matching charging station is found.
                 }
             }
 
-            if (!chargingStationUserUses.isEmpty()) {
-                httpStatus = HttpStatus.OK;
-                jsonObject.addProperty("chargingStationUserUses", chargingStationUserUses);
+            if (id != null) {
+                jsonObject.addProperty("id", id);
+                jsonObject.addProperty("name", name);
             } else {
                 // If no matching charging station is found, you can return an appropriate response.
                 httpStatus = HttpStatus.NOT_FOUND;
@@ -453,7 +452,7 @@ public class ChargingStationController {
                             else
                             {
                                 httpStatus = HttpStatus.UNAUTHORIZED;
-                                jsonObject.addProperty("error", "User already charging.");
+                                jsonObject.addProperty("error", "User already charging in some charging station.");
                             }
                         }
                         else
