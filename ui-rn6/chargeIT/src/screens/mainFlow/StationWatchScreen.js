@@ -1,12 +1,13 @@
-import {Alert, StyleSheet, Text, View} from "react-native";
-import React, {useContext, useState} from "react";
-import basicApi from "../../api/basicApi";
+import {Dimensions, StyleSheet, Text, View} from "react-native";
+import React, {useContext, useEffect, useState} from "react";
 import Buttons from "../../components/Buttons";
 import {Context as StationsContext} from "../../context/StationsContext";
 import ErrorText from "../../components/ErrorText";
 import {useFocusEffect} from "@react-navigation/native";
+import MapView, {Marker} from "react-native-maps";
 
 const StationWatchScreen = ({navigation, route}) => {
+    const [initialRegion, setInitialRegion] = useState({});
     const [stationDetails, setStation] = useState({});
     const [isCharging, setIsCharging] = useState(false);
     const [errorMessage, setErrorMessage] = useState();
@@ -41,55 +42,84 @@ const StationWatchScreen = ({navigation, route}) => {
         }
     });
 
+    // Update initialRegion whenever route.params.location changes
+    useEffect(() => {
+        setInitialRegion({
+            latitude: route.params.location.latitude,
+            longitude: route.params.location.longitude,
+            latitudeDelta: 0.001,
+            longitudeDelta: 0.001,
+        });
+    }, [route.params.location]);
+
     return (
         <View style={styles.mainView}>
-            <Text style={styles.stationName}>Charging Station Details</Text>
-            <View style={{paddingBottom: 20}}>
-                {Object.keys(stationDetails).map((key) => {
-                    return (
-                        <View key={key}>
-                            <Text
-                                style={
-                                    key === "stationName"
-                                        ? styles.stationName
-                                        : styles.stationStatus
-                                }
-                            >
-                                {key}: {stationDetails[key]}
-                            </Text>
-                        </View>
-                    );
-                })}
+            {/*Map*/}
+            <View style={styles.mapContainer}>
+                <MapView
+                    style={styles.map}
+                    region={initialRegion}
+                    scrollEnabled={true}
+                    zoomEnabled={true}
+                    rotateEnabled={false}>
+                    <Marker coordinate={{
+                        latitude: route.params.location.latitude,
+                        longitude: route.params.location.longitude
+                    }}/>
+                </MapView>
             </View>
+            {/**/}
+            {/*Station Details*/}
+            <View style={styles.container}>
+                <Text style={styles.stationName}>Charging Station Details</Text>
+                <View>
+                    {Object.keys(stationDetails).map((key) => {
+                        return (
+                            <View key={key}>
+                                <Text
+                                    style={
+                                        key === "stationName"
+                                            ? styles.stationName
+                                            : styles.stationStatus
+                                    }
+                                >
+                                    {key}: {stationDetails[key]}
+                                </Text>
+                            </View>
+                        );
+                    })}
+                </View>
+            </View>
+            {/**/}
+            {/*Buttons and text*/}
+                {!isCharging ?
+                    (
+                        <Buttons
+                            btn_text={"Press to Charge"}
+                            on_press={async () => {
+                                const result = await charge({
+                                    selectedChargingStationId: route.params["id"],
+                                    currentLocation: route.params["location"],
+                                });
+                                if (result.message) {
+                                    setIsCharging(true);
+                                } else {
+                                    setErrorMessage(result.error);
+                                }
+                                setTimeout(() => navigation.goBack(), 3000);    // Return to 'Charge'.
+                            }}
+                        />
+                    ) : null
+                }
 
-            { !isCharging ?
-                (
-                    <Buttons
-                        btn_text={"Press to Charge"}
-                        on_press={async () => {
-                            const result = await charge({
-                                selectedChargingStationId: route.params["id"],
-                                currentLocation: route.params["location"],
-                            });
-                            if (result.message) {
-                                setIsCharging(true);
-                            }
-                            else {
-                                setErrorMessage(result.error);
-                            }
-                            setTimeout(() => navigation.goBack(), 3000);    // Return to 'Charge'.
-                        }}
-                    />
-                ) : null
-            }
+                {isCharging ? (
+                    <Text style={styles.ischarging}>Station is charging . . .</Text>
+                ) : null}
 
-            {isCharging ? (
-                <Text style={styles.ischarging}>Station is charging . . .</Text>
-            ):null}
-
-            {errorMessage ? (
-                <ErrorText errorMessage={errorMessage}/>
-            ):null}
+                {errorMessage ? (
+                    <ErrorText errorMessage={errorMessage}/>
+                ) : null}
+                {/**/}
         </View>
     );
 };
@@ -112,7 +142,8 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        padding: 10,
+        borderColor: "red",
+        borderWidth: 3,
     },
     stationContainer: {
         borderWidth: 1,
@@ -135,6 +166,15 @@ const styles = StyleSheet.create({
         fontSize: 17,
         color: "gray",
         textAlign: "center",
+    },
+    mapContainer: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    map: {
+        width: Dimensions.get("window").width,
+        height: 250
     },
 });
 
