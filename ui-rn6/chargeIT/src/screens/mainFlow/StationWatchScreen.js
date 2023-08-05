@@ -71,7 +71,6 @@ const StationWatchScreen = ({navigation, route}) => {
                                 selectedChargingStationId: route.params["id"],
                                 currentLocation: route.params["location"],
                             });
-                            debugger;
                             if (result.message) {
                                 setIsCharging(true);
                             }
