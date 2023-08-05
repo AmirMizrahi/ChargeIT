@@ -82,11 +82,22 @@ const SelectChargingStation = ({navigation}) => {
     }, [isFocused, selectedChargingStationId]);
 
     const navigateToStationWatchScreen = (station) => {
-        if (station.status === "CHARGING") {
+         if (selectedChargingStationId) {
+            Alert.alert("Your already charging your vehicle", "Discharge from " + selectedChargingStationName + " first.", [
+                {text: "OK", onPress: () => console.log("OK Pressed")},
+            ]);
+        }
+        else if (station.status === "CHARGING") {
             Alert.alert("Station is NOT available!", null, [
                 {text: "OK", onPress: () => console.log("OK Pressed")},
             ]);
-        } else {
+        }
+        else if (selectedChargingStationId) {
+            Alert.alert("Your already charging your vehicle", "Discharge from " + selectedChargingStationName + " first.", [
+                {text: "OK", onPress: () => console.log("OK Pressed")},
+            ]);
+        }
+        else {
             navigation.navigate("StationWatchScreen", station);
         }
     };
@@ -127,7 +138,7 @@ const SelectChargingStation = ({navigation}) => {
                 {
                     selectedChargingStationName ?
                         <Buttons
-                            btn_text={"Discharge " + selectedChargingStationName}
+                            btn_text={"Discharge from " + selectedChargingStationName}
                             on_press={dischargeActions}/>
                         : null
                 }

@@ -1,15 +1,28 @@
 import {Alert, StyleSheet, Text, View} from "react-native";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import basicApi from "../../api/basicApi";
 import Buttons from "../../components/Buttons";
+import {Context as StationsContext} from "../../context/StationsContext";
+import ErrorText from "../../components/ErrorText";
+import {useFocusEffect} from "@react-navigation/native";
 
 const StationWatchScreen = ({navigation, route}) => {
     const [stationDetails, setStation] = useState({});
     const [isCharging, setIsCharging] = useState(false);
-    const [totalPrice, setTotalPrice] = useState(0);
+    const [errorMessage, setErrorMessage] = useState();
+
+    const {charge} = useContext(StationsContext);
+
+    // Reset isCharging whenever screen is rendered.
+    useFocusEffect(
+        React.useCallback(() => {
+            setIsCharging(false);
+            setErrorMessage(null);
+        }, [])
+    );
 
     Object.keys(route.params).map((key) => {
-        console.log(route);
+        //console.log(route);
         console.log(route.params);
         // if (key === 'location') {
         //     stationDetails["Location"] = "Longitude: " + route.params[key].longitude + ", Latitude: " + route.params[key].latitude
@@ -48,76 +61,36 @@ const StationWatchScreen = ({navigation, route}) => {
                     );
                 })}
             </View>
-            {!isCharging && (
-                <Buttons
-                    btn_text={"Charge"}
-                    on_press={async () => {
-                        //Alert.alert('Charging ...',null, [{text: 'OK', onPress: () => console.log('OK Pressed')}] )
-                        debugger;
-                        try {
-                            await basicApi
-                                .put(
-                                    "/chargingStations/charge?chargingStationId=" + route.params["id"],
-                                    route.params["location"]   // Location inside the body of request.
-                                )
-                                .then(() => {
-                                    setIsCharging(true);
-                                    setTotalPrice(0);
-                                });
-                        } catch (err) {
-                            console.log(err + "hi");
-                            Alert.alert(err, null, [
-                                {
-                                    text: "OK",
-                                    onPress: () => console.log("OK Pressed"),
-                                },
-                            ]);
-                        }
-                    }}
-                ></Buttons>
-            )}
 
-            {isCharging && (
-                <Buttons
-                    btn_text={"Stop"}
-                    on_press={async () => {
-                        try {
-                            await basicApi
-                                .put(
-                                    "/chargingStations/unCharge?chargingStationId=" + route.params["id"],
-                                    route.params["location"]
-                                )
-                                .then((response) => {
-                                    let totalPrice = response.data.payment;
-                                    setTotalPrice(totalPrice);
-                                    setIsCharging(false);
-                                    Alert.alert("Charging session ended", null, [
-                                        {
-                                            text: "OK",
-                                            onPress: () => console.log("OK Pressed"),
-                                        },
-                                    ]);
-                                });
-                        } catch (err) {
-                            Alert.alert("Something went wrong", err.response.data.errorMessage, [
-                                {
-                                    text: "OK",
-                                    onPress: () => console.log("OK Pressed"),
-                                },
-                            ]);
-                        }
-                    }}
-                ></Buttons>
-            )}
-            {totalPrice ? (
-                <Text style={{textAlign: "center"}}>
-                    <Text>Total to Pay: </Text>
-                    <Text style={{fontWeight: "bold"}}>{totalPrice}$</Text>
-                </Text>
-            ) : null}
-            {isCharging && (
+            { !isCharging ?
+                (
+                    <Buttons
+                        btn_text={"Press to Charge"}
+                        on_press={async () => {
+                            const result = await charge({
+                                selectedChargingStationId: route.params["id"],
+                                currentLocation: route.params["location"],
+                            });
+                            debugger;
+                            if (result.message) {
+                                setIsCharging(true);
+                            }
+                            else {
+                                setErrorMessage(result.error);
+                            }
+                            setTimeout(() => navigation.goBack(), 3000);    // Return to 'Charge'.
+                        }}
+                    />
+                ) : null
+            }
+
+            {isCharging ? (
                 <Text style={styles.ischarging}>Station is charging . . .</Text>
-            )}
+            ):null}
+
+            {errorMessage ? (
+                <ErrorText errorMessage={errorMessage}/>
+            ):null}
         </View>
     );
 };

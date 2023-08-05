@@ -10,20 +10,20 @@ const stationsReducer = (state, action) => {
     }
 };
 
-//todo
-// const charge = (dispatch) => async () => {
-//     try {
-//         const response = await basicApi.get(
-//             "/chargingStations/getAllUserChargingStations"
-//         );
-//         return response.data.chargingStations;
-//     } catch (err) {
-//         dispatch({
-//             type: "add_error",
-//             payload: err.response.data.error,
-//         });
-//     }
-// };
+const charge = (dispatch) => async ({selectedChargingStationId, currentLocation}) => {
+    let responseData = {};
+    try {
+        const response = await basicApi.put(
+            "/chargingStations/charge?chargingStationId=" + selectedChargingStationId,
+            {latitude: currentLocation.latitude, longitude: currentLocation.longitude}
+        );
+        responseData.message = response.data.message;
+    }
+    catch (err){
+        responseData.error = err.response.data.error;
+    }
+    return responseData;
+};
 
 const discharge = (dispatch) => async ({selectedChargingStationId, currentLocation}) => {
     let responseData = {};
@@ -166,6 +166,7 @@ const getStationToDischarge =
 export const {Context, Provider} = createDataContext(
     stationsReducer,
     {
+        charge,
         discharge,
         getCurrentLocation,
         fetchChargingStations,
