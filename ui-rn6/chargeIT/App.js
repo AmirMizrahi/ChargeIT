@@ -20,6 +20,7 @@ import StationSelectScreen from "./src/screens/mainFlow/StationSelectScreen";
 import SelectChargingStation from "./src/screens/mainFlow/SelectChargingStation";
 import EditProfile from "./src/screens/authentication/EditProfile";
 import CreateStation from "./src/screens/mainFlow/CreateStation";
+import ChargeSucceeded from "./src/screens/mainFlow/ChargeSucceeded";
 import Bill from "./src/screens/statistics/Bill";
 
 import {Provider as AuthProvider} from "./src/context/AuthContext";
@@ -77,7 +78,7 @@ function TabNavigator() {
                 component={CreateStation}
                 options={{
                     tabBarButton: () => null,
-                    tabBarVisible: false, //hide tab bar on this screen
+                    tabBarVisible: false,
                 }}
             />
             <Tab.Screen
@@ -99,7 +100,7 @@ function TabNavigator() {
                 component={EditStation}
                 options={{
                     tabBarButton: () => null,
-                    tabBarVisible: false, //hide tab bar on this screen
+                    tabBarVisible: false,
                 }}
             />
             <Tab.Screen
@@ -107,7 +108,7 @@ function TabNavigator() {
                 component={EditProfile}
                 options={{
                     tabBarButton: () => null,
-                    tabBarVisible: false, //hide tab bar on this screen
+                    tabBarVisible: false,
                 }}
             />
             <Tab.Screen
@@ -125,7 +126,7 @@ function TabNavigator() {
                 component={SelectLocationByMap}
                 options={{
                     tabBarButton: () => null,
-                    tabBarVisible: false, //hide tab bar on this screen
+                    tabBarVisible: false,
                 }}
             />
             <Tab.Screen
@@ -133,7 +134,7 @@ function TabNavigator() {
                 component={StationSelectScreen}
                 options={{
                     tabBarButton: () => null,
-                    tabBarVisible: false, //hide tab bar on this screen
+                    tabBarVisible: false,
                 }}
             />
             <Tab.Screen
@@ -141,7 +142,15 @@ function TabNavigator() {
                 component={StationWatchScreen}
                 options={{
                     tabBarButton: () => null,
-                    tabBarVisible: false, //hide tab bar on this screen
+                    tabBarVisible: false,
+                }}
+            />
+            <Tab.Screen
+                name="ChargeSucceeded"
+                component={ChargeSucceeded}
+                options={{
+                    tabBarButton: () => null,
+                    tabBarVisible: false,
                 }}
             />
         </Tab.Navigator>

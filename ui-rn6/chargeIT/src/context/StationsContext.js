@@ -25,13 +25,20 @@ const stationsReducer = (state, action) => {
 //     }
 // };
 
-const discharge = (dispatch) => async ({selectedChargingStationId, location}) => {
-    const response = await basicApi.put(
-        "/chargingStations/unCharge?chargingStationId=" + selectedChargingStationId,
-        {params: {location}}
-    );
-    console.log(response);
-    return response.data.chargingStation;
+const discharge = (dispatch) => async ({selectedChargingStationId, currentLocation}) => {
+    let responseData = {};
+    try {
+        const response = await basicApi.put(
+            "/chargingStations/unCharge?chargingStationId=" + selectedChargingStationId,
+            {latitude: currentLocation.latitude, longitude: currentLocation.longitude}
+        );
+        responseData.stationName = response.data.stationName;
+        responseData.payment = response.data.payment;
+    }
+    catch (err){
+        responseData.error = err.response.data.error;
+    }
+    return responseData;
 };
 
 const getCurrentLocation = (dispatch) => (location) => {

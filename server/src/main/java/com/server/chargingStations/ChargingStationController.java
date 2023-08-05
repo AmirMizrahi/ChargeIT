@@ -488,7 +488,7 @@ public class ChargingStationController {
     }
 
     @PutMapping("/unCharge")
-    public ResponseEntity<String> unCharge(@RequestParam("chargingStationId") String chargingStationId, @RequestBody GeoLocation currentGeoLocation, HttpServletRequest request) {
+    public ResponseEntity<String> unCharge(@RequestParam("chargingStationId") String chargingStationId, @RequestBody GeoLocation currentLocation, HttpServletRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 
@@ -505,7 +505,7 @@ public class ChargingStationController {
             if(station.getStatus().equals(Estatus.CHARGING))
             {
                 if(GeoUtils.distanceBetweenPointsInKilometers(station.getLocation().getLatitude(), station.getLocation().getLongitude(),
-                        currentGeoLocation.getLatitude(), currentGeoLocation.getLongitude()) * 1000 <= MAX_DISTANCE_FROM_STATION_IN_METERS)
+                        currentLocation.getLatitude(), currentLocation.getLongitude()) * 1000 <= MAX_DISTANCE_FROM_STATION_IN_METERS)
                 {
                     int percentToAskPayFor = 0;
 
@@ -539,7 +539,7 @@ public class ChargingStationController {
 
                     station.unCharge();
                     m_chargingStationsRepository.save(station);
-                    jsonObject.addProperty("message", "UnCharge.");
+                    jsonObject.addProperty("stationName", station.getStationName());
                     jsonObject.addProperty("payment", (percentToAskPayFor * station.getPricePerVolt()));
 
                     // Update MoneyTransaction

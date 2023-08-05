@@ -64,12 +64,6 @@ const styles = StyleSheet.create({
     width: "90%",
     paddingLeft: 20,
   },
-  errorMessage: {
-    fontSize: 16,
-    color: "red",
-    marginLeft: 15,
-    marginTop: 15,
-  },
   container: {
     flex: 1,
     justifyContent: "center",

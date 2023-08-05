@@ -14,6 +14,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 import Buttons from "../../components/Buttons";
 import basicApi from "../../api/basicApi";
+import ErrorText from "../../components/ErrorText";
 
 const EditProfile = ({navigation}) => {
     const [errorMessage, setErrorMessage] = useState(null);
@@ -196,9 +197,7 @@ const EditProfile = ({navigation}) => {
                     />
                 </View>
             </View>
-            {errorMessage ? (
-                <Text style={styles.errorMessage}>{errorMessage}</Text>
-            ) : null}
+            <ErrorText errorMessage={errorMessage}/>
             <Buttons btn_text="Update" on_press={() => updateUser(userData,navigation, setErrorMessage)}/>
         </View>
     );
@@ -240,11 +239,5 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 10,
         padding: 10
-    },
-    errorMessage: {
-        fontSize: 16,
-        color: "red",
-        marginLeft: 15,
-        marginTop: 15,
-    },
+    }
 });

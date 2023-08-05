@@ -11,6 +11,7 @@ import {
 import Buttons from "../../components/Buttons";
 import { useNavigation } from "@react-navigation/native";
 import Spacer from "../../components/Spacer";
+import ErrorText from "../../components/ErrorText";
 
 const AuthForm = ({
   headerText,
@@ -55,9 +56,7 @@ const AuthForm = ({
               placeholderTextColor="#818181"
             />
           </View>
-          {errorMessage ? (
-            <Text style={styles.errorMessage}>{errorMessage}</Text>
-          ) : null}
+          <ErrorText errorMessage={errorMessage}/>
           <Spacer></Spacer>
 
           <View style={{ alignItems: "center" }}>
@@ -124,12 +123,6 @@ const styles = StyleSheet.create({
     height: 60,
     paddingLeft: 20,
     marginTop: 20,
-  },
-  errorMessage: {
-    fontSize: 16,
-    color: "red",
-    marginLeft: 15,
-    marginTop: 15,
   },
 });
 
