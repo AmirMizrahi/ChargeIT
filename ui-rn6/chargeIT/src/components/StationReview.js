@@ -1,7 +1,7 @@
 import react from "react";
 import { Text, Image, View, StyleSheet } from "react-native";
 
-const ResultsList = ({ result }) => {
+const StationReview = ({ result }) => {
     return (
         <View style={styles.container}>
             <Image style={styles.image} source={{ uri: result.image_url }} />
@@ -28,4 +28,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ResultsList;
+export default StationReview;

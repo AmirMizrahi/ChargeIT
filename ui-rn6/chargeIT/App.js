@@ -20,7 +20,7 @@ import StationSelectScreen from "./src/screens/mainFlow/StationSelectScreen";
 import SelectChargingStation from "./src/screens/mainFlow/SelectChargingStation";
 import EditProfile from "./src/screens/authentication/EditProfile";
 import CreateStation from "./src/screens/mainFlow/CreateStation";
-import ChargeSucceeded from "./src/screens/mainFlow/ChargeSucceeded";
+import AddReview from "./src/screens/mainFlow/AddReview";
 import Bill from "./src/screens/statistics/Bill";
 
 import {Provider as AuthProvider} from "./src/context/AuthContext";
@@ -146,8 +146,8 @@ function TabNavigator() {
                 }}
             />
             <Tab.Screen
-                name="ChargeSucceeded"
-                component={ChargeSucceeded}
+                name="AddReview"
+                component={AddReview}
                 options={{
                     tabBarButton: () => null,
                     tabBarVisible: false,

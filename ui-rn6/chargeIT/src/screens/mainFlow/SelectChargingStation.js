@@ -16,7 +16,6 @@ import trackMyLocation from "../../hooks/trackMyLocation";
 import * as Location from "expo-location";
 import {StationDetails} from "../../components/StationDetails";
 import Buttons from "../../components/Buttons";
-import ChargeSucceeded from "./ChargeSucceeded";
 
 const SelectChargingStation = ({navigation}) => {
     const {
@@ -119,7 +118,7 @@ const SelectChargingStation = ({navigation}) => {
             ]);
         } else {
             setSelectedChargingStationName(null);
-            navigation.navigate("ChargeSucceeded", {result});
+            navigation.navigate("AddReview", {result});
         }
     };
 
