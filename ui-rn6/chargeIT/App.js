@@ -2,7 +2,7 @@ import React from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import {MaterialIcons} from "@expo/vector-icons";
 import {I18nManager} from "react-native";
 
@@ -26,6 +26,7 @@ import Bill from "./src/screens/statistics/Bill";
 import {Provider as AuthProvider} from "./src/context/AuthContext";
 import {Provider as StationsProvider} from "./src/context/StationsContext";
 import {Provider as UsersProvider} from "./src/context/UsersContext";
+import {Provider as ReviewsProvider} from "./src/context/ReviewsContext"
 
 import SelectLocationByMap from "./src/screens/mainFlow/SelectLocationByMap";
 
@@ -53,9 +54,9 @@ function StackNavigator() {
 
 function DrawerNavigator() {
     return (
-        <Drawer.Navigator screenOptions={{headerTitle:""}}>
+        <Drawer.Navigator screenOptions={{headerTitle: ""}}>
             <Drawer.Screen name="TabNavigator" component={TabNavigator} options={{drawerItemStyle: {display: 'none'}}}/>
-            <Drawer.Screen name="Bill" component={Bill} />
+            <Drawer.Screen name="Bill" component={Bill}/>
         </Drawer.Navigator>
     );
 }
@@ -169,11 +170,13 @@ const App = () => {
 export default () => {
     return (
         <UsersProvider>
-            <StationsProvider>
-                <AuthProvider>
-                    <App/>
-                </AuthProvider>
-            </StationsProvider>
+            <ReviewsProvider>
+                <StationsProvider>
+                    <AuthProvider>
+                        <App/>
+                    </AuthProvider>
+                </StationsProvider>
+            </ReviewsProvider>
         </UsersProvider>
     );
 };

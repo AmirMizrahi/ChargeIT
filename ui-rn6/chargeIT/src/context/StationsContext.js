@@ -34,6 +34,7 @@ const discharge = (dispatch) => async ({selectedChargingStationId, currentLocati
         );
         responseData.stationName = response.data.stationName;
         responseData.payment = response.data.payment;
+        responseData.id = selectedChargingStationId;
     }
     catch (err){
         responseData.error = err.response.data.error;
