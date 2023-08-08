@@ -10,7 +10,7 @@ const reviewsReducer = (state, action) => {
     }
 };
 
-const addReview = (dispatch) => async ({grade, review, chargingStationId, nickname}) => {
+const addReview = (dispatch) => ({grade, review, chargingStationId, nickname}) => {
     let responseData = {};
     const queryParams = {
         grade,
@@ -20,9 +20,7 @@ const addReview = (dispatch) => async ({grade, review, chargingStationId, nickna
     };
 
     try {
-        console.log('Final URL:', queryParams);
-        const response = await basicApi.put(
-            "/chargingStations/addReview",null,{ params: queryParams });
+        basicApi.put("/chargingStations/addReview",null,{ params: queryParams });
     }
     catch (err){
         responseData.error = err.response.data.error;

@@ -1,10 +1,12 @@
-import {Dimensions, StyleSheet, Text, View} from "react-native";
+import {Dimensions, ScrollView, StyleSheet, Text, View} from "react-native";
 import React, {useContext, useEffect, useState} from "react";
 import Buttons from "../../components/Buttons";
 import {Context as StationsContext} from "../../context/StationsContext";
 import ErrorText from "../../components/ErrorText";
 import {useFocusEffect} from "@react-navigation/native";
 import MapView, {Marker} from "react-native-maps";
+import stationReview from "../../components/StationReview";
+import StationReview from "../../components/StationReview";
 
 const StationWatchScreen = ({navigation, route}) => {
     const [initialRegion, setInitialRegion] = useState({});
@@ -23,11 +25,8 @@ const StationWatchScreen = ({navigation, route}) => {
     );
 
     Object.keys(route.params).map((key) => {
-        //console.log(route);
         console.log(route.params);
-        // if (key === 'location') {
-        //     stationDetails["Location"] = "Longitude: " + route.params[key].longitude + ", Latitude: " + route.params[key].latitude
-        // }
+
         if (key === "chargerType") {
             stationDetails["Charging Type"] = route.params[key];
         } else if (key === "stationName") {
@@ -39,6 +38,8 @@ const StationWatchScreen = ({navigation, route}) => {
                 route.params["status"] === "NOT_CHARGING"
                     ? "Available"
                     : "Not Available";
+        } else if (key === "reviews") {
+            stationDetails["reviews"] = route.params[key];
         }
     });
 
@@ -53,7 +54,7 @@ const StationWatchScreen = ({navigation, route}) => {
     }, [route.params.location]);
 
     return (
-        <View style={styles.mainView}>
+        <ScrollView style={styles.mainView}>
             {/*Map*/}
             <View style={styles.mapContainer}>
                 <MapView
@@ -73,64 +74,79 @@ const StationWatchScreen = ({navigation, route}) => {
             <View style={styles.container}>
                 <Text style={styles.stationName}>Charging Station Details</Text>
                 <View>
+                    {/*Iterate on every field of the station besides reviews*/}
                     {Object.keys(stationDetails).map((key) => {
-                        return (
-                            <View key={key}>
-                                <Text
-                                    style={
-                                        key === "stationName"
-                                            ? styles.stationName
-                                            : styles.stationStatus
-                                    }
-                                >
-                                    {key}: {stationDetails[key]}
-                                </Text>
-                            </View>
-                        );
+                        {
+                            if (key !== "reviews") {
+                                return (
+                                    <View key={key}>
+                                        <Text
+                                            style={key === "Station Name" ? styles.stationName : styles.stationStatus}>
+                                            {key}: {stationDetails[key]}
+                                        </Text>
+                                    </View>
+                                )
+                            }
+                        }
                     })}
+                    {/*Show all reviews as StationReview component*/}
+                    {stationDetails["reviews"] && stationDetails["reviews"].length > 0 ? (
+                        <View style={styles.reviewsContainer}>
+                            <Text style={styles.reviewsTitle}>Reviews:</Text>
+                            {
+                                stationDetails["reviews"].map((review, index) => (
+                                    <View key={index} style={styles.reviewItem}>
+                                        <StationReview details={{
+                                            name: review.nickname,
+                                            grade: review.grade,
+                                            text: review.reviewText,
+                                            dateTime: review.dateTime
+                                        }}/>
+                                    </View>
+                                ))}
+                        </View>
+                    ) : null}
                 </View>
             </View>
             {/**/}
             {/*Buttons and text*/}
-                {!isCharging ?
-                    (
-                        <Buttons
-                            btn_text={"Press to Charge"}
-                            on_press={async () => {
-                                const result = await charge({
-                                    selectedChargingStationId: route.params["id"],
-                                    currentLocation: route.params["location"],
-                                });
-                                if (result.message) {
-                                    setIsCharging(true);
-                                } else {
-                                    setErrorMessage(result.error);
-                                }
-                                setTimeout(() => navigation.goBack(), 3000);    // Return to 'Charge'.
-                            }}
-                        />
-                    ) : null
-                }
+            {!isCharging ?
+                (
+                    <Buttons
+                        btn_text={"Press to Charge"}
+                        on_press={async () => {
+                            const result = await charge({
+                                selectedChargingStationId: route.params["id"],
+                                currentLocation: route.params["location"],
+                            });
+                            if (result.message) {
+                                setIsCharging(true);
+                            } else {
+                                setErrorMessage(result.error);
+                            }
+                            setTimeout(() => navigation.goBack(), 3000);    // Return to 'Charge'.
+                        }}
+                    />
+                ) : null
+            }
 
-                {isCharging ? (
-                    <Text style={styles.ischarging}>Station is charging . . .</Text>
-                ) : null}
+            {isCharging ? (
+                <Text style={styles.isCharging}>Station is charging . . .</Text>
+            ) : null}
 
-                {errorMessage ? (
-                    <ErrorText errorMessage={errorMessage}/>
-                ) : null}
-                {/**/}
-        </View>
+            {errorMessage ? (
+                <ErrorText errorMessage={errorMessage}/>
+            ) : null}
+            {/**/}
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     mainView: {
-        alignItems: "center",
-        justifyContent: "center",
         flex: 1,
     },
-    ischarging: {
+    isCharging: {
         fontSize: 16,
         fontStyle: "italic",
         fontWeight: "400",

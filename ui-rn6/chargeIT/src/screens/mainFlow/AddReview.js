@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, StyleSheet, TextInput } from 'react-native';
+import {View, Text, StyleSheet, TextInput, Alert} from 'react-native';
 import Buttons from '../../components/Buttons';
 import StarRating from 'react-native-star-rating-widget';
 import { Context as ReviewsContext } from '../../context/ReviewsContext';
 import ErrorText from '../../components/ErrorText';
 
-const AddReview = ({ route }) => {
+const AddReview = ({ navigation, route }) => {
     const { result } = route.params;
 
     const [grade, setGrade] = useState(1);
@@ -36,6 +36,13 @@ const AddReview = ({ route }) => {
         onChangeNickname(null);
         onChangeReview('');
         setIsReviewFilled(false);
+
+        Alert.alert("Thank You", "Your review was registered.", [
+            {text: "OK"},
+        ]);
+
+        navigation.navigate("TabNavigator", {screen: "UserProfile"});
+
     };
 
     return (

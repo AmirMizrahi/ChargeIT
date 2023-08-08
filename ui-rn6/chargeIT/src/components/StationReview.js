@@ -1,31 +1,39 @@
-import react from "react";
-import { Text, Image, View, StyleSheet } from "react-native";
+import {Text, View, StyleSheet} from "react-native";
+import {MaterialCommunityIcons} from '@expo/vector-icons';
+import StarRating from 'react-native-star-rating-widget';
+import React from "react";
 
-const StationReview = ({ result }) => {
+const StationReview = ({details}) => {
     return (
         <View style={styles.container}>
-            <Image style={styles.image} source={{ uri: result.image_url }} />
-            <Text style={styles.name}>{result.name}</Text>
-            <Text style={styles.name}>
-                {result.rating} Stars, {result.review_count} Reviews
-            </Text>
+            <View style={styles.nameAndImage}>
+                <MaterialCommunityIcons name="face-man" size={24} color="black"/>
+                <Text style={styles.name}>{details.name}</Text>
+            </View>
+            <StarRating starSize={20} rating={details.grade} onChange={(newGrade) => null} />
+            <Text>{details.text}</Text>
+            <Text style={styles.date}>{details.dateTime}</Text>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        marginLeft: 15,
-    },
-    image: {
-        width: 250,
-        height: 120,
-        borderRadius: 4,
-        marginBottom: 5,
+        borderWidth: 2,
+        borderColor: 'black',
+        borderRadius: 10
     },
     name: {
         fontWeight: "bold",
+        marginLeft: 5
     },
+    nameAndImage: {
+        flexDirection:'row',
+    },
+    date: {
+        fontStyle:'italic',
+        color:'gray'
+    }
 });
 
 export default StationReview;
