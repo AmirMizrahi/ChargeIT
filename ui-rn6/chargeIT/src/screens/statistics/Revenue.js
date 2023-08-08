@@ -16,12 +16,12 @@ const Revenue = () => {
         const fetchData = async () => {
             try {
                 const user = await getUserInfo();
-                const payments = user.payments;
+                const profits = user.profits;
 
-                const total = payments.reduce((sum, payment) => sum + payment.amount, 0);
+                const total = profits.reduce((sum, profit) => sum + profit.amount, 0);
                 setTotalAmount(total);
 
-                const tableRows = payments.map(payment => [payment.dateTime, payment.amount + "₪"]);
+                const tableRows = profits.map(profit => [profit.dateTime, profit.amount + "₪"]);
                 setTableData(tableRows);
             } catch (error) {
                 console.log("Error fetching data:", error);
@@ -37,7 +37,7 @@ const Revenue = () => {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>
-                <Text>My Payments:</Text>
+                <Text>My Profits:</Text>
                 <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
                     <Row data={['Date', 'Profit']} style={styles.head} textStyle={styles.text} />
                     <Rows data={tableData} textStyle={styles.text} />

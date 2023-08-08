@@ -18,7 +18,6 @@ const UserProfile = ({navigation}) => {
     const [lastName, setLastName] = useState(null);
     const [phone, setPhone] = useState(null);
     const [isCreditCardEntered, setIsCreditCardEntered] = useState(false);
-    const [stations, setStations] = useState(null);
     const {logout} = useContext(AuthContext);
     const {state, getUserInfo, clearErrorMessage} = useContext(UsersContext);
 
@@ -45,17 +44,13 @@ const UserProfile = ({navigation}) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const val = await getUserInfo();
-                setMail(val.email);
-                setFirstName(val.firstName);
-                setLastName(val.lastName);
-                setPhone(val.phoneNumber);
-                setIsCreditCardEntered(val.isValidIsraeliCreditCard);
+                const user = await getUserInfo();
+                setMail(user.email);
+                setFirstName(user.firstName);
+                setLastName(user.lastName);
+                setPhone(user.phoneNumber);
+                setIsCreditCardEntered(user.isValidIsraeliCreditCard);
 
-                const chargingStationIDs = val.chargingStationDTOS.map(
-                    (station) => station.id
-                );
-                setStations(chargingStationIDs);
             } catch (error) {
                 console.log("Error fetching data:", error);
             }

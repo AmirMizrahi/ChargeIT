@@ -22,6 +22,7 @@ import EditProfile from "./src/screens/authentication/EditProfile";
 import CreateStation from "./src/screens/mainFlow/CreateStation";
 import AddReview from "./src/screens/mainFlow/AddReview";
 import Bill from "./src/screens/statistics/Bill";
+import Revenue from "./src/screens/statistics/Revenue";
 
 import {Provider as AuthProvider} from "./src/context/AuthContext";
 import {Provider as StationsProvider} from "./src/context/StationsContext";
@@ -56,7 +57,8 @@ function DrawerNavigator() {
     return (
         <Drawer.Navigator screenOptions={{headerTitle: ""}}>
             <Drawer.Screen name="TabNavigator" component={TabNavigator} options={{drawerItemStyle: {display: 'none'}}}/>
-            <Drawer.Screen name="Bill" component={Bill}/>
+            <Drawer.Screen name="My Payments" component={Bill}/>
+            <Drawer.Screen name="My Profits" component={Revenue}/>
         </Drawer.Navigator>
     );
 }
