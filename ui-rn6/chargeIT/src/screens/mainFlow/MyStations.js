@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from "react";
 import {useIsFocused} from "@react-navigation/native";
-import {View, Text, StyleSheet} from "react-native";
+import {View, Text, StyleSheet, ImageBackground} from "react-native";
 import Buttons from "../../components/Buttons";
 import Spacer from "../../components/Spacer";
 import {Context as StationsContext} from "../../context/StationsContext";
@@ -36,6 +36,7 @@ const MyStations = ({navigation}) => {
         }
     }, [isFocused]);
     //
+
 
     const renderStation = (station) => {
         const stationDetails = JSON.parse(Object.values(station)[0]);
@@ -78,6 +79,7 @@ const MyStations = ({navigation}) => {
     } else {
         return (
             <View style={styles.mainView}>
+                <ImageBackground source={image} resizeMode="cover" style={styles.image}>
                 <Spacer></Spacer>
                 <Text style={styles.noStationsText}>
                     You currently don't have any stations.
@@ -90,12 +92,17 @@ const MyStations = ({navigation}) => {
                         on_press={() => navigation.navigate("SelectLocation")}
                     />
                 </View>
+                </ImageBackground>
             </View>
         );
     }
 };
-
+const image = require('./../../assets/images/app-background-new.jpg')
 const styles = StyleSheet.create({
+    image: {
+        flex: 1,
+        justifyContent: 'center',
+    },
     mainView: {
         justifyContent: "center",
         flex: 1,
@@ -110,6 +117,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontStyle: "italic",
         fontWeight: "400",
+        textAlign: 'center'
     },
     container: {
         flex: 1,

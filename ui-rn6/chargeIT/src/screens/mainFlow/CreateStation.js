@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import {View, Text, StyleSheet, ImageBackground, Dimensions} from "react-native";
 import {Picker} from "@react-native-picker/picker";
 import Buttons from "../../components/Buttons";
 import {TextInput} from "react-native-gesture-handler";
@@ -17,76 +17,100 @@ const CreateStation = ({navigation, route}) => {
 
     return (
         <View style={styles.mainView}>
-            <Text style={styles.headerText}>Create New Charging Station</Text>
-            <Spacer></Spacer>
-            <View>
-                <View style={styles.lineTextAndInput}>
-                    <Entypo name="add-user" size={24} color="black"/>
-                    <Text style={styles.label}> Station Name: </Text>
-                    <TextInput
-                        editable
-                        maxLength={40}
-                        onChangeText={setName}
-                        value={stationName}
-                        style={styles.input}
-                    />
-                </View>
-                <View style={styles.lineTextAndInput}>
-                    <Entypo name="price-tag" size={24} color="black"/>
-                    <Text style={styles.label}> Price per Volt: </Text>
-                    <TextInput
-                        editable
-                        keyboardType="number-pad"
-                        maxLength={5}
-                        onChangeText={setPrice}
-                        value={pricePerVolt}
-                        style={styles.input}
-                    />
-                </View>
+            <ImageBackground source={image} resizeMode="cover" style={styles.image}>
 
-                <View style={styles.lineTextAndInput}>
-                    <Entypo name="battery" size={24} color="black"/>
-                    <Text style={styles.label}> Type of Charger:</Text>
-                    <Picker
-                        style={styles.picker}
-                        selectedValue={chargerType}
-                        onValueChange={(itemValue, itemIndex) =>
-                            setSelectedValue(itemValue)
-                        }
-                    >
-                        <Picker.Item label="Type 0" value="TYPE_0"/>
-                        <Picker.Item label="Type 1" value="TYPE_1"/>
-                    </Picker>
+                <Text style={styles.headerText}>Create New Charging Station</Text>
+                <Spacer></Spacer>
+                <View style={styles.fieldsContainer}>
+                    <View style={styles.lineTextAndInput}>
+                        <Entypo name="add-user" size={24} color="#465bd8" style={{paddingRight: 7}}/>
+                        <Text style={styles.label}> Station Name: </Text>
+                        <TextInput
+                            editable
+                            maxLength={40}
+                            onChangeText={setName}
+                            value={stationName}
+                            style={styles.input}
+                        />
+                    </View>
+                    <View style={styles.lineTextAndInput}>
+                        <Entypo name="price-tag" size={24} color="#465bd8" style={{paddingRight: 7}}/>
+                        <Text style={styles.label}> Price per Volt: </Text>
+                        <TextInput
+                            editable
+                            keyboardType="number-pad"
+                            maxLength={5}
+                            onChangeText={setPrice}
+                            value={pricePerVolt}
+                            style={styles.input}
+                        />
+                    </View>
+
+                    <View style={styles.lineTextAndInput}>
+                        <Entypo name="battery" size={24} color="#465bd8" style={{paddingRight: 7}}/>
+                        <Text style={styles.label}> Type of Charger:</Text>
+                        <Picker
+                            style={styles.picker}
+                            selectedValue={chargerType}
+                            onValueChange={(itemValue, itemIndex) =>
+                                setSelectedValue(itemValue)
+                            }
+                        >
+                            <Picker.Item label="Type 0" value="TYPE_0"/>
+                            <Picker.Item label="Type 1" value="TYPE_1"/>
+                        </Picker>
+                    </View>
+                    <View style={{paddingTop: 50}}>
+
+                    </View>
                 </View>
-                <View style={{paddingTop: 50}}>
-                <Buttons
-                    on_press={async () => {
-                        const id = await createChargingStation({
-                            latitude,
-                            longitude,
-                            pricePerVolt,
-                            chargerType,
-                            stationName,
-                        });
-                        navigation.navigate("StationCreated", {id});
-                    }}
-                    btn_text={"Create"}
-                ></Buttons>
+                <View style={styles.buttons}>
+                    <Buttons
+                        on_press={async () => {
+                            const id = await createChargingStation({
+                                latitude,
+                                longitude,
+                                pricePerVolt,
+                                chargerType,
+                                stationName,
+                            });
+                            navigation.navigate("StationCreated", {id});
+                        }}
+                        btn_text={"Create"}
+                    ></Buttons>
                 </View>
-            </View>
+            </ImageBackground>
         </View>
     );
 };
 
+const image = require('./../../assets/images/app-background-new.jpg')
+
 const styles = StyleSheet.create({
+    image: {
+        flex: 1,
+    },
+    fieldsContainer: {
+        display: "flex",
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "space-between",
+        maxHeight: Dimensions.get('window').height * 0.4,
+        top: 100
+
+    },
     headerText: {
-        fontSize: 24,
-        fontWeight: "bold",
-        justifyContent: "center",
-        textAlign: "center",
+        fontSize: 25,
+        fontWeight: "300",
+        textAlign: 'center',
+        top: 40
     },
     buttons: {
-        alignItems: "center",
+        bottom: -200,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        opacity: 0.9
     },
     smallText: {
         maxWidth: "50%",
@@ -94,22 +118,19 @@ const styles = StyleSheet.create({
         fontSize: 14,
         textAlign: "center",
         paddingTop: 10,
+        fontWeight: 200
     },
     mainView: {
-        alignItems: "center",
-        justifyContent: "center",
         flex: 1,
-        flexDirection: "column",
-        marginTop: 20,
     },
     picker: {
-        fontSize: 20,
+        fontSize: 14,
         justifyContent: "center",
         flex: 1,
         height: 20,
     },
     input: {
-        width: "60%",
+        width: "40%",
         height: 40,
         borderWidth: 1,
         borderColor: "gray",
@@ -119,13 +140,13 @@ const styles = StyleSheet.create({
     lineTextAndInput: {
         display: "flex",
         flexDirection: "row",
-        margin: 10,
-        width: 300,
+        alignSelf: "center",
+        maxWidth: Dimensions.get('window').width - 100,
         alignItems: 'center',
-        justifyContent: 'center'
     },
     label: {
         fontSize: 18,
+        fontWeight: 300
     },
 });
 
