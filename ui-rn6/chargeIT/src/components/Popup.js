@@ -13,7 +13,7 @@ const PopupScreen = ({ visible, onClose, navigation, txt, navigateTo }) => {
             title="OK"
             onPress={() => {
               onClose();
-              navigation.navigate(navigateTo);
+              navigateTo != null ? navigation.navigate(navigateTo) : null; // Pass null if no navigation needed.
             }}
           />
         </View>

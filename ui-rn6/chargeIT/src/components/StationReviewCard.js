@@ -3,7 +3,7 @@ import {MaterialCommunityIcons} from '@expo/vector-icons';
 import StarRating from 'react-native-star-rating-widget';
 import React from "react";
 
-const StationReview = ({details}) => {
+const StationReviewCard = ({details}) => {
     return (
         <View style={styles.container}>
             <View style={styles.nameAndImage}>
@@ -36,4 +36,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default StationReview;
+export default StationReviewCard;

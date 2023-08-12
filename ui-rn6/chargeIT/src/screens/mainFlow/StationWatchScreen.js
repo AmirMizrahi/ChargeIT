@@ -5,8 +5,7 @@ import {Context as StationsContext} from "../../context/StationsContext";
 import ErrorText from "../../components/ErrorText";
 import {useFocusEffect} from "@react-navigation/native";
 import MapView, {Marker} from "react-native-maps";
-import stationReview from "../../components/StationReview";
-import StationReview from "../../components/StationReview";
+import StationReviewCard from "../../components/StationReviewCard";
 
 const StationWatchScreen = ({navigation, route}) => {
     const [initialRegion, setInitialRegion] = useState({});
@@ -32,7 +31,7 @@ const StationWatchScreen = ({navigation, route}) => {
         } else if (key === "stationName") {
             stationDetails["Station Name"] = route.params[key];
         } else if (key === "pricePerVolt") {
-            stationDetails["Price Per Volt"] = route.params[key] + "$";
+            stationDetails["Price Per Volt"] = route.params[key] + "₪";
         } else if (key === "status") {
             stationDetails["Status"] =
                 route.params["status"] === "NOT_CHARGING"
@@ -89,14 +88,14 @@ const StationWatchScreen = ({navigation, route}) => {
                             }
                         }
                     })}
-                    {/*Show all reviews as StationReview component*/}
+                    {/*Show all reviews as StationReviewCard component*/}
                     {stationDetails["reviews"] && stationDetails["reviews"].length > 0 ? (
                         <View style={styles.reviewsContainer}>
                             <Text style={styles.reviewsTitle}>Reviews:</Text>
                             {
                                 stationDetails["reviews"].map((review, index) => (
                                     <View key={index} style={styles.reviewItem}>
-                                        <StationReview details={{
+                                        <StationReviewCard details={{
                                             name: review.nickname,
                                             grade: review.grade,
                                             text: review.reviewText,
@@ -114,17 +113,24 @@ const StationWatchScreen = ({navigation, route}) => {
                 (
                     <Buttons
                         btn_text={"Press to Charge"}
-                        on_press={async () => {
-                            const result = await charge({
+                        on_press={ async () => {
+                            navigation.navigate("QRScanScreen", {
                                 selectedChargingStationId: route.params["id"],
                                 currentLocation: route.params["location"],
                             });
-                            if (result.message) {
-                                setIsCharging(true);
-                            } else {
-                                setErrorMessage(result.error);
-                            }
-                            setTimeout(() => navigation.goBack(), 3000);    // Return to 'Charge'.
+                            // alert(`asdasdsad`);
+
+                            // console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                            // const result = await charge({
+                            //     selectedChargingStationId: route.params["id"],
+                            //     currentLocation: route.params["location"],
+                            // });
+                            // if (result.message) {
+                            //     setIsCharging(true);
+                            // } else {
+                            //     setErrorMessage(result.error);
+                            // }
+                            // setTimeout(() => navigation.goBack(), 30000);    // Return to 'Charge'.
                         }}
                     />
                 ) : null
