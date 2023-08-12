@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
+import Buttons from "../../components/Buttons";
 
 const SelectLocationByMap = ({ navigation }) => {
   const [location, setLocation] = useState(null);
@@ -42,11 +43,9 @@ const SelectLocationByMap = ({ navigation }) => {
         )}
       </MapView>
       {location != null && (
-        <View style={styles.buttonContainer}>
-          <Text style={styles.button} onPress={handleSavePress}>
-            Save Location
-          </Text>
-        </View>
+          <View style={styles.buttonContainer}>
+          <Buttons btn_text={"Save Location"} on_press={handleSavePress}></Buttons>
+          </View>
       )}
       <View style={styles.textContainer}>
         <Text style={styles.text}>Please Select Location</Text>
@@ -64,17 +63,18 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     position: "absolute",
-    top: 50,
+    top: 20,
     left: 20,
     right: 20,
     alignItems: "center",
+    opacity: 0.7
   },
   text: {
     backgroundColor: "white",
     padding: 10,
     borderRadius: 5,
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "300",
   },
   buttonContainer: {
     position: "absolute",
@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     alignItems: "center",
+    opacity: 0.9
   },
   button: {
     backgroundColor: "#007AFF",
