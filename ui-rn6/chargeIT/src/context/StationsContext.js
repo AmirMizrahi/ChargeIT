@@ -85,14 +85,15 @@ const createChargingStation =
             const location = {latitude, longitude};
             console.log(stationName);
             try {
-                await basicApi
+                const result = await basicApi
                     .post("/chargingStations/createChargingStation", {
                         location,
                         pricePerVolt,
                         chargerType,
                         stationName,
                     })
-                    .then((res) => console.log(res));
+
+                return result.data.chargingStationId;
             } catch (err) {
                 dispatch({
                     type: "add_error",

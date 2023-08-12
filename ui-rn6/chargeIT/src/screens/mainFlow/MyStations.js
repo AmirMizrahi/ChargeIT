@@ -5,6 +5,8 @@ import Buttons from "../../components/Buttons";
 import Spacer from "../../components/Spacer";
 import { Context as StationsContext } from "../../context/StationsContext";
 import { ScrollView } from "react-native";
+import MyStationCard from "../../components/MyStationCard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MyStations = ({ navigation }) => {
   const { state, getAllStationsByUser } = useContext(StationsContext);
@@ -38,29 +40,22 @@ const MyStations = ({ navigation }) => {
 
   const renderStation = (station) => {
     const stationDetails = JSON.parse(Object.values(station)[0]);
-    const { id, location, status, pricePerVolt, chargerType, stationName } =
-      stationDetails;
+    const { id, location, status, pricePerVolt, chargerType, stationName, reviews } = stationDetails;
+
+    const avgRat = reviews.reduce((sum, review) => sum + review.grade, 0) / reviews.length;
 
     return (
-      <TouchableOpacity
-        key={id}
-        onPress={() => navigation.navigate("EditStation", { stationId: id })}
-      >
-        <View key={id} style={styles.wrapper}>
-          <View style={styles.stationContainer}>
-            <Text style={styles.stationName}>{stationName}</Text>
-            <Text style={styles.stationStatus}>
-              Charger type: {chargerType}
-            </Text>
-            <Text style={styles.stationStatus}>
-              Status: {status === "NOT_CHARGING" ? "Ready for use" : "Charging"}
-            </Text>
-            <Text style={styles.stationStatus}>
-              Price per Volt: {pricePerVolt}$
-            </Text>
-          </View>
+        <View key={id} style={{margin:10}} >
+          <MyStationCard details={{
+            name: stationName,
+            type: chargerType,
+            price: pricePerVolt,
+            status: status,
+            location: location,
+            avgRat: avgRat,
+            id: id
+          }} navigation={navigation}/>
         </View>
-      </TouchableOpacity>
     );
   };
 
@@ -68,9 +63,9 @@ const MyStations = ({ navigation }) => {
     if (usersStationsAvailable && usersStationsAvailable.length > 0) {
       return (
         <View style={styles.mainView}>
-          <Text style={styles.title}>My Stations</Text>
+          <Text style={styles.title}>Manager your Stations</Text>
           <ScrollView contentContainerStyle={styles.scroll}>
-            <View>{usersStationsAvailable.map(renderStation)}</View>
+              {usersStationsAvailable.map(renderStation)}
           </ScrollView>
           <View>
             <Buttons
@@ -101,11 +96,9 @@ const MyStations = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   mainView: {
-    alignItems: "center",
     justifyContent: "center",
     flex: 1,
     flexDirection: "column",
-    marginTop: 100,
   },
   title: {
     textAlign: "center",

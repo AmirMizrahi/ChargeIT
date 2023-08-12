@@ -23,13 +23,15 @@ import CreateStation from "./src/screens/mainFlow/CreateStation";
 import AddReview from "./src/screens/mainFlow/AddReview";
 import Bill from "./src/screens/statistics/Bill";
 import Revenue from "./src/screens/statistics/Revenue";
+import QRScanScreen from "./src/screens/station/QRScanScreen"
+import SelectLocationByMap from "./src/screens/mainFlow/SelectLocationByMap";
+import StationCreated from "./src/screens/station/StationCreated";
 
 import {Provider as AuthProvider} from "./src/context/AuthContext";
 import {Provider as StationsProvider} from "./src/context/StationsContext";
 import {Provider as UsersProvider} from "./src/context/UsersContext";
 import {Provider as ReviewsProvider} from "./src/context/ReviewsContext"
 
-import SelectLocationByMap from "./src/screens/mainFlow/SelectLocationByMap";
 
 I18nManager.forceRTL(false);
 I18nManager.allowRTL(false);
@@ -41,6 +43,7 @@ const Drawer = createDrawerNavigator();
 function StackNavigator() {
     return (
         <Stack.Navigator screenOptions={{headerShown: false}}>
+            {/*<Stack.Screen name="QRScanScreen" component={QRScanScreen}/>*/}
             <Stack.Screen name="Splash" component={Splash}/>
             <Stack.Screen name="Login" component={Login}/>
             <Stack.Screen name="Registration" component={Registration}/>
@@ -79,6 +82,13 @@ function TabNavigator() {
             <Tab.Screen
                 name="CreateStation"
                 component={CreateStation}
+                options={{
+                    tabBarButton: () => null,
+                    tabBarVisible: false,
+                }}
+            /><Tab.Screen
+                name="StationCreated"
+                component={StationCreated}
                 options={{
                     tabBarButton: () => null,
                     tabBarVisible: false,
@@ -151,6 +161,14 @@ function TabNavigator() {
             <Tab.Screen
                 name="AddReview"
                 component={AddReview}
+                options={{
+                    tabBarButton: () => null,
+                    tabBarVisible: false,
+                }}
+            />
+            <Tab.Screen
+                name="QRScanScreen"
+                component={QRScanScreen}
                 options={{
                     tabBarButton: () => null,
                     tabBarVisible: false,

@@ -60,15 +60,15 @@ const CreateStation = ({navigation, route}) => {
                 </View>
                 <View style={{paddingTop: 50}}>
                 <Buttons
-                    on_press={() => {
-                        createChargingStation({
+                    on_press={async () => {
+                        const id = await createChargingStation({
                             latitude,
                             longitude,
                             pricePerVolt,
                             chargerType,
                             stationName,
                         });
-                        navigation.navigate("Stations");
+                        navigation.navigate("StationCreated", {id});
                     }}
                     btn_text={"Create"}
                 ></Buttons>
