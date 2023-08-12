@@ -1,4 +1,4 @@
-import {Text, View, StyleSheet, Button, Dimensions} from "react-native";
+import {Text, View, StyleSheet, Button, Dimensions, Alert} from "react-native";
 import {FontAwesome5} from '@expo/vector-icons';
 import StarRating from 'react-native-star-rating-widget';
 import React, {useState} from "react";
@@ -24,6 +24,18 @@ const MyStationCard = ({details, navigation}) => {
 
     const closeMapPopup = () => {
         setMapPopupVisible(false);
+    };
+
+    const handleEditStation = () => {
+        if (details.status === "CHARGING"){
+            Alert.alert("Can't do that...", "You can't edit station which is currently used by others." +
+                " Please try again later", [
+                { text: "OK" },
+            ]);
+        }
+        else{
+            navigation.navigate("EditStation", { stationId: details.id} )
+        }
     };
 
     return (
@@ -76,7 +88,7 @@ const MyStationCard = ({details, navigation}) => {
             {/*Left panel Buttons*/}
             <View style={styles.buttonContainer}>
                 <Button style={styles.button} title={"Watch QR Code"} onPress={ openQRPopup }/>
-                <Button style={styles.button} title={"Edit Station"} onPress={ () => navigation.navigate("EditStation", { stationId: details.id} )}/>
+                <Button style={styles.button} title={"Edit Station"} onPress={ handleEditStation }/>
                 <Button style={styles.button} title={"See Location"} onPress={ openMapPopup}/>
                 <Button style={styles.button} title={"*Delete Station"}/>
             </View>

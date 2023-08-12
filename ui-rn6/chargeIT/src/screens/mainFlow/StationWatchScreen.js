@@ -111,28 +111,30 @@ const StationWatchScreen = ({navigation, route}) => {
             {/*Buttons and text*/}
             {!isCharging ?
                 (
-                    <Buttons
-                        btn_text={"Press to Charge"}
-                        on_press={ async () => {
-                            navigation.navigate("QRScanScreen", {
-                                selectedChargingStationId: route.params["id"],
-                                currentLocation: route.params["location"],
-                            });
-                            // alert(`asdasdsad`);
+                    <View style={styles.mapContainer}>
+                        <Buttons
+                            btn_text={"Press to Charge"}
+                            on_press={async () => {
+                                navigation.navigate("QRScanScreen", {
+                                    selectedChargingStationId: route.params["id"],
+                                    currentLocation: route.params["location"],
+                                });
+                                // alert(`asdasdsad`);
 
-                            // console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-                            // const result = await charge({
-                            //     selectedChargingStationId: route.params["id"],
-                            //     currentLocation: route.params["location"],
-                            // });
-                            // if (result.message) {
-                            //     setIsCharging(true);
-                            // } else {
-                            //     setErrorMessage(result.error);
-                            // }
-                            // setTimeout(() => navigation.goBack(), 30000);    // Return to 'Charge'.
-                        }}
-                    />
+                                // console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                                // const result = await charge({
+                                //     selectedChargingStationId: route.params["id"],
+                                //     currentLocation: route.params["location"],
+                                // });
+                                // if (result.message) {
+                                //     setIsCharging(true);
+                                // } else {
+                                //     setErrorMessage(result.error);
+                                // }
+                                // setTimeout(() => navigation.goBack(), 30000);    // Return to 'Charge'.
+                            }}
+                        />
+                    </View>
                 ) : null
             }
 
