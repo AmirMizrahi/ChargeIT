@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from "react";
 import {useIsFocused, useFocusEffect} from "@react-navigation/native";
-import {View, Text, StyleSheet} from "react-native";
+import {View, Text, StyleSheet, Dimensions, ImageBackground} from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import Buttons from "../../components/Buttons";
 import Spacer from "../../components/Spacer";
@@ -66,7 +66,7 @@ const UserProfile = ({navigation}) => {
 
         // Cancel return to the authentication flow:
         navigation.addListener('beforeRemove', (e) => {
-            if (e.data.action.type === "GO_BACK"){
+            if (e.data.action.type === "GO_BACK") {
                 e.preventDefault();
             }
         })
@@ -75,103 +75,125 @@ const UserProfile = ({navigation}) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Hello, {firstName ?? 'User'}</Text>
+            <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+                <Text style={styles.title}>Hello, {firstName ?? 'User'}</Text>
 
-            <Text style={{marginTop: 20, fontSize: 18, fontWeight: "bold"}}>
-                {userData ? userData.fname : ""} {userData ? userData.lname : ""}
-            </Text>
+                <Text style={{marginTop: 20, fontSize: 18, fontWeight: "bold"}}>
+                    {userData ? userData.fname : ""} {userData ? userData.lname : ""}
+                </Text>
 
-            <View style={styles.viewGeneral}>
-                <Feather name="mail" style={styles.tinyImages}/>
-                <Text style={styles.label}>Email: </Text>
-                <Text style={styles.value}>{mail}</Text>
-            </View>
+                <View style={styles.fieldsContainer}>
+                    <View style={styles.viewGeneral}>
+                        <Feather name="mail" style={styles.tinyImages}/>
+                        <Text style={styles.label}>Email: </Text>
+                        <Text style={styles.value}>{mail}</Text>
+                    </View>
 
-            <View style={styles.viewGeneral}>
-                <Feather name="edit" style={styles.tinyImages}/>
-                <Text style={styles.label}>First name: </Text>
-                <Text style={styles.value}>{firstName}</Text>
-            </View>
+                    <View style={styles.viewGeneral}>
+                        <Feather name="edit" style={styles.tinyImages}/>
+                        <Text style={styles.label}>First name: </Text>
+                        <Text style={styles.value}>{firstName}</Text>
+                    </View>
 
-            <View style={styles.viewGeneral}>
-                <Feather name="edit" style={styles.tinyImages}/>
-                <Text style={styles.label}>Last name: </Text>
-                <Text style={styles.value}>{lastName}</Text>
-            </View>
+                    <View style={styles.viewGeneral}>
+                        <Feather name="edit" style={styles.tinyImages}/>
+                        <Text style={styles.label}>Last name: </Text>
+                        <Text style={styles.value}>{lastName}</Text>
+                    </View>
 
-            <View style={styles.viewGeneral}>
-                <Feather name="phone" style={styles.tinyImages}/>
-                <Text style={styles.label}>Phone number: </Text>
-                <Text style={styles.value}>{phone}</Text>
-            </View>
+                    <View style={styles.viewGeneral}>
+                        <Feather name="phone" style={styles.tinyImages}/>
+                        <Text style={styles.label}>Phone number: </Text>
+                        <Text style={styles.value}>{phone}</Text>
+                    </View>
 
-            <View style={styles.viewGeneral}>
-                <Feather name="credit-card" style={styles.tinyImages}/>
-                <Text style={styles.label}>Credit-card inserted? </Text>
-                <BouncyCheckbox
-                    isChecked={isCreditCardEntered}
-                    disableBuiltInState/>
-            </View>
+                    <View style={styles.viewGeneral}>
+                        <Feather name="credit-card" style={styles.tinyImages}/>
+                        <Text style={styles.label}>Credit-card inserted? </Text>
+                        <BouncyCheckbox
+                            isChecked={isCreditCardEntered}
+                            disableBuiltInState/>
+                    </View>
+                </View>
+                {/*<View style={styles.viewGeneral}>*/
+                }
+                {/*  <Feather name="battery-charging" style={styles.tinyImages} />*/
+                }
+                {/*  <Text style={styles.label}>My charging stations:</Text>*/
+                }
+                {/*  <Text style={styles.value}>{stations}</Text>*/
+                }
+                {/*</View>*/
+                }
 
-            {/*<View style={styles.viewGeneral}>*/}
-            {/*  <Feather name="battery-charging" style={styles.tinyImages} />*/}
-            {/*  <Text style={styles.label}>My charging stations:</Text>*/}
-            {/*  <Text style={styles.value}>{stations}</Text>*/}
-            {/*</View>*/}
+                {
+                    state.errorMessage ? (
+                        <>
+                            <Text style={styles.errorMessage}>{state.errorMessage}</Text>
+                            <Popup
+                                visible={popupVisible}
+                                onClose={closePopup}
+                                navigation={navigation}
+                                txt="Session is over. Please login again."
+                                navigateTo={"Login"}
+                            />
+                        </>
+                    ) : null
+                }
 
-            {state.errorMessage ? (
-                <>
-                    <Text style={styles.errorMessage}>{state.errorMessage}</Text>
-                    <Popup
-                        visible={popupVisible}
-                        onClose={closePopup}
-                        navigation={navigation}
-                        txt="Session is over. Please login again."
-                        navigateTo={"Login"}
+                <Spacer></Spacer>
+                <View style={styles.buttons}>
+                    <Buttons
+                        btn_text={"Update Profile"}
+                        on_press={() =>
+                            navigation.navigate("EditProfile", {
+                                mail: mail,
+                                firstName: firstName,
+                                lastName: lastName,
+                                phone: phone
+                            })
+                        }
                     />
-                </>
-            ) : null}
-
-            <Spacer></Spacer>
-            <View style={styles.buttons}>
-                <Buttons
-                    btn_text={"Update Profile"}
-                    on_press={() =>
-                        navigation.navigate("EditProfile", {
-                            mail: mail,
-                            firstName: firstName,
-                            lastName: lastName,
-                            phone: phone
-                        })
-                    }
-                />
-                <Buttons
-                    btn_text={"Sign Out"} j
-                    on_press={() => logout({navigation})}
-                />
-            </View>
+                    <Buttons
+                        btn_text={"Sign Out"} j
+                        on_press={() => logout({navigation})}
+                    />
+                </View>
+            </ImageBackground>
         </View>
-    );
+    )
+        ;
 };
 
+const image = require('./../../assets/images/stations.jpg')
+
 const styles = StyleSheet.create({
+    image: {
+        flex: 1,
+    },
+    fieldsContainer: {
+        display: "flex",
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "space-between",
+        maxHeight: Dimensions.get('window').height * 0.3,
+        top: 50
+    },
     title: {
-        paddingTop: 20,
-        textAlign: "center",
-        fontSize: 23,
-        textShadowColor: "gray",
+        fontSize: 25,
+        fontWeight: "300",
+        textAlign: 'center',
+        top: 40
     },
     container: {
+        flex: 1,
         display: "flex",
-        padding: 50,
         backgroundColor: "#fff",
-        margin: 20,
-        alignContent: "space-between",
-        justifyContent: "center",
+
     },
     label: {
-        fontWeight: "bold",
-        fontSize: 16,
+        fontWeight: 300,
+        fontSize: 20,
     },
     value: {
         fontSize: 16,
@@ -179,6 +201,9 @@ const styles = StyleSheet.create({
     },
     viewGeneral: {
         flexDirection: "row",
+        alignContent: "center",
+        alignSelf: 'center'
+
     },
     tinyImages: {
         color: "#333333",
@@ -188,10 +213,10 @@ const styles = StyleSheet.create({
     buttons: {
         alignItems: "center",
         paddingTop: 50,
+        bottom: -60
     },
     errorMessage: {
         fontSize: 16,
-        color: "red",
         marginLeft: 15,
         marginTop: 15,
     },

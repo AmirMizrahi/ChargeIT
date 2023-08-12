@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-end',
-        opacity: 0.9
     },
     smallText: {
         maxWidth: "50%",

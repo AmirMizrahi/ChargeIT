@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import { Text } from "react-native";
 import { KeyboardAvoidingView, ScrollView } from "react-native";
 import { Context as AuthContext } from "../../context/AuthContext";
@@ -18,8 +18,12 @@ const Registration = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView>
+      <View>
+        <Image style={{ position: 'absolute', top:0, left:0 }} source={image} />
+      </View>
       <ScrollView contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.container}>
+
           {/* Going to the a generic form */}
           <AuthForm
             headerText="Signup to ChargeIT"
@@ -45,6 +49,7 @@ const Registration = ({ navigation }) => {
     </KeyboardAvoidingView>
   );
 };
+const image = require('./../../assets/images/stations.jpg')
 
 Registration.navigationOptions = () => {
   return {
@@ -64,11 +69,12 @@ const styles = StyleSheet.create({
     width: "90%",
     paddingLeft: 20,
   },
+  image: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    justifyContent: "center",
-    marginLeft: 20,
-    marginTop: 20,
+    alignItems: 'center'
   },
   contentContainerStyle: {
     paddingVertical: 150,
@@ -77,7 +83,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ededed",
     width: "95%",
     borderRadius: 10,
     height: 60,
