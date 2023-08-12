@@ -12,7 +12,7 @@ export const StationDetails = (params) => {
       station["Charging Type"] = params.station[key];
     }
     if (key === "pricePerVolt") {
-      station["Price Per Volt"] = params.station[key] + "$";
+      station["Price Per Volt"] = params.station[key] + "₪";
     } else if (key === "status") {
       station["Status"] =
         params.station["status"] === "NOT_CHARGING"
