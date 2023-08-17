@@ -54,7 +54,12 @@ public class ChargingStationController {
                 jsonObject.addProperty("chargingStationId", chargingStation.getId().toString());
                 try
                 {
-                    sendChargingStationIDToSimulator(chargingStation.getId().toString());
+                    RestTemplate restTemplate = new RestTemplate();
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add("Cookie", request.getHeader("Cookie"));
+                    HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+                    String url = "http://localhost:8081/simulator/createChargingStation?chargingStationId=" + chargingStation.getId().toString();
+                    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
                 }
                 catch (Exception exception)
                 {
@@ -65,18 +70,6 @@ public class ChargingStationController {
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(jsonObject.toString());
-    }
-
-    private void sendChargingStationIDToSimulator(String chargingStationId) {
-        String applicationBUrl = "http://localhost:8081/simulator/chargingStations";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        String requestBody = "{\"chargingStationId\": \"" + chargingStationId + "\"}";
-        HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> responseEntity = restTemplate.exchange(applicationBUrl, HttpMethod.POST, requestEntity, String.class);
-        String response = responseEntity.getBody();
-        //System.out.println("Response from Simulator: " + response);
     }
 
     @DeleteMapping("/delete")
@@ -403,16 +396,6 @@ public class ChargingStationController {
                         boolean isValidIsraeliCreditCard = isValidIsraeliCreditCardElement.getAsBoolean();
                         if(isValidIsraeliCreditCard)
                         {
-                            try {
-                                restTemplate = new RestTemplate();
-                                headers = new HttpHeaders();
-                                headers.add("Cookie", request.getHeader("Cookie"));
-                                httpEntity = new HttpEntity<>(headers);
-                                url = "http://localhost:8081/simulator/charge?chargingStationId=" + chargingStationId;
-                                restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
-                            } catch (Exception exception) {
-
-                            }
 
                             //check user is not charging
                             boolean isCharging = false;
@@ -440,6 +423,17 @@ public class ChargingStationController {
                                     headers.add("Cookie", request.getHeader("Cookie"));
                                     httpEntity = new HttpEntity<>(headers);
                                     url = "http://localhost:8080/users/updateChargingStatus?isCharging=" + true;
+                                    restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+                                } catch (Exception exception) {
+
+                                }
+
+                                try {
+                                    restTemplate = new RestTemplate();
+                                    headers = new HttpHeaders();
+                                    headers.add("Cookie", request.getHeader("Cookie"));
+                                    httpEntity = new HttpEntity<>(headers);
+                                    url = "http://localhost:8081/simulator/charge?chargingStationId=" + chargingStationId;
                                     restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
                                 } catch (Exception exception) {
 
@@ -509,22 +503,6 @@ public class ChargingStationController {
                 {
                     int percentToAskPayFor = 0;
 
-                    try {
-                        RestTemplate restTemplate = new RestTemplate();
-                        HttpHeaders headers = new HttpHeaders();
-                        headers.add("Cookie", request.getHeader("Cookie"));
-                        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
-                        String url = "http://localhost:8081/simulator/unCharge";
-                        restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
-
-                        String applicationBUrl = "http://localhost:8081/simulator/unCharge";
-                        ResponseEntity<Integer> response = restTemplate.exchange(applicationBUrl, HttpMethod.PUT, httpEntity, Integer.class);
-                        percentToAskPayFor = response.getBody();
-                        //System.out.println("Please Pay: " + percentToAskPayFor* station.getPricePerVolt());
-                    } catch (Exception exception) {
-
-                    }
-
                     //update the user charging status
                     try {
                         RestTemplate restTemplate = new RestTemplate();
@@ -533,6 +511,25 @@ public class ChargingStationController {
                         HttpEntity<String> httpEntity = new HttpEntity<>(headers);
                         String url = "http://localhost:8080/users/updateChargingStatus?isCharging=" + false;
                         restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+                    } catch (Exception exception) {
+
+                    }
+
+                    try {
+                        RestTemplate restTemplate = new RestTemplate();
+                        HttpHeaders headers = new HttpHeaders();
+                        headers.add("Cookie", request.getHeader("Cookie"));
+                        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+                        String url = "http://localhost:8081/simulator/unCharge?chargingStationId=" + chargingStationId;
+                        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+
+                        String responseBody = response.getBody();
+                        if (responseBody != null) {
+                            JsonObject jsonResponse = JsonParser.parseString(responseBody).getAsJsonObject();
+                            if (jsonResponse.has("percentage")) {
+                                percentToAskPayFor = jsonResponse.get("percentage").getAsInt();
+                            }
+                        }
                     } catch (Exception exception) {
 
                     }
