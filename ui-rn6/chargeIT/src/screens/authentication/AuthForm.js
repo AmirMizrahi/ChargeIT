@@ -74,11 +74,12 @@ const AuthForm = ({
 const styles = StyleSheet.create({
   headerView: {
     flexDirection: "row",
-    justifyContent: "flex-start",
     alignItems: "center",
+    justifyContent: "center"
   },
   headerText: {
     fontSize: 30,
+    textAlign: "center"
   },
   wavingHand: {
     width: 30,
@@ -88,6 +89,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     paddingTop: 10,
     color: "#777",
+    textAlign: "center"
   },
   input: {
     position: "relative",
