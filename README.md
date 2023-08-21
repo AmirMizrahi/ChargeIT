@@ -24,6 +24,10 @@ The following are the features of Chargit:
 
 Chargit is built using React Native, a popular framework for building mobile apps. The app uses Google Maps API to display the charging stations on the map and to provide navigation directions. The backend of the app is built using JAVA spring boot and MongoDB.
 
+## ChargeSimulator Git Project
+
+The backend of the app communicates with the [ChargeSimulator](https://github.com/AmirMizrahi/ChargeSimulator) server, which simulates interactions with charging stations.
+
 ## Contributing
 
 Contributions to the Chargit project are welcome. If you find any issues or have any suggestions for improvement, please create a GitHub issue or pull request.
