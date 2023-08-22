@@ -63,6 +63,7 @@ const signin =
                     email,
                     password,
                 });
+                console.log("response: "+response);
                 await AsyncStorage.setItem("token", response.data.token);
                 dispatch({type: "signin", payload: response.data.token});
                 navigation.navigate("DrawerNavigator", {screen: "TabNavigator"});

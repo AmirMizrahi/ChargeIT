@@ -6,6 +6,7 @@ import Spacer from "../../components/Spacer";
 import {Context as StationsContext} from "../../context/StationsContext";
 import {ScrollView} from "react-native";
 import MyStationCard from "../../components/MyStationCard";
+import image from "../../assets/images/app-background-new.jpg";
 
 const MyStations = ({navigation}) => {
     const {state, getAllStationsByUser} = useContext(StationsContext);
@@ -45,7 +46,7 @@ const MyStations = ({navigation}) => {
         const avgRat = reviews.reduce((sum, review) => sum + review.grade, 0) / reviews.length;
 
         return (
-            <View key={id} style={{margin: 10}}>
+            <View key={id} style={{margin: 20}}>
                 <MyStationCard details={{
                     name: stationName,
                     type: chargerType,
@@ -63,7 +64,8 @@ const MyStations = ({navigation}) => {
         if (usersStationsAvailable && usersStationsAvailable.length > 0) {
             return (
                 <View style={styles.mainView}>
-                    <Text style={styles.title}>Manager your Stations</Text>
+                    <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+                    <Text style={styles.title}>Manage your Stations</Text>
                     <ScrollView contentContainerStyle={styles.scroll}>
                         {usersStationsAvailable.map(renderStation)}
                     </ScrollView>
@@ -73,6 +75,7 @@ const MyStations = ({navigation}) => {
                             on_press={() => navigation.navigate("SelectLocation")}
                         />
                     </View>
+                    </ImageBackground>
                 </View>
             );
         }
@@ -97,7 +100,6 @@ const MyStations = ({navigation}) => {
         );
     }
 };
-const image = require('./../../assets/images/app-background-new.jpg')
 const styles = StyleSheet.create({
     image: {
         flex: 1,
@@ -110,8 +112,10 @@ const styles = StyleSheet.create({
     },
     title: {
         textAlign: "center",
-        fontSize: 23,
+        fontSize: 25,
+        fontWeight: 300,
         textShadowColor: "gray",
+        margin: 10
     },
     noStationsText: {
         fontSize: 18,
@@ -130,11 +134,9 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: "center",
         justifyItems: "center",
-        borderRight: "4 bold",
     },
     stationName: {
         fontSize: 16,
-        fontWeight: "bold",
         paddingBottom: 15,
     },
     stationLocation: {
@@ -168,7 +170,8 @@ const styles = StyleSheet.create({
 
     buttonViewContainer: {
         alignContent:'center',
-        alignItems:'center'
+        alignItems:'center',
+        top: 15
     }
 });
 

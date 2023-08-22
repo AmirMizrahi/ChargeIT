@@ -58,7 +58,12 @@ function StackNavigator() {
 
 function DrawerNavigator() {
     return (
-        <Drawer.Navigator screenOptions={{headerTitle: ""}}>
+        <Drawer.Navigator drawerStyle={{backgroundColor: '#f2f2f2', width: 100}} screenOptions={{
+            headerTitle: "",
+            drawerContainerStyle: {
+                backgroundColor: '#f2f2f2'
+            }
+        }}>
             <Drawer.Screen name="TabNavigator" component={TabNavigator} options={{drawerItemStyle: {display: 'none'}}}/>
             <Drawer.Screen name="My Payments" component={Bill}/>
             <Drawer.Screen name="My Profits" component={Revenue}/>
@@ -87,13 +92,13 @@ function TabNavigator() {
                     tabBarVisible: false,
                 }}
             /><Tab.Screen
-                name="StationCreated"
-                component={StationCreated}
-                options={{
-                    tabBarButton: () => null,
-                    tabBarVisible: false,
-                }}
-            />
+            name="StationCreated"
+            component={StationCreated}
+            options={{
+                tabBarButton: () => null,
+                tabBarVisible: false,
+            }}
+        />
             <Tab.Screen
                 name="Stations"
                 component={MyStations}

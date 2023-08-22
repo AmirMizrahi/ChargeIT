@@ -1,4 +1,4 @@
-import {Dimensions, ScrollView, StyleSheet, Text, View} from "react-native";
+import {Dimensions, ScrollView, StyleSheet, Text, View,ImageBackground} from "react-native";
 import React, {useContext, useEffect, useState} from "react";
 import Buttons from "../../components/Buttons";
 import {Context as StationsContext} from "../../context/StationsContext";
@@ -6,6 +6,7 @@ import ErrorText from "../../components/ErrorText";
 import {useFocusEffect} from "@react-navigation/native";
 import MapView, {Marker} from "react-native-maps";
 import StationReviewCard from "../../components/StationReviewCard";
+import image from "../../assets/images/app-background-new.jpg";
 
 const StationWatchScreen = ({navigation, route}) => {
     const [initialRegion, setInitialRegion] = useState({});
@@ -54,6 +55,10 @@ const StationWatchScreen = ({navigation, route}) => {
 
     return (
         <ScrollView style={styles.mainView}>
+            <ImageBackground source={logo3} resizeMode="cover" style={styles.image}>
+
+            <Text style={styles.title}>Charging Station Details</Text>
+
             {/*Map*/}
             <View style={styles.mapContainer}>
                 <MapView
@@ -71,8 +76,7 @@ const StationWatchScreen = ({navigation, route}) => {
             {/**/}
             {/*Station Details*/}
             <View style={styles.container}>
-                <Text style={styles.stationName}>Charging Station Details</Text>
-                <View>
+                <View style={styles.fields}>
                     {/*Iterate on every field of the station besides reviews*/}
                     {Object.keys(stationDetails).map((key) => {
                         {
@@ -80,8 +84,8 @@ const StationWatchScreen = ({navigation, route}) => {
                                 return (
                                     <View key={key}>
                                         <Text
-                                            style={key === "Station Name" ? styles.stationName : styles.stationStatus}>
-                                            {key}: {stationDetails[key]}
+                                            style={styles.fieldName}>
+                                            {key} - {stationDetails[key]}
                                         </Text>
                                     </View>
                                 )
@@ -146,13 +150,16 @@ const StationWatchScreen = ({navigation, route}) => {
                 <ErrorText errorMessage={errorMessage}/>
             ) : null}
             {/**/}
+            </ImageBackground>
         </ScrollView>
     );
 };
+const logo3 = require('./../../assets/images/logo4.jpeg')
 
 const styles = StyleSheet.create({
     mainView: {
         flex: 1,
+        paddingTop: 40
     },
     isCharging: {
         fontSize: 16,
@@ -166,8 +173,8 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        borderColor: "red",
-        borderWidth: 3,
+        flexDirection: 'column',
+        alignItems: "center"
     },
     stationContainer: {
         borderWidth: 1,
@@ -175,11 +182,12 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 10,
     },
-    stationName: {
-        fontSize: 19,
-        fontWeight: "bold",
+    title: {
         textAlign: "center",
-        paddingBottom: 15,
+        fontSize: 25,
+        fontWeight: 300,
+        textShadowColor: "gray",
+        margin: 10
     },
     stationLocation: {
         marginTop: 5,
@@ -191,10 +199,23 @@ const styles = StyleSheet.create({
         color: "gray",
         textAlign: "center",
     },
+    fields: {
+        flexDirection: 'column',
+        flex:1,
+        padding: 20
+    },
+    fieldName: {
+        fontWeight: 400,
+        fontSize: 20,
+        marginLeft: 10,
+        textAlign: 'center',
+        marginBottom: 5
+    },
     mapContainer: {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
+        margin: 20
     },
     map: {
         width: Dimensions.get("window").width,

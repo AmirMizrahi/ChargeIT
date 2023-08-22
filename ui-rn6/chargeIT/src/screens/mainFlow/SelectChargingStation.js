@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     ScrollView,
     Alert,
+    ImageBackground
 } from "react-native";
 import Spacer from "../../components/Spacer";
 import Map from "../../components/Map";
@@ -16,6 +17,7 @@ import trackMyLocation from "../../hooks/trackMyLocation";
 import * as Location from "expo-location";
 import {StationDetails} from "../../components/StationDetails";
 import Buttons from "../../components/Buttons";
+import image from "../../assets/images/app-background-new.jpg";
 
 const SelectChargingStation = ({navigation}) => {
     const {
@@ -123,7 +125,10 @@ const SelectChargingStation = ({navigation}) => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
+            <ImageBackground source={logo3} resizeMode="cover" style={styles.image}>
+            <Text style={styles.stationTitle}>Stations Around You:</Text>
+
             <View style={styles.mapContainer}>
                 <Map/>
                 {err ? (
@@ -142,7 +147,6 @@ const SelectChargingStation = ({navigation}) => {
                         : null
                 }
 
-                <Text style={styles.stationTitle}>Stations Around You:</Text>
                 <ScrollView contentContainerStyle={styles.stationListContainer}>
                     {stationsList.map((station) => {
                         return (
@@ -159,13 +163,17 @@ const SelectChargingStation = ({navigation}) => {
                     })}
                 </ScrollView>
             </View>
-        </SafeAreaView>
+            </ImageBackground>
+        </View>
     );
 };
+
+const logo3 = require('./../../assets/images/logo4.jpeg')
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'column',
     },
     mapContainer: {
         flex: 1,
@@ -179,13 +187,18 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
     },
+    image: {
+        flex: 1,
+
+    },
     stationTitle: {
-        fontSize: 16,
-        fontWeight: "bold",
-        marginTop: 10,
+        fontSize: 25,
+        fontWeight: 300,
+        textShadowColor: "gray",
+        textAlign: 'center',
+        margin: 5,
     },
     stationListContainer: {
-        alignItems: "center",
     },
 });
 
