@@ -5,6 +5,7 @@ import {
     TouchableOpacity,
     TextInput,
     StyleSheet,
+    ImageBackground
 } from "react-native";
 import {useFocusEffect, useRoute} from "@react-navigation/native";
 import {formatCardNumber,updateUser} from "../../hooks/userUtils";
@@ -15,6 +16,7 @@ import Feather from "react-native-vector-icons/Feather";
 import Buttons from "../../components/Buttons";
 import basicApi from "../../api/basicApi";
 import ErrorText from "../../components/ErrorText";
+import image from "../../assets/images/app-background-new.jpg";
 
 const EditProfile = ({navigation}) => {
     const [errorMessage, setErrorMessage] = useState(null);
@@ -42,15 +44,18 @@ const EditProfile = ({navigation}) => {
 
     return (
         <View style={styles.container}>
-            <View style={{alignItems: "center"}}>
+            <ImageBackground source={image} resizeMode="cover" style={styles.image}>
                 <TouchableOpacity onPress={() => this.bs.current.snapTo(0)}>
                     <View
                         style={{
                             height: 100,
                             width: 100,
                             borderRadius: 15,
+                            borderWidth: 1,
+                            borderColor: "#7eddb1",
                             justifyContent: "center",
                             alignItems: "center",
+                            marginTop: 5
                         }}
                     >
                         <View
@@ -73,13 +78,17 @@ const EditProfile = ({navigation}) => {
                                     borderRadius: 10,
                                 }}
                             />
+                            <Text style={styles.addPhoto}>Add Photo</Text>
                         </View>
                     </View>
                 </TouchableOpacity>
-                <Text style={{marginTop: 10, fontSize: 18, fontWeight: "bold"}}>
+                <Text style={{ fontSize: 25,
+                    fontWeight: 300,
+                    textShadowColor: "gray",
+                marginTop: 5}}>
                     {userData ? userData.fname : ""} {userData ? userData.lname : ""}
                 </Text>
-            </View>
+
 
             <View style={styles.action}>
                 <FontAwesome name="user-o" color="#333333" size={20}/>
@@ -199,6 +208,7 @@ const EditProfile = ({navigation}) => {
             </View>
             <ErrorText errorMessage={errorMessage}/>
             <Buttons btn_text="Update" on_press={() => updateUser(userData,navigation, setErrorMessage)}/>
+            </ImageBackground>
         </View>
     );
 };
@@ -208,7 +218,18 @@ export default EditProfile;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginLeft: 20,
+    },
+    addPhoto: {
+        color: 'white',
+        marginTop: 5,
+        size: 9
+    },
+    image: {
+        flex: 1,
+        alignItems: "center",
+
+        flexDirection: "column"
+
     },
     header: {
         backgroundColor: "#FFFFFF",
@@ -219,6 +240,7 @@ const styles = StyleSheet.create({
         paddingTop: 20,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
+
     },
     action: {
         flexDirection: "row",
@@ -233,11 +255,13 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === "ios" ? 0 : -12,
         paddingLeft: 10,
         color: "#333333",
+        maxWidth: 250
     },
     paymentView: {
-        borderColor: 'black',
-        borderWidth: 1,
         borderRadius: 10,
-        padding: 10
+        padding: 20,
+        minWidth: 300,
+        margin: 15,
+        backgroundColor: "#ffffffde"
     }
 });

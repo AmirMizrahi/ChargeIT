@@ -90,7 +90,7 @@ const MyStationCard = ({details, navigation}) => {
                 <Button style={styles.button} title={"Watch QR Code"} onPress={ openQRPopup }/>
                 <Button style={styles.button} title={"Edit Station"} onPress={ handleEditStation }/>
                 <Button style={styles.button} title={"See Location"} onPress={ openMapPopup}/>
-                <Button style={styles.button} title={"*Delete Station"}/>
+                <Button color="#e15656" style={styles.button} title={"Delete Station"}/>
             </View>
 
             {/*Popups!*/}
@@ -136,10 +136,9 @@ const styles = StyleSheet.create({
         height: 250
     },
     mainContainer: {
-        borderWidth: 2,
-        borderColor: 'black',
         borderRadius: 10,
         flexDirection: "row",
+        backgroundColor: "#ffffffde"
     },
     detailsContainer: {
         flex: 1,
@@ -151,7 +150,8 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     name: {
-        fontWeight: "bold",
+        fontWeight: 500,
+        fontSize: 15,
         marginLeft: 10
     },
     regularText: {

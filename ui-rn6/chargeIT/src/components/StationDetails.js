@@ -27,7 +27,7 @@ export const StationDetails = (params) => {
         {Object.keys(station).map((field) => {
           return (
             <Text key={field}>
-              <Text style={{ fontWeight: "bold" }}> {field.toUpperCase()} </Text>
+              <Text style={styles.fieldName}> {field.toUpperCase()} </Text>
               <Text
                 style={
                   field === "Status" && station[field] === "Ready for use"
@@ -53,17 +53,19 @@ export const styles = {
     flex: 1,
     flexDirection: "row",
     alignContent: "space-between",
-    marginTop: 30,
-    padding: 10,
+   marginBottom: 10,
     color: "white",
-    width: 300,
+    width: 350,
     maxHeight: 150,
-    borderColor: "white",
-    borderRadius: 6,
-    borderWidth: 2,
+    borderRadius: 10,
+    backgroundColor: "#ffffffde"
+  },
+  fieldName: {
+    fontWeight: 500,
+    fontSize: 15,
+    marginLeft: 10
   },
   container: {
-    marginTop: 30,
     padding: 10,
     color: "white",
     width: 300,
@@ -99,14 +101,17 @@ export const styles = {
     fontWeight: "bold",
   },
   stationLocation: {
-    marginTop: 5,
     flex: 1,
     fontSize: 14,
     textAlign: "center",
     padding: 10,
-    borderColor: "white",
+    borderColor: "#7eddb1",
     borderRadius: 8,
     borderWidth: 2,
+    maxHeight: 60,
+    maxWidth: 80,
+    marginLeft: 60,
+    marginTop: 20
   },
   stationStatus: {
     marginTop: 5,
