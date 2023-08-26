@@ -227,7 +227,7 @@ public class UserController {
                         isValidIsraeliCreditCard = user.getIsraeliCreditCard().isValid();
                     }
 
-                    UserDTO userDTO = new UserDTO(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNumber(), chargingStations, isValidIsraeliCreditCard, user.getProfits(), user.getPayments());
+                    UserDTO userDTO = new UserDTO(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNumber(), chargingStations, isValidIsraeliCreditCard/*, user.getProfits(), user.getPayments()*/);
                     JsonElement jsonElement = gson.toJsonTree(userDTO);
                     JsonObject userJson = jsonElement.getAsJsonObject();
                     jsonObject.add("user", userJson);
@@ -247,6 +247,54 @@ public class UserController {
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(jsonObject.toString());
+    }
+
+    @GetMapping(value = "/getUserMoneyTransactions")
+    public ResponseEntity<String> getUserMoneyTransactions(HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        JsonObject jsonObject = new JsonObject();
+
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null)
+        {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            jsonObject.addProperty("error", "No valid session.");
+        }
+        else
+        {
+            try
+            {
+                User user = m_userRepository.findById((ObjectId) session.getAttribute("id"))
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+
+                List<MoneyTransaction> profits = user.getProfits();
+                List<MoneyTransaction> payments = user.getPayments();
+
+                jsonObject.add("profits", serializeTransactions(profits));
+                jsonObject.add("payments", serializeTransactions(payments));
+            }
+            catch (RuntimeException runtimeException)
+            {
+                httpStatus = HttpStatus.NOT_FOUND;
+                jsonObject.addProperty("error", runtimeException.getMessage());
+            }
+        }
+
+        return ResponseEntity.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonObject.toString());
+    }
+
+    private JsonArray serializeTransactions(List<MoneyTransaction> transactions) {
+        JsonArray jsonArray = new JsonArray();
+        for (MoneyTransaction transaction : transactions) {
+            JsonObject transactionObject = new JsonObject();
+            transactionObject.addProperty("amount", transaction.getAmount());
+            transactionObject.addProperty("dateTime", transaction.getDateTime().toString());
+            jsonArray.add(transactionObject);
+        }
+        return jsonArray;
     }
 
     @GetMapping("/getChargingStatus")
@@ -679,15 +727,28 @@ public class UserController {
                 httpStatus = HttpStatus.NOT_FOUND;
                 jsonObject.addProperty("error", "User(s) not found.");
             } else {
-                // Add the money transaction to the customer and owner
-                customer.addPayment(moneyTransaction);
-                owner.addProfit(moneyTransaction);
+                if(customer.getId().equals(owner.getId()))
+                {
+                    // Add the money transaction to the customer and owner
+                    owner.addPayment(moneyTransaction);
+                    owner.addProfit(moneyTransaction);
 
-                // Save the updated users in the database
-                m_userRepository.save(customer);
-                m_userRepository.save(owner);
+                    // Save the updated users in the database
+                    m_userRepository.save(owner);
 
-                jsonObject.addProperty("message", "Money transaction updated successfully.");
+                    jsonObject.addProperty("message", "Money transaction updated successfully.");
+                }
+                else {
+                    // Add the money transaction to the customer and owner
+                    customer.addPayment(moneyTransaction);
+                    owner.addProfit(moneyTransaction);
+
+                    // Save the updated users in the database
+                    m_userRepository.save(customer);
+                    m_userRepository.save(owner);
+
+                    jsonObject.addProperty("message", "Money transaction updated successfully.");
+                }
             }
         }
 

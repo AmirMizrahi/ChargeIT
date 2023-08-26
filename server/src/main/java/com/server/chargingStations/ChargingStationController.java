@@ -716,7 +716,7 @@ public class ChargingStationController {
     }
 
     @PutMapping("/addReview")
-    public ResponseEntity<String> addReview(@RequestParam("grade") int grade, @RequestParam("review") String review, @RequestParam("nickname") String nickname, @RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
+    public ResponseEntity<String> addReview(@RequestParam("grade") int grade, @RequestBody String review, @RequestParam("nickname") String nickname, @RequestParam("chargingStationId") String chargingStationId, HttpServletRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         JsonObject jsonObject = new JsonObject();
 

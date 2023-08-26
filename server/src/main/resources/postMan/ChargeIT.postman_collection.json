@@ -149,6 +149,38 @@
 					"response": []
 				},
 				{
+					"name": "getUserMoneyTransactions",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/getUserMoneyTransactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"getUserMoneyTransactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getChargingStationIDuserCurrentlyUse",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -447,7 +479,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 32.050275,\r\n    \"longitude\": 34.75892\r\n  },\r\n  \"pricePerVolt\": 3.25,\r\n  \"chargerType\": \"TYPE_0\",\r\n  \"stationName\": \"AMIR station 2\"\r\n}\r\n",
+							"raw": "{\r\n  \"location\": {\r\n    \"latitude\": 32.050276,\r\n    \"longitude\": 34.75893\r\n  },\r\n  \"pricePerVolt\": 3.25,\r\n  \"chargerType\": \"TYPE_0\",\r\n  \"stationName\": \"SIM TEST\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -655,7 +687,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"latitude\": 32.050274,\r\n  \"longitude\": 34.75891\r\n}",
+							"raw": "{\r\n  \"latitude\": 32.052386,\r\n  \"longitude\": 34.766146\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -663,7 +695,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/chargingStations/charge?chargingStationId=6475ef469c513479468ac747",
+							"raw": "http://localhost:8080/chargingStations/charge?chargingStationId=64bba697e967a45e60ba3bf8",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -676,7 +708,7 @@
 							"query": [
 								{
 									"key": "chargingStationId",
-									"value": "6475ef469c513479468ac747"
+									"value": "64bba697e967a45e60ba3bf8"
 								}
 							]
 						}
@@ -690,7 +722,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"latitude\": 32.050274,\r\n  \"longitude\": 34.75891\r\n}",
+							"raw": "{\r\n  \"latitude\": 32.052386,\r\n  \"longitude\": 34.766146\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -698,7 +730,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/chargingStations/unCharge?chargingStationId=6475ef469c513479468ac747",
+							"raw": "http://localhost:8080/chargingStations/unCharge?chargingStationId=64bba697e967a45e60ba3bf8",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -711,7 +743,7 @@
 							"query": [
 								{
 									"key": "chargingStationId",
-									"value": "6475ef469c513479468ac747"
+									"value": "64bba697e967a45e60ba3bf8"
 								}
 							]
 						}
@@ -846,15 +878,15 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "test24082023",
 							"options": {
 								"raw": {
-									"language": "json"
+									"language": "text"
 								}
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/chargingStations/addReview?grade=5&review=test2&chargingStationId=6475ef469c513479468ac747&nickname=anonymous",
+							"raw": "http://localhost:8080/chargingStations/addReview?grade=5&chargingStationId=6475ef469c513479468ac747&nickname=eden",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -870,16 +902,12 @@
 									"value": "5"
 								},
 								{
-									"key": "review",
-									"value": "test2"
-								},
-								{
 									"key": "chargingStationId",
 									"value": "6475ef469c513479468ac747"
 								},
 								{
 									"key": "nickname",
-									"value": "anonymous"
+									"value": "eden"
 								}
 							]
 						}
