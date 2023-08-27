@@ -23,7 +23,7 @@ const CreateStation = ({navigation, route}) => {
                 <Spacer></Spacer>
                 <View style={styles.fieldsContainer}>
                     <View style={styles.lineTextAndInput}>
-                        <Entypo name="add-user" size={24} color="#465bd8" style={{paddingRight: 7}}/>
+                        <Entypo name="add-user" size={24} style={{paddingRight: 7}}/>
                         <Text style={styles.label}> Station Name: </Text>
                         <TextInput
                             editable
@@ -34,7 +34,7 @@ const CreateStation = ({navigation, route}) => {
                         />
                     </View>
                     <View style={styles.lineTextAndInput}>
-                        <Entypo name="price-tag" size={24} color="#465bd8" style={{paddingRight: 7}}/>
+                        <Entypo name="price-tag" size={24} style={{paddingRight: 7}}/>
                         <Text style={styles.label}> Price per Volt: </Text>
                         <TextInput
                             editable
@@ -47,7 +47,7 @@ const CreateStation = ({navigation, route}) => {
                     </View>
 
                     <View style={styles.lineTextAndInput}>
-                        <Entypo name="battery" size={24} color="#465bd8" style={{paddingRight: 7}}/>
+                        <Entypo name="battery" size={24}  style={{paddingRight: 7}}/>
                         <Text style={styles.label}> Type of Charger:</Text>
                         <Picker
                             style={styles.picker}
