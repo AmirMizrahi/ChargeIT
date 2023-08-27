@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 import { Table, Row, Rows } from 'react-native-table-component';
 import { useIsFocused } from "@react-navigation/native";
 import { Context as UsersContext } from "../../context/UsersContext";
 import { SafeAreaView } from "react-native-safe-area-context";
+import image from "../../assets/images/stations.jpg";
 
 const Revenue = () => {
     const { state, getUserInfo } = useContext(UsersContext);
@@ -35,13 +36,16 @@ const Revenue = () => {
     }, [isFocused]);
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView>
-                <Text>My Profits:</Text>
+        <SafeAreaView>
+            <View>
+                <Image style={{position: 'absolute', top: 0, left: 0}} source={image}/>
+            </View>
+            <ScrollView style={{padding: 10}}>
+                <Text style={styles.title}>My Profits</Text>
                 <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
-                    <Row data={['Date', 'Profit']} style={styles.head} textStyle={styles.text} />
+                    <Row data={['Date', 'Profit']} style={styles.HeadStyle} textStyle={styles.HeadText} />
                     <Rows data={tableData} textStyle={styles.text} />
-                    <Row data={['Total', totalAmount]} style={styles.totalRow} textStyle={styles.text} />
+                    <Row data={['Total', totalAmount]} style={styles.totalRow} textStyle={styles.TableText} />
                 </Table>
             </ScrollView>
         </SafeAreaView>
@@ -51,15 +55,32 @@ const Revenue = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        padding: 18,
+        paddingTop: 35,
+        backgroundColor: '#ffffff'
     },
-    head: {
-        height: 40,
-        backgroundColor: '#f1f8ff'
+    title: {
+        fontSize: 25,
+        fontWeight: "300",
+        textAlign: 'center',
+        paddingBottom: 20
     },
-    text: {
-        margin: 6
+    HeadStyle: {
+        height: 50,
+        backgroundColor: '#465bd8',
     },
+    HeadText: {
+        margin: 10,
+        fontSize: 18,
+        textAlign: 'center',
+        color: 'white',
+
+    },
+    TableText: {
+        textAlign: 'center',
+        fontWeight: '200',
+    },
+
     totalRow: {
         backgroundColor: '#f2f2f2'
     }
