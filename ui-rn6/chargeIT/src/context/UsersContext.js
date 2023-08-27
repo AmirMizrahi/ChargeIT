@@ -44,8 +44,40 @@ const getUserInfo = (dispatch) => async () => {
   }
 };
 
+const getBill =
+    (dispatch) =>
+        async () => {
+          let dischargeStation;
+          try {
+            dischargeStation = await basicApi.get("/chargingStations/getWhichChargingStationUserUses")
+          } catch (err) {
+            dispatch({
+              type: "add_error",
+              payload: err.response.data.error,
+            });
+          }
+
+          return dischargeStation;
+        };
+
+const getDeals =
+    (dispatch) =>
+        async () => {
+          let dischargeStation;
+          try {
+            dischargeStation = await basicApi.get("/users/getUserMoneyTransactions")
+          } catch (err) {
+            dispatch({
+              type: "add_error",
+              payload: err.response.data.error,
+            });
+          }
+
+          return dischargeStation.data;
+        };
+
 export const { Context, Provider } = createDataContext(
   usersReducer,
-  { getUserInfo, clearErrorMessage },
+  { getUserInfo, clearErrorMessage, getDeals },
   { userValues: null, errorMessage: "" }
 );

@@ -7,7 +7,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import image from "../../assets/images/stations.jpg";
 
 const Revenue = () => {
-    const {state, getUserInfo} = useContext(UsersContext);
+    const {state, getDeals} = useContext(UsersContext);
     const [tableData, setTableData] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0); // Total amount state
 
@@ -16,7 +16,7 @@ const Revenue = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const user = await getUserInfo();
+                const user = await getDeals();
                 const payments = user.payments;
 
                 const total = payments.reduce((sum, payment) => sum + payment.amount, 0);
