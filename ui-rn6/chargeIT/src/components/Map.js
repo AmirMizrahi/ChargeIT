@@ -2,6 +2,10 @@ import React, { useContext, useState, useEffect } from "react";
 import { ActivityIndicator, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { Context as StationsContext } from "../context/StationsContext";
+import basicApi from "../api/basicApi";
+import outsideStation from "../assets/images/outside_charging_station2.jpg"
+import appStations from "../assets/images/appStations_30x30.png"
+import * as Location from "expo-location";
 
 const Map = () => {
   const [markerList, setMarkerList] = useState([]);
@@ -13,10 +17,36 @@ const Map = () => {
     const fetchMarkers = async () => {
       try {
         const arrayOfStations = await fetchChargingStations();
-        const jsonArray = arrayOfStations.map((obj) =>
+        let jsonArray = arrayOfStations.map((obj) =>
           JSON.parse(Object.values(obj)[0])
         );
+
+        let location = await Location.getCurrentPositionAsync({});
+        let newLocation = {
+          longitude: location.coords.longitude,
+          latitude: location.coords.latitude,
+        };
+
+        const outEVStationsObject = await basicApi.get(
+            `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${newLocation.latitude},${newLocation.longitude}&radius=5000&type=gas_station&key=AIzaSyCn9n4ARkLfQzaAkuGsSvW4agalcPixTQw`
+        );
+        const stations = outEVStationsObject.data.results;
+        let formattedStations = [];
+        stations.forEach(station => {
+          formattedStations.push(
+              {
+                id:station.place_id,
+                stationName:station.name,
+                status:"Outer station",
+                location : {
+                  latitude: station.geometry.location.lat,
+                  longitude: station.geometry.location.lng
+                }
+              })
+        })
+        jsonArray = jsonArray.concat(formattedStations);
         setMarkerList(jsonArray);
+
       } catch (error) {
         console.error(error);
       }
@@ -56,6 +86,9 @@ const Map = () => {
               latitude: marker.location.latitude,
               longitude: marker.location.longitude,
             }}
+            // pinColor={marker.status === "Outsource station" ? "green" : "red"} // Set green color for "Outsource station" markers
+            image={marker.status === "Outer station" ? outsideStation : appStations}
+            style={{ width: 3, height: 30 }}
           />
         ))}
       </MapView>

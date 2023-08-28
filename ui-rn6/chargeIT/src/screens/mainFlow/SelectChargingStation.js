@@ -10,14 +10,12 @@ import {
 } from "react-native";
 import Spacer from "../../components/Spacer";
 import Map from "../../components/Map";
-import {SafeAreaView} from "react-native-safe-area-context";
 import {useIsFocused} from "@react-navigation/native";
 import {Context as StationsContext} from "../../context/StationsContext";
 import trackMyLocation from "../../hooks/trackMyLocation";
 import * as Location from "expo-location";
 import {StationDetails} from "../../components/StationDetails";
 import Buttons from "../../components/Buttons";
-import image from "../../assets/images/app-background-new.jpg";
 
 const SelectChargingStation = ({navigation}) => {
     const {
