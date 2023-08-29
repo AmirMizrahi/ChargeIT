@@ -74,7 +74,7 @@ const AddReview = ({ navigation, route }) => {
             <View>
                 <View style={styles.buttonView}>
                     <Buttons btn_text="Add Review" on_press={handleAddReview} />
-                    <Buttons btn_text="Not interested" />
+                    <Buttons btn_text="Not interested" on_press={()=> navigation.goBack()}/>
                     <ErrorText errorMessage={errorMessage} />
                 </View>
             </View>
