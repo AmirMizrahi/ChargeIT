@@ -19,7 +19,6 @@ const addReview = (dispatch) => ({grade, review, chargingStationId, nickname}) =
     };
 
     try {
-        debugger;
         basicApi.put("/chargingStations/addReview", review,
             {headers: {'Content-Type': 'text/plain'},  params: queryParams })
             .then(response => {
@@ -29,7 +28,7 @@ const addReview = (dispatch) => ({grade, review, chargingStationId, nickname}) =
             .catch(error => {
                 // Handle errors
                 console.error("Error adding review", error);
-            });        debugger;
+            });
     } catch (err) {
         responseData.error = err.response.data.error;
     }

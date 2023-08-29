@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignSelf: "center",
         maxWidth: Dimensions.get('window').width - 100,
-        alignItems: 'center',
+        alignItems: 'center'
     },
     label: {
         fontSize: 18,
