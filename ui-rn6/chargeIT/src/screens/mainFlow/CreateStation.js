@@ -127,7 +127,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         flex: 1,
         height: 20,
-        backgroundColor: 'red'
     },
     input: {
         width: "40%",
@@ -136,7 +135,6 @@ const styles = StyleSheet.create({
         borderColor: "gray",
         borderRadius: 5,
         paddingLeft: 10,
-        backgroundColor: 'pink'
     },
     lineTextAndInput: {
         display: "flex",
