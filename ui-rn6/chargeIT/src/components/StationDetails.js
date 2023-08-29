@@ -1,5 +1,5 @@
-import {Text, TextBase, View} from "react-native";
-import React, {useState} from "react";
+import { Text, TextBase, View } from "react-native";
+import React, { useState } from "react";
 import Spacer from "./Spacer";
 
 export const StationDetails = (params) => {
@@ -12,7 +12,7 @@ export const StationDetails = (params) => {
             station["Charging Type"] = params.station[key];
         }
         if (key === "pricePerVolt") {
-            station["Price Per Volt"] = params.station[key] + "₪";
+            station["Price (kWh)"] = params.station[key] + "₪";
         } else if (key === "status") {
             station["Status"] =
                 params.station["status"] === "NOT_CHARGING"
@@ -27,7 +27,7 @@ export const StationDetails = (params) => {
                 {Object.keys(station).map((field) => {
                     return (
                         <Text key={field}>
-                            <Text style={styles.fieldName}> {field} </Text>
+                            <Text style={styles.fieldName}> {field.toUpperCase()} </Text>
                             <Text
                                 style={
                                     field === "Status" && station[field] === "Ready for use"
@@ -50,8 +50,14 @@ export const StationDetails = (params) => {
 
 export const styles = {
     wrapper: {
-        borderRadius: 10,
+        flex: 1,
         flexDirection: "row",
+        alignContent: "space-between",
+        marginBottom: 10,
+        color: "white",
+        width: 350,
+        maxHeight: 150,
+        borderRadius: 10,
         backgroundColor: "#ffffffde"
     },
     fieldName: {
@@ -95,6 +101,7 @@ export const styles = {
         fontWeight: "bold",
     },
     stationLocation: {
+        flex: 1,
         fontSize: 14,
         textAlign: "center",
         padding: 10,
