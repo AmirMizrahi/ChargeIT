@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, LogBox, ScrollView, StyleSheet, Text, View} from 'react-native';
 import { Table, Row, Rows } from 'react-native-table-component';
 import { useIsFocused } from "@react-navigation/native";
 import { Context as UsersContext } from "../../context/UsersContext";
@@ -12,6 +12,8 @@ const Revenue = () => {
     const [totalAmount, setTotalAmount] = useState(0); // Total amount state
 
     const isFocused = useIsFocused();
+
+    LogBox.ignoreLogs(['Invalid prop `textStyle` of type `array` supplied to `Cell`']); //Disable warnings.
 
     useEffect(() => {
         const fetchData = async () => {

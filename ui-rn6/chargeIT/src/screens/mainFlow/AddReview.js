@@ -1,14 +1,14 @@
-import React, { useContext, useState } from 'react';
+import React, {useContext, useState} from 'react';
 import {View, Text, StyleSheet, TextInput, Alert, Dimensions, ImageBackground} from 'react-native';
 import Buttons from '../../components/Buttons';
 import StarRating from 'react-native-star-rating-widget';
-import { Context as ReviewsContext } from '../../context/ReviewsContext';
+import {Context as ReviewsContext} from '../../context/ReviewsContext';
 import ErrorText from '../../components/ErrorText';
 import image from "../../assets/images/app-background-new.jpg";
 import Spacer from "../../components/Spacer";
 
-const AddReview = ({ navigation, route }) => {
-    const { result } = route.params;
+const AddReview = ({navigation, route}) => {
+    const {result} = route.params;
 
     const [grade, setGrade] = useState(1);
     const [nickname, onChangeNickname] = React.useState();
@@ -16,7 +16,7 @@ const AddReview = ({ navigation, route }) => {
     const [errorMessage, setErrorMessage] = React.useState();
     const [isReviewFilled, setIsReviewFilled] = React.useState(false);
 
-    const { addReview } = useContext(ReviewsContext);
+    const {addReview} = useContext(ReviewsContext);
 
     const handleAddReview = () => {
         if (!review || review.trim() === '') {
@@ -51,17 +51,17 @@ const AddReview = ({ navigation, route }) => {
     const logo3 = require('./../../assets/images/logo4.jpeg')
     return (
         <View style={styles.mainView}>
-            <ImageBackground source={logo3} resizeMode="cover" style={styles.image}>
-                <View>
-                    <Text style={styles.text}>
-                        Thank you for using {result.stationName}.{"\n"} Total to pay is: {result.payment}
-                    </Text>
-                    <Spacer></Spacer>
-                    <Text style={styles.headerText}>Tell us what you think!</Text>
-                </View>
-                <View style={styles.fieldsContainer}>
+            {/*<ImageBackground source={logo3} resizeMode="cover" style={styles.image}>*/}
+            <View>
+                <Text style={styles.text}>
+                    Thank you for using {result.stationName}.{"\n"} Total to pay is: {result.payment}
+                </Text>
+                <Spacer></Spacer>
+                <Text style={styles.headerText}>Tell us what you think!</Text>
+            </View>
+            <View style={styles.fieldsContainer}>
 
-                <StarRating rating={grade} onChange={(newGrade) => setGrade(newGrade)} enableHalfStar={false} />
+                <StarRating rating={grade} onChange={(newGrade) => setGrade(newGrade)} enableHalfStar={false}/>
                 <TextInput
                     style={styles.input}
                     onChangeText={onChangeNickname}
@@ -80,15 +80,16 @@ const AddReview = ({ navigation, route }) => {
                     maxLength={200}
                     editable={true}
                 />
-            </View>
-            <View>
                 <View style={styles.buttons}>
-                    <Buttons btn_text="Add Review" on_press={handleAddReview} />
-                    <Buttons btn_text="Not interested" on_press={()=> navigation.goBack()}/>
-                    <ErrorText errorMessage={errorMessage} />
+                    <Buttons btn_text="Add Review" on_press={handleAddReview}/>
+                    <Buttons btn_text="Not interested" on_press={() => navigation.goBack()}/>
+                    <ErrorText errorMessage={errorMessage}/>
                 </View>
             </View>
-            </ImageBackground>
+            <View>
+
+            </View>
+            {/*</ImageBackground>*/}
         </View>
     );
 };
@@ -102,9 +103,9 @@ const styles = StyleSheet.create({
         display: "flex",
         flex: 1,
         flexDirection: "column",
-        justifyContent: "space-between",
+        // justifyContent: "space-between",
         alignItems: 'center',
-        maxHeight: Dimensions.get('window').height * 0.2,
+        // maxHeight: Dimensions.get('window').height * 0.2,
         top: 70
 
     },
@@ -121,10 +122,11 @@ const styles = StyleSheet.create({
         top: 40
     },
     buttons: {
-        bottom: -200,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-end',
+        width: 300,
+        marginTop:10
     },
     smallText: {
         fontSize: 14,

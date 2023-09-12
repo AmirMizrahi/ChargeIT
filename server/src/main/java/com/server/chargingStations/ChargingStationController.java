@@ -498,8 +498,8 @@ public class ChargingStationController {
             ChargingStation station = m_chargingStationsRepository.findById(new ObjectId(chargingStationId)).orElseThrow(() -> new RuntimeException("Charging Station not found"));
             if(station.getStatus().equals(Estatus.CHARGING))
             {
-                if(GeoUtils.distanceBetweenPointsInKilometers(station.getLocation().getLatitude(), station.getLocation().getLongitude(),
-                        currentLocation.getLatitude(), currentLocation.getLongitude()) * 1000 <= MAX_DISTANCE_FROM_STATION_IN_METERS)
+               // if(GeoUtils.distanceBetweenPointsInKilometers(station.getLocation().getLatitude(), station.getLocation().getLongitude(),
+               //         currentLocation.getLatitude(), currentLocation.getLongitude()) * 1000 <= MAX_DISTANCE_FROM_STATION_IN_METERS)
                 {
                     int percentToAskPayFor = 0;
 
@@ -558,11 +558,11 @@ public class ChargingStationController {
                     ResponseEntity<String> response = restTemplate.exchange(urlWithParams, HttpMethod.PUT, updateTransactionRequest, String.class);
                     // End update MoneyTransaction
                 }
-                else
-                {
-                    httpStatus = HttpStatus.FORBIDDEN;
-                    jsonObject.addProperty("error", "You need to be in the range of 50 meters from the charging station in order to discharge.");
-                }
+               // else
+               // {
+               //     httpStatus = HttpStatus.FORBIDDEN;
+               //     jsonObject.addProperty("error", "You need to be in the range of 50 meters from the charging station in order to discharge.");
+               // }
             }
             else
             {

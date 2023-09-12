@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, View, LogBox} from 'react-native';
 import {Table, Row, Rows} from 'react-native-table-component';
 import {useIsFocused} from "@react-navigation/native";
 import {Context as UsersContext} from "../../context/UsersContext";

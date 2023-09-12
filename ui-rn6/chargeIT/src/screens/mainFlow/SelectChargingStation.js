@@ -118,7 +118,7 @@ const SelectChargingStation = ({navigation}) => {
             ]);
         } else {
             setSelectedChargingStationName(null);
-            navigation.navigate("AddReview", {navigation, result});
+            navigation.navigate("AddReview", {result});
         }
     };
 
