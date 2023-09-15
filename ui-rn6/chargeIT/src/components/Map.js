@@ -28,7 +28,7 @@ const Map = () => {
         };
 
         const outEVStationsObject = await basicApi.get(
-            `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${newLocation.latitude},${newLocation.longitude}&radius=5000&type=gas_station&key=AIzaSyCn9n4ARkLfQzaAkuGsSvW4agalcPixTQw`
+            `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${newLocation.latitude},${newLocation.longitude}&radius=5000&type=gas_station&key={insertKeyHere}`
         );
         const stations = outEVStationsObject.data.results;
         let formattedStations = [];
